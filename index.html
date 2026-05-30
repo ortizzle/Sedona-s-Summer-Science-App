@@ -1905,7 +1905,7 @@ applySession();
 renderHome();
 function applySession(){
   const s=getSession();
-  document.getElementById('home-sub-el').textContent=`${s.subject} · Session ${s.num}`;
+  document.getElementById('home-sub-el').textContent=s.combined?`${s.icon} ${s.title}`:` ${s.subject} · Session ${s.num}`;
   document.getElementById('sb-name-el').textContent=`Session ${s.num} — ${s.title}`;
   document.getElementById('sb-date-el').innerHTML=`${s.date} · ${s.subject} &nbsp;· <span style="font-size:12px;opacity:0.85;">tap to learn more ›</span>`;
   // Rebuild lesson modal header
