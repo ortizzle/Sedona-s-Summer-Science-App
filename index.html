@@ -1803,11 +1803,22 @@ function renderHaniDash(){
       <div class="hani-section-title">📅 Active Session</div>
       <div class="hani-card">
         <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Select which session Sedona is studying today. Flashcards will show only that session's content. Practice games draw from all sessions.</div>
+        <div style="font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Individual Sessions</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+          ${SESSIONS.filter(s=>!s.combined).map((s,i)=>{
+            const active=i===ACTIVE_SESSION;
+            return `<button onclick="setActiveSession(${i})" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'var(--purple)':'var(--gray-200)'};background:${active?'#ede9fe':'white'};color:${active?'var(--purple-dark)':'var(--gray-700)'};">
+              ${active?'✅ ':''}Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:0.7;">${s.date} · ${s.subject}</span>
+            </button>`;}).join('')}
+        </div>
+        <div style="font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Combined Review</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          ${SESSIONS.map((s,i)=>`
-            <button onclick="setActiveSession(${i})" id="sess-btn-${i}" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${i===ACTIVE_SESSION?'var(--purple)':'var(--gray-200)'};background:${i===ACTIVE_SESSION?'#ede9fe':'white'};color:${i===ACTIVE_SESSION?'var(--purple-dark)':'var(--gray-700)'};">
-              ${i===ACTIVE_SESSION?'✅ ':''}Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:0.7;">${s.date} · ${s.subject}</span>
-            </button>`).join('')}
+          ${SESSIONS.map((s,i)=>({s,i})).filter(({s})=>s.combined).map(({s,i})=>{
+            const active=i===ACTIVE_SESSION;
+            const chemCount=CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject)).length;
+            return `<button onclick="setActiveSession(${i})" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'#2dd4bf':'var(--gray-200)'};background:${active?'rgba(45,212,191,0.1)':'white'};color:${active?'#0f766e':'var(--gray-700)'};">
+              ${active?'✅ ':''}${s.icon} ${s.title}<br><span style="font-size:11px;opacity:0.7;">${chemCount} flashcards across all ${s.subject} sessions</span>
+            </button>`;}).join('')}
         </div>
       </div>
     </div>
