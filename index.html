@@ -1047,7 +1047,7 @@ function saveProgress(){
     localStorage.setItem('sedona_asl_s1',JSON.stringify({
       totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,
       studySeconds:S.studySeconds,
-      mistakes:S.mistakes,timingLog:S.timingLog,quizSessions:S.quizSessions,
+      mistakes:S.mistakes,timingLog:S.timingLog,quizSessions:S.quizSessions,checkIns:S.checkIns,
       badges:S.badges.map(b=>({id:b.id,unlocked:b.unlocked,earnedAt:b.earnedAt}))
     }));
   }catch(e){}
