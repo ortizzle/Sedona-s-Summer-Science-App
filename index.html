@@ -363,30 +363,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <!-- Lesson Summary Modal -->
   <div id="lesson-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
     <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-      <div style="background:linear-gradient(135deg,#6d28d9,#7c3aed);padding:20px;color:white;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.85;margin-bottom:4px;">📚 SESSION 1</div>
-        <div style="font-size:20px;font-weight:800;margin-bottom:2px;">Atoms, Isotopes &amp; Ions</div>
-        <div style="font-size:13px;opacity:0.8;" id="modal-session-date">Friday, May 30 · NGSS Unit 3</div>
-      </div>
-      <div style="padding:20px;font-family:system-ui,sans-serif;">
-        <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 16px;"><strong>Why this matters:</strong> Everything in the universe — your body, the air, your phone — is made of atoms. Understanding atomic structure is the foundation of all chemistry. Once you know how atoms are built, you can predict how elements behave and why the periodic table is arranged the way it is.</p>
-        <div style="background:#f5f3ff;border-left:4px solid #7c3aed;border-radius:8px;padding:14px;margin-bottom:16px;">
-          <div style="font-weight:700;color:#5b21b6;margin-bottom:10px;font-size:13px;">🔑 KEY CONCEPTS</div>
-          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#374151;">
-            <div><strong>⚛️ Atomic Number &amp; Mass Number</strong><br>Atomic number = # of protons (defines the element). Mass number = protons + neutrons. Use the MAN formula: M = A + N.</div>
-            <div><strong>🧬 Isotopes</strong><br>Same element, different neutron counts. Same atomic number, different mass numbers. Example: Carbon-12 vs Carbon-14.</div>
-            <div><strong>⚡ Ions</strong><br>Atoms that gained or lost electrons. Lose electrons → positive ion (cation). Gain electrons → negative ion (anion). Charge = protons − electrons.</div>
-            <div><strong>⚖️ Average Atomic Mass</strong><br>A weighted average of all isotopes based on their natural abundance. That's why the periodic table shows decimals!</div>
-            <div><strong>🌊 Valence Electrons</strong><br>Electrons in the outermost shell. They determine how an element reacts. Group number = valence electrons (for main-group elements).</div>
-            <div><strong>📈 Periodic Trends</strong><br>Across a period (→): atomic radius shrinks, electronegativity increases. Down a group (↓): atomic radius grows, electronegativity decreases.</div>
-          </div>
-        </div>
-        <div style="background:#ecfdf5;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#166534;">
-          <strong>💡 Quick Formulas to Remember:</strong><br>
-          <span style="font-family:monospace;font-size:13px;">Mass # = Protons + Neutrons<br>Charge = Protons − Electrons<br>Neutrons = Mass # − Atomic #</span>
-        </div>
-        <button onclick="document.getElementById('lesson-modal').style.display='none'" style="width:100%;padding:12px;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Got it! Let's study 🚀</button>
-      </div>
+      <div id="lesson-modal-header" style="background:linear-gradient(135deg,#6d28d9,#7c3aed);padding:20px;color:white;"></div>
+      <div id="lesson-modal-body" style="padding:20px;font-family:system-ui,sans-serif;"></div>
     </div>
   </div>
   <div class="xp-section" onclick="showRankMap()" style="cursor:pointer;">
