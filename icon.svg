@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4c1d95"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="liquid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d9488"/>
+      <stop offset="100%" style="stop-color:#38bdf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="180" height="180" rx="40" fill="url(#bg)"/>
+
+  <!-- Beaker body -->
+  <rect x="62" y="48" width="56" height="6" rx="3" fill="white" opacity="0.9"/>
+  <!-- Beaker neck -->
+  <rect x="70" y="54" width="40" height="14" fill="white" opacity="0.85"/>
+  <!-- Beaker flask shape -->
+  <path d="M70 68 L52 118 Q49 130 60 132 L120 132 Q131 130 128 118 L110 68 Z" fill="white" opacity="0.15" stroke="white" stroke-width="3" stroke-opacity="0.7"/>
+
+  <!-- Liquid fill -->
+  <clipPath id="beaker-clip">
+    <path d="M70 68 L52 118 Q49 130 60 132 L120 132 Q131 130 128 118 L110 68 Z"/>
+  </clipPath>
+  <rect x="48" y="100" width="84" height="35" fill="url(#liquid)" opacity="0.85" clip-path="url(#beaker-clip)"/>
+
+  <!-- Bubbles in liquid -->
+  <circle cx="75" cy="118" r="4" fill="white" opacity="0.5"/>
+  <circle cx="95" cy="112" r="3" fill="white" opacity="0.4"/>
+  <circle cx="110" cy="120" r="5" fill="white" opacity="0.45"/>
+
+  <!-- Atom orbits around beaker -->
+  <ellipse cx="90" cy="90" rx="78" ry="26" fill="none" stroke="white" stroke-width="2" stroke-opacity="0.35" transform="rotate(0 90 90)"/>
+  <ellipse cx="90" cy="90" rx="78" ry="26" fill="none" stroke="white" stroke-width="2" stroke-opacity="0.35" transform="rotate(60 90 90)"/>
+  <ellipse cx="90" cy="90" rx="78" ry="26" fill="none" stroke="white" stroke-width="2" stroke-opacity="0.35" transform="rotate(-60 90 90)"/>
+
+  <!-- Nucleus dot -->
+  <circle cx="90" cy="90" r="5" fill="#fbbf24"/>
+
+  <!-- Electron dots -->
+  <circle cx="90" cy="64" r="4" fill="#a78bfa"/>
+  <circle cx="155" cy="107" r="4" fill="#38bdf8"/>
+  <circle cx="25" cy="107" r="4" fill="#6ee7b7"/>
+</svg>
