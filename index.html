@@ -695,10 +695,48 @@ const ELEMENTS_DATA=[
 ];
 
 // ─── SESSION CONFIG (update each session) ─────────────────────────────────
-const SESSION_NUM = 1;
-const SESSION_TITLE = 'Atoms, Isotopes & Ions';
-const SESSION_DATE = 'Friday, May 30'; // update each session
-const SESSION_SUBJECT = 'Chemistry';
+// ─── SESSION REGISTRY ─────────────────────────────────────────────────────
+const SESSIONS = [
+  {
+    num: 1,
+    title: 'Atoms, Isotopes & Ions',
+    date: 'Friday, May 30',
+    subject: 'Chemistry',
+    unit: 'NGSS Unit 3',
+    why: 'Everything in the universe — your body, the air, your phone — is made of atoms. Understanding atomic structure is the foundation of all chemistry. Once you know how atoms are built, you can predict how elements behave and why the periodic table is arranged the way it is.',
+    concepts: [
+      {title:'⚛️ Atomic Number & Mass Number', body:'Atomic number = # of protons (defines the element). Mass number = protons + neutrons. Use the MAN formula: M = A + N.'},
+      {title:'🧬 Isotopes', body:'Same element, different neutron counts. Same atomic number, different mass numbers. Example: Carbon-12 vs Carbon-14.'},
+      {title:'⚡ Ions', body:'Atoms that gained or lost electrons. Lose electrons → positive ion (cation). Gain electrons → negative ion (anion). Charge = protons − electrons.'},
+      {title:'⚖️ Average Atomic Mass', body:'A weighted average of all isotopes based on their natural abundance. That\'s why the periodic table shows decimals!'},
+      {title:'🌊 Valence Electrons', body:'Electrons in the outermost shell. They determine how an element reacts. Group number = valence electrons (for main-group elements).'},
+      {title:'📈 Periodic Trends', body:'Across a period (→): atomic radius shrinks, electronegativity increases. Down a group (↓): atomic radius grows, electronegativity decreases.'},
+    ],
+    formulas: 'Mass # = Protons + Neutrons\nCharge = Protons − Electrons\nNeutrons = Mass # − Atomic #',
+  },
+  {
+    num: 2,
+    title: 'Motion & Forces',
+    date: 'Sunday, June 1',
+    subject: 'Physics',
+    unit: 'Physics Unit 1–2',
+    why: 'Everything that moves — a car, a soccer ball, even your own body — follows the same rules of motion and force. Newton figured them out 300+ years ago and they still explain every sport, vehicle, and collision on Earth. This is the foundation of all physics.',
+    concepts: [
+      {title:'🏃 Average Velocity', body:'v = Δx/Δt — change in position over time. It\'s a vector (direction matters). Speed is scalar; velocity is speed + direction.'},
+      {title:'🚀 Acceleration', body:'a = (vf − vi)/t — rate of change of velocity. Slowing down IS acceleration (just negative). Any change in speed or direction = acceleration.'},
+      {title:'💥 Momentum', body:'p = mv — mass × velocity. Heavier and faster = more momentum. A vector — direction matters. Conserved in closed systems.'},
+      {title:'⚡ Impulse-Momentum Theorem', body:'J = FΔt = Δp — force applied over time changes momentum. Why airbags work: longer time = less force for same momentum change.'},
+      {title:'⚖️ Inertia & Equilibrium', body:'Inertia: resistance to change in motion (Newton\'s 1st Law). Equilibrium: net force = 0, velocity is constant (can still be moving!).'},
+      {title:'🔄 Newton\'s 3rd Law', body:'Every action has an equal and opposite reaction. Force pairs are equal in magnitude, opposite in direction, acting on different objects.'},
+    ],
+    formulas: 'v_avg = Δx/Δt\na = (vf−vi)/t\np = mv\nJ = FΔt = Δp',
+  },
+];
+
+// Active session — Hani sets this before each study session
+let ACTIVE_SESSION = 0; // index into SESSIONS array
+
+function getSession(){ return SESSIONS[ACTIVE_SESSION]; }
 
 // ─── FLASHCARD DATA ────────────────────────────────────────────────────────
 const CARDS=[
