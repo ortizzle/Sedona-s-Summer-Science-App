@@ -11,6 +11,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Science Lab">
 <meta name="theme-color" content="#7c3aed">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --purple:#7c3aed;--purple-light:#a78bfa;--purple-dark:#4c1d95;
@@ -115,34 +118,85 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .el-detail-value{font-size:14px;font-weight:800;color:var(--purple-dark);margin-top:2px;}
 .el-detail-note{margin-top:10px;background:#ede9fe;border-radius:8px;padding:10px 12px;font-size:13px;color:var(--purple-dark);line-height:1.5;}
 
-/* FLASHCARDS — Chemistry Lab Aesthetic */
+/* FLASHCARDS — Science Lab Aesthetic */
 .fc-bar{display:flex;align-items:center;gap:10px;padding:8px 20px;}
 .fc-bar-track{flex:1;height:8px;background:var(--gray-200);border-radius:999px;overflow:hidden;}
 .fc-bar-fill{height:100%;background:var(--purple);border-radius:999px;transition:width .4s;}
 .fc-bar-txt{font-size:13px;font-weight:600;color:var(--gray-500);white-space:nowrap;}
 .fc-status{text-align:center;padding:4px 20px 8px;font-size:13px;color:var(--gray-500);min-height:24px;}
-.card-area{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 20px;perspective:1000px;}
-.flip-card{width:100%;max-width:400px;height:270px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);position:relative;}
+.card-area{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 20px;perspective:1000px;min-height:300px;max-height:420px;}
+.flip-card{width:100%;max-width:400px;height:280px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);position:relative;filter:drop-shadow(3px 6px 18px rgba(0,0,0,0.22));}
 .flip-card.flipped{transform:rotateY(180deg);}
-.card-face{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:var(--radius);backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;}
-/* Parchment front */
+.card-face{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:var(--radius);backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;overflow:hidden;}
+
+/* ── FRONT: worn index card ── */
 .card-front{
-  background:linear-gradient(145deg,#faf7f0,#f0ebe0);
-  border:2px solid #c8b99a;
-  box-shadow:4px 4px 0 #b8a080,8px 8px 20px rgba(0,0,0,0.18);
+  background:
+    /* coffee ring top-right */
+    radial-gradient(ellipse 38px 34px at 88% 18%, rgba(139,90,43,0.13) 60%, transparent 100%),
+    radial-gradient(ellipse 30px 26px at 88% 18%, rgba(139,90,43,0.0) 55%, rgba(139,90,43,0.10) 56%, rgba(139,90,43,0.0) 62%),
+    /* teal liquid splash bottom-left */
+    radial-gradient(ellipse 70px 50px at 8% 88%, rgba(13,148,136,0.12) 0%, transparent 100%),
+    /* amber stain mid-right */
+    radial-gradient(ellipse 45px 35px at 92% 62%, rgba(180,120,30,0.10) 0%, transparent 100%),
+    /* base parchment */
+    linear-gradient(160deg,#fdf8f0 0%,#f5ede0 40%,#f0e8d8 100%);
+  border:1.5px solid #c8b080;
   transform:rotateY(0deg);
+  /* burnt corners via box-shadow inset */
+  box-shadow:
+    inset -18px -16px 28px rgba(60,20,0,0.09),
+    inset 18px 16px 28px rgba(60,20,0,0.05),
+    inset -4px -4px 12px rgba(80,30,0,0.12),
+    inset 4px 4px 12px rgba(80,30,0,0.07);
 }
-/* Chemistry blue back */
+/* ruled lines on the front like an index card */
+.card-front::before{
+  content:'';position:absolute;inset:0;border-radius:var(--radius);
+  background:repeating-linear-gradient(180deg,transparent 0px,transparent 27px,rgba(180,160,120,0.18) 27px,rgba(180,160,120,0.18) 28px);
+  pointer-events:none;
+}
+/* chemical formula watermark */
+.card-front::after{
+  content:'H₂O  NaCl  CO₂';
+  position:absolute;bottom:10px;right:14px;
+  font-family:'Courier New',monospace;font-size:11px;
+  color:rgba(100,70,30,0.18);letter-spacing:3px;pointer-events:none;
+}
+
+/* ── BACK: dark lab notebook ── */
 .card-back{
-  background:linear-gradient(145deg,#0d2137,#1a3d5c,#0d5c6e);
+  background:
+    /* purple chemical stain top-left */
+    radial-gradient(ellipse 60px 45px at 10% 12%, rgba(124,58,237,0.18) 0%, transparent 100%),
+    /* teal drip right */
+    radial-gradient(ellipse 30px 55px at 94% 55%, rgba(13,148,136,0.20) 0%, transparent 100%),
+    /* base dark lab */
+    linear-gradient(145deg,#0d1f30,#0f2a3f,#0a2030);
   transform:rotateY(180deg);
-  border:2px solid #1a6b8a;
-  box-shadow:4px 4px 0 #0a1f2e,8px 8px 20px rgba(0,0,0,0.3);
+  border:1.5px solid #1a5a70;
+  box-shadow:
+    inset -14px -14px 24px rgba(0,0,0,0.3),
+    inset 14px 14px 24px rgba(0,0,0,0.15);
 }
-.card-term{font-family:Georgia,'Times New Roman',serif;font-size:21px;font-weight:700;text-align:center;color:#2c1810;line-height:1.3;}
-.card-eq{background:#1a1a2e;color:#38bdf8;font-family:'Courier New',Courier,monospace;padding:10px 18px;border-radius:8px;font-size:20px;letter-spacing:3px;margin:12px 0 4px;border-left:4px solid #38bdf8;font-weight:700;}
-.card-hint-text{font-size:12px;color:var(--gray-500);margin-top:10px;font-style:italic;}
-.card-def{font-size:14px;line-height:1.6;text-align:center;color:#e0f2fe;font-family:Georgia,serif;}
+/* graph paper grid on back */
+.card-back::before{
+  content:'';position:absolute;inset:0;border-radius:var(--radius);
+  background:
+    repeating-linear-gradient(0deg,transparent 0px,transparent 19px,rgba(56,189,248,0.06) 19px,rgba(56,189,248,0.06) 20px),
+    repeating-linear-gradient(90deg,transparent 0px,transparent 19px,rgba(56,189,248,0.06) 19px,rgba(56,189,248,0.06) 20px);
+  pointer-events:none;
+}
+/* atom watermark on back */
+.card-back::after{
+  content:'⚛';position:absolute;font-size:90px;opacity:0.04;
+  bottom:-10px;right:5px;pointer-events:none;color:white;
+}
+
+.card-term{font-family:'Caveat',cursive;font-size:26px;font-weight:700;text-align:center;color:#2c1810;line-height:1.3;position:relative;z-index:1;}
+.card-eq{background:rgba(26,26,46,0.85);color:#38bdf8;font-family:'Courier New',Courier,monospace;padding:10px 18px;border-radius:8px;font-size:20px;letter-spacing:3px;margin:12px 0 4px;border-left:4px solid #38bdf8;font-weight:700;position:relative;z-index:1;}
+.card-hint-text{font-size:12px;color:rgba(100,70,30,0.6);margin-top:10px;font-style:italic;position:relative;z-index:1;}
+.card-def{font-size:14px;line-height:1.6;text-align:center;color:#e0f2fe;font-family:'Caveat',cursive;font-size:18px;position:relative;z-index:1;}
 .card-eq-back{background:rgba(56,189,248,0.15);color:#38bdf8;font-family:'Courier New',monospace;padding:8px 16px;border-radius:8px;font-size:18px;letter-spacing:2px;margin:10px 0;border:1px solid rgba(56,189,248,0.3);}
 .card-back .card-hint-text{color:rgba(255,255,255,.5);margin-top:14px;}
 .fc-btns{display:flex;gap:12px;padding:10px 20px 0;}
