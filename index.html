@@ -1316,7 +1316,9 @@ function trackMistake(qId,mode,ms,correct){
 // ─── FLASHCARDS ───────────────────────────────────────────────────────────
 function startFC(){
   const f=S.fc;
-  f.deck=shuffle(CARDS);f.wrong=[];f.idx=0;f.mastered=0;f.phase='main';f.flipped=false;f.sessionXP=0;
+  // Flashcards show active session only; practice games use all sessions
+  const sessionCards=CARDS.filter(c=>!c.session||c.session===getSession().num);
+  f.deck=shuffle(sessionCards);f.wrong=[];f.idx=0;f.mastered=0;f.phase='main';f.flipped=false;f.sessionXP=0;
   renderFC();
 }
 function renderFC(){
