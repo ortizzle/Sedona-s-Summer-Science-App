@@ -2030,20 +2030,29 @@ function fmtStudyTime(sec){const m=Math.floor(sec/60),s=sec%60;return m>0?`${m}m
 loadProgress();
 takeSnapshot();
 buildPeriodicTable();
-// Welcome back toast on return visits
-if(S.totalXP>0){
-  const lastBadge=S.badges.filter(b=>b.unlocked).slice(-1)[0];
-  const msg=lastBadge
-    ? `Welcome back, Sedona! 👋\nLast badge: ${lastBadge.icon} ${lastBadge.name}`
-    : `Welcome back, Sedona! 👋\nBest streak: ${S.bestStreak} in a row`;
-  setTimeout(()=>{
-    const t=document.getElementById('badge-toast');
-    t.innerHTML=msg.replace('\n','<br>');
-    t.classList.add('on');
-    setTimeout(()=>t.classList.remove('on'),4000);
-  },600);
-}
 applySession();
+// Start on welcome screen — chooseSedona() will show welcome-back toast after check-in
+function showWelcomeBack(){
+  if(S.totalXP>0){
+    const lastBadge=S.badges.filter(b=>b.unlocked).slice(-1)[0];
+    const msg=lastBadge
+      ? `Welcome back, Sedona! 👋\nLast badge: ${lastBadge.icon} ${lastBadge.name}`
+      : `Welcome back, Sedona! 👋\nBest streak: ${S.bestStreak} in a row`;
+    setTimeout(()=>{
+      const t=document.getElementById('badge-toast');
+      t.innerHTML=msg.replace('\n','<br>');
+      t.classList.add('on');
+      setTimeout(()=>t.classList.remove('on'),4000);
+    },400);
+  }
+}
+// Override chooseSedona to show welcome-back after check-in
+const _checkinNext=checkinNext;
+checkinNext=function(){
+  const wasLast=checkinStep===CHECKIN_STEPS.length-1;
+  _checkinNext();
+  if(wasLast)showWelcomeBack();
+};
 renderHome();
 function applySession(){
   const s=getSession();
