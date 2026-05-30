@@ -352,6 +352,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="mode-card" onclick="go('lv')"><div class="mc-icon">🎯</div><div class="mc-title">Levels</div><div class="mc-desc">Easy → Medium → Hard</div></div>
     <div class="mode-card" onclick="go('qz')"><div class="mc-icon">⏱️</div><div class="mc-title">Sprint Quiz</div><div class="mc-desc">30 sec · wrong answers come back · final boss</div></div>
   </div>
+  <div style="margin:0 20px 16px;background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);">
+    <div style="font-size:13px;font-weight:800;color:var(--gray-700);margin-bottom:12px;">🎮 How to Practice</div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--gray-700);line-height:1.5;">
+      <div><span style="font-weight:800;color:var(--purple);">🃏 Flashcards</span> — Flip cards and rate yourself. Cards you're still learning come back more often. Good for first-time review of all terms.</div>
+      <div><span style="font-weight:800;color:#dc2626;">❤️ Quick Questions</span> — You get 3 hearts. Every wrong answer costs one. Lose all 3 and the round ends. Tests how well you know the material under pressure.</div>
+      <div><span style="font-weight:800;color:var(--purple);">🎯 Levels</span> — Three tiers: Easy, Medium, Hard. You must answer every question correctly (no mistakes) to unlock the next level. Best for building solid understanding step by step.</div>
+      <div><span style="font-weight:800;color:var(--orange);">⏱️ Sprint Quiz</span> — 10 questions with a timer. Wrong answers come back at the end. Ends with a Final Boss question. Great for simulating test conditions.</div>
+    </div>
+  </div>
   <div class="section-header">🌱 Growth Zone <span id="gz-count" style="background:#dcfce7;color:#166534;border-radius:99px;padding:2px 8px;font-size:11px;"></span></div>
   <div class="gz-list" id="gz-list"><div class="gz-empty">No misses yet — keep it going! 🎯</div></div>
   <div class="section-header">🏅 Achievements</div>
@@ -666,6 +675,26 @@ const QS=[
    opts:['23','12','11','22'],ans:2,
    hint:'Neutral atom rule: protons = electrons. What\'s the atomic number?',
    ex:{main:'Neutral atom → p⁺ = e⁻. Z = 11 protons → 11 electrons. The 23 is Na\'s mass number (not electron count). Na also has 12 neutrons (23 − 11 = 12 using MAN).',tip:'Mass number ≠ electron count. Always use atomic number for electrons in a neutral atom.',mnemonic:'Na: 11 protons, 11 electrons, 12 neutrons. The atomic number (11) is the electron count for neutral atoms.'}},
+  {id:21,lv:1,q:'What is the atomic number of an element?',
+   opts:['Number of neutrons','Number of protons','Number of electrons','Mass number'],ans:1,
+   hint:'The atomic number is what makes each element unique on the periodic table.',
+   ex:{main:'The atomic number = number of protons in the nucleus. It defines the element. Carbon always has 6, oxygen always has 8. The periodic table is arranged in order of increasing atomic number.',tip:'Atomic number = Z = protons. Never changes for an element.',mnemonic:'Atomic number = proton count. Z stands for German \'Zahl\' meaning number.'}},
+  {id:22,lv:1,q:'Valence electrons are found in the ___?',
+   opts:['Nucleus','Inner shells','Outermost shell','Neutrons'],ans:2,
+   hint:'These are the electrons involved in bonding and reactions — where do they live?',
+   ex:{main:'Valence electrons occupy the outermost energy shell. They determine how an element reacts. For main-group elements, the group number tells you the valence electron count — Group 1 has 1, Group 2 has 2, Group 17 has 7, Group 18 has 8.',tip:'Group number = valence electrons (for Groups 1–2 and 13–18).',mnemonic:'VALence = outermost shell — they\'re VALuable because they do all the reacting!'}},
+  {id:23,lv:1,q:'An atom gains 2 electrons. What type of ion does it form?',
+   opts:['Cation (+2)','Anion (−2)','Isotope','Neutral atom'],ans:1,
+   hint:'Gaining electrons adds negative charge. What sign does the ion have?',
+   ex:{main:'Gaining electrons adds negative charge → anion. Gaining 2 electrons → 2− charge. Example: Oxygen gains 2 electrons → O²⁻. This gives oxygen the same electron count as neon (noble gas stability).',tip:'Gain electrons → anion (−). Lose electrons → cation (+).',mnemonic:'Anion = A Negative ION. ANion = A Negative.'}},
+  {id:24,lv:1,q:'Which of these is a correct use of the MAN formula?',
+   opts:['Mass + Atomic # = Neutrons','Mass − Atomic # = Neutrons','Atomic # − Mass = Neutrons','Mass × Atomic # = Neutrons'],ans:1,
+   hint:'MAN: M minus A equals N. Which option matches?',
+   ex:{main:'MAN: Mass number − Atomic Number = Neutrons. Rearranged from: Mass = Protons + Neutrons (since Atomic Number = Protons). Always subtract the smaller from the larger.',tip:'MAN is a subtraction formula: M − A = N.',mnemonic:'M−A=N. Mass minus Atomic number equals Neutrons. MAN!'}},
+  {id:25,lv:1,q:'Carbon-14 has 6 protons. How many neutrons does it have?',
+   opts:['6','8','14','20'],ans:1,
+   hint:'Use MAN: mass number is 14, atomic number is 6.',
+   ex:{main:'MAN: 14 − 6 = 8 neutrons. Carbon-14 is the radioactive isotope used in carbon dating. It has the same 6 protons as C-12 and C-13, but 8 neutrons instead of 6 or 7.',tip:'The number after the element name IS the mass number. Always.',mnemonic:'C-14: 14 − 6 = 8 neutrons. Carbon dating uses C-14 because it decays at a known rate.'}},
   // LEVEL 2 — Medium
   {id:8,lv:2,q:'Chlorine-35 has 17 protons. How many neutrons does it have?',
    opts:['35','17','18','52'],ans:2,
@@ -691,6 +720,26 @@ const QS=[
    opts:['Decreases','Stays the same','Increases','Depends on the group'],ans:2,
    hint:'More shells = bigger atom. What happens to the number of electron shells as you go down?',
    ex:{main:'Atomic radius increases down a group because each new period adds an electron shell. More shells = larger atom. For example: Li < Na < K < Rb (all Group 1A). From the notes: \'Atomic radius increases down a group due to an increasing number of electron shells.\'',tip:'Periodic trend: down a group → more shells → bigger radius. Fr (bottom-left) has the largest radius.',mnemonic:'Going DOWN the group = going DOWN in size... wait, no! More shells = BIGGER. Down = Bigger radius.'}},
+  {id:26,lv:2,q:'A magnesium ion Mg²⁺ has 12 protons. How many electrons does it have?',
+   opts:['14','12','10','8'],ans:2,
+   hint:'Charge = protons − electrons. Rearrange to find electrons.',
+   ex:{main:'Electrons = protons − charge = 12 − 2 = 10. Mg²⁺ has the same electron count as neon (10e⁻). That noble gas configuration is exactly why magnesium loses 2 electrons — it achieves maximum stability.',tip:'Electrons = protons − charge. Works for any ion.',mnemonic:'Mg²⁺: 12 protons, lost 2 electrons → 10 electrons = same as Ne.'}},
+  {id:27,lv:2,q:'Silicon is in Period 3, Group 14. How many valence electrons does it have?',
+   opts:['3','14','4','2'],ans:2,
+   hint:'For main-group elements, the last digit of the group number = valence electrons.',
+   ex:{main:'Group 14 → 4 valence electrons. Silicon has the electron configuration 2-8-4. Its 4 valence electrons make it a semiconductor — it can share electrons in 4 directions, perfect for computer chips.',tip:'Groups 13–18: subtract 10 from group number to get valence electrons. Group 14 → 4.',mnemonic:'Si in Group 14 → 4 valence electrons → 4 bonds → foundation of all computer chips.'}},
+  {id:28,lv:2,q:'As you move LEFT to RIGHT across a period, electronegativity...',
+   opts:['Decreases','Stays the same','Increases','Increases then decreases'],ans:2,
+   hint:'Which side of the periodic table pulls electrons more strongly in a bond?',
+   ex:{main:'Electronegativity increases left to right across a period. More protons pull electrons more strongly. Fluorine (top-right) is the most electronegative element. Noble gases are excluded since they don\'t bond. From notes: \'electronegativity increases across a period.\'',tip:'Trend: bottom-left = lowest EN (Fr). Top-right = highest EN (F). Ignore noble gases.',mnemonic:'Left to right = more protons = stronger pull = higher electronegativity. F is the most electronegative.'}},
+  {id:29,lv:2,q:'An element has 2 electrons in its outer shell and is in Period 3. What is it?',
+   opts:['Helium','Calcium','Magnesium','Beryllium'],ans:2,
+   hint:'Period 3 = 3rd row of the periodic table. 2 valence electrons = Group 2.',
+   ex:{main:'Period 3, Group 2 = Magnesium (Mg). Electron configuration: 2-8-2. Mg has 12 protons, 12 electrons, and 2 valence electrons — that\'s why it forms Mg²⁺ ions. Be is Period 2, Ca is Period 4.',tip:'Period = row number = number of electron shells. Group 2 = 2 valence electrons.',mnemonic:'Period 3, Group 2 = Mg. Period tells you shells; Group tells you valence electrons.'}},
+  {id:30,lv:2,q:'Which ion has the same electron count as Argon (18 electrons)?',
+   opts:['Na⁺','O²⁻','Ca²⁺','Cl⁻'],ans:2,
+   hint:'Ca has 20 protons. If it loses 2 electrons, how many remain?',
+   ex:{main:'Ca²⁺: 20 protons − 2 = 18 electrons = same as Ar. Na⁺ has 10e⁻ (Ne config). O²⁻ has 10e⁻ (Ne config). Cl⁻ has 18e⁻ (Ar config) — also correct! Ca²⁺ and Cl⁻ are both isoelectronic with Ar.',tip:'Isoelectronic = same electron count. Ions aim for the nearest noble gas configuration.',mnemonic:'Ca²⁺ = 20 − 2 = 18 = Ar. Ions become noble gas twins!'}},
   // LEVEL 3 — Hard
   {id:14,lv:3,q:'An unknown ion has 18 electrons and a 2+ charge. How many protons?',
    opts:['16','18','20','22'],ans:2,
@@ -720,6 +769,26 @@ const QS=[
    opts:['22','20','18','16'],ans:2,
    hint:'Start with neutral Ca\'s electron count. Then subtract what was lost.',
    ex:{main:'Neutral Ca (Z=20) has 20 electrons. It loses 2 to form Ca²⁺: 20 − 2 = 18 electrons. 18 electrons = same as Argon (noble gas). This is WHY Ca forms 2+ — it achieves noble gas stability! From class notes: \'Ca2+ → 20−2=18 → same as Ar.\'',tip:'Every ion has the same number of electrons as its nearest noble gas. This is the driving force for ion formation.',mnemonic:'Ca²⁺ is isoelectronic with Ar (18e⁻). The octet rule at work — atoms form ions to get noble gas electron counts.'}},
+  {id:31,lv:3,q:'Sulfur (Z=16) forms an S²⁻ ion. What is its electron configuration?',
+   opts:['2-8-6','2-8-8','2-6-8','2-8-4'],ans:1,
+   hint:'Neutral S has 16 electrons (2-8-6). It gains 2 to become S²⁻ — add them to the outer shell.',
+   ex:{main:'Neutral S: 16e⁻ = 2-8-6. Gains 2e⁻ → 18e⁻ = 2-8-8. Same as Argon! S²⁻ is called sulfide and appears in many minerals. The outer shell goes from 6 to 8 electrons — completing the octet.',tip:'Anions add electrons to the outermost shell first.',mnemonic:'S²⁻: 16 + 2 = 18 electrons = 2-8-8 = Ar configuration. Sulfide achieves the octet!'}},
+  {id:32,lv:3,q:'Element X has an average atomic mass of 35.45 amu. X has two isotopes: X-35 (75%) and X-37 (25%). Which element is X?',
+   opts:['Fluorine','Bromine','Chlorine','Sulfur'],ans:2,
+   hint:'Calculate: (35×0.75)+(37×0.25). What element has atomic number 17?',
+   ex:{main:'(35×0.75)+(37×0.25) = 26.25 + 9.25 = 35.50 ≈ 35.45 amu = Chlorine (Z=17). This matches the periodic table perfectly. Cl is a halogen (Group 17) that exists as Cl₂ gas and is used to disinfect water.',tip:'Identify elements by matching atomic number to the periodic table, not just atomic mass.',mnemonic:'Cl average mass ≈ 35.45 because it\'s 75% Cl-35 and 25% Cl-37. The table value tells the story.'}},
+  {id:33,lv:3,q:'An ion has 36 electrons and a 1+ charge. What element is it?',
+   opts:['Krypton','Bromine','Rubidium','Strontium'],ans:2,
+   hint:'1+ charge means it lost 1 electron. So it had 37 protons originally. Check the periodic table.',
+   ex:{main:'Charge = P − E → +1 = P − 36 → P = 37. Element with 37 protons = Rubidium (Rb). Rb⁺ has 36 electrons = same as Krypton (noble gas). Group 1 metals commonly form 1+ ions by losing their single valence electron.',tip:'Protons = charge + electrons. Then look up the element by proton count.',mnemonic:'Rb⁺: 37 protons − 1 = 36 electrons = Kr configuration. Group 1 always forms 1+ ions.'}},
+  {id:34,lv:3,q:'Which set of particles correctly describes a nitrogen-14 atom that has gained 3 electrons?',
+   opts:['7p, 7n, 7e','7p, 7n, 10e','7p, 8n, 10e','10p, 7n, 10e'],ans:1,
+   hint:'N-14: 7 protons (Z=7), neutrons from MAN, then add 3 electrons.',
+   ex:{main:'N has Z=7 (protons). MAN: 14−7=7 neutrons. Neutral N has 7 electrons. Gains 3 → 10 electrons. N³⁻ (nitride): 7p, 7n, 10e⁻. Protons and neutrons NEVER change in ion formation — only electrons move.',tip:'Forming ions only changes electron count. Protons and neutrons stay fixed.',mnemonic:'Ions = electron changes only. N³⁻: same nucleus (7p, 7n), 3 extra electrons = 10e⁻.'}},
+  {id:35,lv:3,q:'Why does atomic radius DECREASE across a period left to right?',
+   opts:['Fewer electron shells','More neutrons added','More protons increase nuclear pull on same shell electrons','Electrons are removed'],ans:2,
+   hint:'The number of shells stays the same across a period. What\'s increasing that could pull electrons inward?',
+   ex:{main:'Across a period, proton count increases while electrons are added to the SAME shell. More protons = stronger nuclear attraction = electrons pulled closer to nucleus = smaller radius. This is called increased nuclear charge or effective nuclear charge (Zeff).',tip:'Same period = same shells. More protons = stronger pull = smaller atom.',mnemonic:'More protons across a period = tighter grip on electrons = smaller atom. Nuclear charge wins!'}},
 ];
 
 const LEVELS_META=[
@@ -1244,14 +1313,16 @@ function renderLvQ(){
   const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;
   if(l.idx>=deck.length){
     if(l.phase==='main'&&l.wrong.length){l.phase='retry';l.idx=0;renderLvQ();return;}
-    if(!l.passed.includes(l.curLv))l.passed.push(l.curLv);
-    l.sessionXP+=50;addXP(50,'lv-xp-badge');launchConfetti(40);
-    if(l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
+    const perfected=l.wrong.length===0;
+    if(perfected&&!l.passed.includes(l.curLv))l.passed.push(l.curLv);
+    l.sessionXP+=perfected?50:20;addXP(perfected?50:20,'lv-xp-badge');
+    if(perfected)launchConfetti(40);
+    if(perfected&&l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
     updateLvTabs();
     if(l.passed.length===3){checkBadge('levels_complete');launchConfetti(80);}
-    document.getElementById('lv-next').textContent=l.curLv<3?'🎉 Passed! Unlock Next Level ↗':'🏆 All Levels Complete!';
+    document.getElementById('lv-next').textContent=perfected?(l.curLv<3?'🎉 Perfect! Next level unlocked ↗':'🏆 All Levels Complete!'):'📚 Keep practicing to unlock the next level!';
     document.getElementById('lv-next').classList.add('on');
-    document.getElementById('lv-q-text').textContent='Level '+(l.curLv<3?l.curLv+' complete! Next level unlocked.':'3 complete!');
+    document.getElementById('lv-q-text').textContent=perfected?('Level '+(l.curLv<3?l.curLv+' perfected! Next level unlocked.':'3 complete — champion!')):'Good effort! Answer every question correctly to unlock the next level.';
     document.getElementById('lv-opts').innerHTML='';return;
   }
   l.hintUsed=false;const item=deck[l.idx];
@@ -1510,30 +1581,28 @@ function renderHaniDash(){
         </div>
         <div style="padding:12px 14px 8px;">
           <div style="font-size:11px;font-weight:700;color:#374151;letter-spacing:.5px;margin-bottom:8px;">QUESTION BREAKDOWN</div>
-          <table style="width:100%;border-collapse:collapse;font-size:12px;">
-            <thead><tr style="color:var(--gray-500);border-bottom:1px solid var(--gray-200);">
-              <th style="text-align:left;padding:4px 6px;font-weight:600;">Question</th>
-              <th style="text-align:center;padding:4px 6px;font-weight:600;">Attempts</th>
-              <th style="text-align:center;padding:4px 6px;font-weight:600;">Correct</th>
-              <th style="text-align:center;padding:4px 6px;font-weight:600;">Misses</th>
-              <th style="text-align:center;padding:4px 6px;font-weight:600;">Avg Time</th>
-            </tr></thead>
-            <tbody>
-              ${qStats.map(s=>{
-                const pct=s.attempts?Math.round(s.corrects/s.attempts*100):null;
-                const color=s.misses===0&&s.attempts>0?'#166534':s.misses>=3?'#991b1b':s.misses>=1?'#854d0e':'#9ca3af';
-                const avgSec=s.avgMs?(s.avgMs/1000).toFixed(1)+'s':'—';
-                const label=s.misses===0&&s.attempts>0?'✓':s.misses>=1?'✗ '+s.misses:'—';
-                return `<tr style="border-bottom:1px solid var(--gray-100);">
-                  <td style="padding:5px 6px;color:#374151;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.q.q.slice(0,45)}…</td>
-                  <td style="text-align:center;padding:5px 6px;color:var(--gray-500);">${s.attempts||'—'}</td>
-                  <td style="text-align:center;padding:5px 6px;color:#166534;">${s.attempts?s.corrects:'—'}</td>
-                  <td style="text-align:center;padding:5px 6px;font-weight:700;color:${color};">${label}</td>
-                  <td style="text-align:center;padding:5px 6px;color:var(--gray-500);">${avgSec}</td>
-                </tr>`;
-              }).join('')}
-            </tbody>
-          </table>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            ${qStats.map((s,i)=>{
+              const color=s.misses===0&&s.attempts>0?'#166534':s.misses>=3?'#991b1b':s.misses>=1?'#854d0e':'#9ca3af';
+              const dot=s.misses===0&&s.attempts>0?'🟢':s.misses>=3?'🔴':s.misses>=1?'🟡':'⚪';
+              const avgSec=s.avgMs?(s.avgMs/1000).toFixed(1)+'s':'—';
+              return `<div style="border:1px solid var(--gray-200);border-radius:8px;overflow:hidden;">
+                <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;background:var(--gray-100);">
+                  <span style="font-size:14px;">${dot}</span>
+                  <span style="font-size:12px;color:#374151;font-weight:600;flex:1;line-height:1.4;">${s.q.q}</span>
+                </div>
+                <div style="display:none;padding:10px 12px;font-size:12px;color:var(--gray-700);background:white;">
+                  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;text-align:center;">
+                    <div style="background:var(--gray-100);border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:#374151;">${s.attempts||'0'}</div><div style="font-size:10px;color:var(--gray-500);">Attempts</div></div>
+                    <div style="background:#dcfce7;border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:#166534;">${s.attempts?s.corrects:'0'}</div><div style="font-size:10px;color:#166534;">Correct</div></div>
+                    <div style="background:${s.misses>0?'#fee2e2':'var(--gray-100)'};border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:${color};">${s.misses||'0'}</div><div style="font-size:10px;color:${color};">Misses</div></div>
+                    <div style="background:var(--gray-100);border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:#374151;">${avgSec}</div><div style="font-size:10px;color:var(--gray-500);">Avg Time</div></div>
+                  </div>
+                  <div style="font-size:11px;color:var(--gray-500);">Answer: <strong style="color:#374151;">${s.q.opts[s.q.ans]}</strong></div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
         </div>
       </div>
     </div>
