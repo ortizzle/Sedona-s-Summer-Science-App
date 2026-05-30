@@ -1182,6 +1182,8 @@ function maybeShowSummary(){
 // ─── NAV ──────────────────────────────────────────────────────────────────
 function go(mode){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  if(mode==='welcome'){document.getElementById('s-welcome').classList.add('active');return;}
+  if(mode==='checkin'){document.getElementById('s-checkin').classList.add('active');return;}
   if(mode==='home'){document.getElementById('s-home').classList.add('active');renderHome();maybeShowSummary();return;}
   if(mode==='pt'){document.getElementById('s-pt').classList.add('active');return;}
   if(mode==='fc'){document.getElementById('s-fc-screen').classList.add('active');startFC();return;}
