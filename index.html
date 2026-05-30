@@ -41,7 +41,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .xp-lv{font-weight:700;font-size:13px;color:var(--purple);}
 .xp-amt{font-size:12px;color:var(--gray-500);}
 .xp-track{height:10px;background:var(--gray-200);border-radius:999px;overflow:hidden;}
-.xp-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:999px;transition:width .5s ease;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--purple),#2dd4bf);border-radius:999px;transition:width .5s ease;}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 14px 14px;}
 .stat{background:var(--white);border-radius:var(--radius-sm);padding:8px 4px;text-align:center;box-shadow:var(--shadow-sm);}
 .stat-icon{font-size:16px;margin-bottom:1px;}
@@ -203,7 +203,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .lv-prog{padding:4px 20px 8px;}
 .lv-prog-row{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);margin-bottom:4px;}
 .lv-bar-track{height:8px;background:var(--gray-200);border-radius:999px;overflow:hidden;}
-.lv-bar-fill{height:100%;background:var(--green);border-radius:999px;transition:width .4s;}
+.lv-bar-fill{height:100%;background:linear-gradient(90deg,#2dd4bf,#06b6d4);border-radius:999px;transition:width .4s;}
 
 /* SURVIVAL = QUICK QUESTIONS */
 .sv-header{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 12px;}
@@ -229,7 +229,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .flash-overlay{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:100;opacity:0;}
 @keyframes flash-g{0%{opacity:1;}100%{opacity:0;}}
 @keyframes flash-r{0%{opacity:1;}100%{opacity:0;}}
-.fl{background:rgba(22,163,74,.15);animation:flash-g .55s ease forwards;}
+.fl{background:rgba(45,212,191,.2);animation:flash-g .55s ease forwards;}
 .fr{background:rgba(220,38,38,.15);animation:flash-r .55s ease forwards;}
 .fa{background:rgba(234,179,8,.15);animation:flash-g .55s ease forwards;}
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
@@ -350,7 +350,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="mode-card" onclick="go('fc')"><div class="mc-icon">🃏</div><div class="mc-title">Flashcards</div><div class="mc-desc">Flip &amp; memorize with spaced repetition</div></div>
     <div class="mode-card" onclick="go('qq')"><div class="mc-icon">❤️</div><div class="mc-title">Quick Questions</div><div class="mc-desc">3 hearts. Answer fast. Don't slip up.</div></div>
     <div class="mode-card" onclick="go('lv')"><div class="mc-icon">🎯</div><div class="mc-title">Levels</div><div class="mc-desc">Easy → Medium → Hard</div></div>
-    <div class="mode-card" onclick="go('qz')"><div class="mc-icon">⏱️</div><div class="mc-title">Sprint Quiz</div><div class="mc-desc">30 sec · wrong answers come back · final boss</div></div>
+    <div class="mode-card" onclick="go('qz')"><div class="mc-icon">⏱️</div><div class="mc-title">Sprint Quiz</div><div class="mc-desc">30 sec · not-yet answers come back · final boss</div></div>
   </div>
   <div class="section-header">🌱 Growth Zone <span id="gz-count" style="background:#dcfce7;color:#166534;border-radius:99px;padding:2px 8px;font-size:11px;"></span></div>
   <div class="gz-list" id="gz-list"><div class="gz-empty">No misses yet — keep it going! 🎯</div></div>
@@ -368,9 +368,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div style="font-size:13px;font-weight:800;color:var(--gray-700);margin-bottom:12px;">🎮 How to Practice</div>
     <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--gray-700);line-height:1.5;">
       <div><span style="font-weight:800;color:var(--purple);">🃏 Flashcards</span> — Flip cards and rate yourself. Cards you're still learning come back more often. Good for first-time review of all terms.</div>
-      <div><span style="font-weight:800;color:#dc2626;">❤️ Quick Questions</span> — You get 3 hearts. Every wrong answer costs one. Lose all 3 and the round ends. Tests how well you know the material under pressure.</div>
+      <div><span style="font-weight:800;color:#dc2626;">❤️ Quick Questions</span> — You get 3 hearts. Every question you haven't mastered yet costs one. Lose all 3 and the round ends. Tests how well you know the material under pressure.</div>
       <div><span style="font-weight:800;color:var(--purple);">🎯 Levels</span> — Three tiers: Easy, Medium, Hard. You must answer every question correctly (no mistakes) to unlock the next level. Best for building solid understanding step by step.</div>
-      <div><span style="font-weight:800;color:var(--orange);">⏱️ Sprint Quiz</span> — 10 questions with a timer. Wrong answers come back at the end. Ends with a Final Boss question. Great for simulating test conditions.</div>
+      <div><span style="font-weight:800;color:var(--orange);">⏱️ Sprint Quiz</span> — 10 questions with a timer. Questions you haven't mastered yet come back at the end. Ends with a Final Boss question. Great for simulating test conditions.</div>
     </div>
   </div>
 </div>
@@ -1120,10 +1120,12 @@ function revealOpts(cid,sel,ans){
     else if(i===sel)el.classList.add('wrong');
   });
 }
+const EFFORT_MSGS=['Good effort, Sedona — this one\'s tricky!','Not yet, but you\'re learning it right now!','Every attempt counts, Sedona — here\'s the key:','You\'re building the knowledge, Sedona — read this carefully:','That\'s how you grow, Sedona — here\'s what to remember:'];
 function showExp(id,ok,ex){
   const el=document.getElementById(id);
+  const notYetMsg=EFFORT_MSGS[Math.floor(Math.random()*EFFORT_MSGS.length)];
   el.innerHTML=`
-    <div class="exp-title">${ok?'✅ Correct!':'❌ Not quite — here\'s why:'}</div>
+    <div class="exp-title" style="${ok?'color:#2dd4bf;':''}}">${ok?'✅ Yes, Sedona!':'💪 '+notYetMsg}</div>
     <div class="exp-main">${ex.main}</div>
     ${ex.tip?`<div class="exp-tip"><strong>📌 Exam Tip</strong>${ex.tip}</div>`:''}
     ${ex.mnemonic?`<div class="exp-mnemonic"><strong>🧠 Memory Hook</strong>${ex.mnemonic}</div>`:''}
@@ -1675,6 +1677,19 @@ function fmtStudyTime(sec){const m=Math.floor(sec/60),s=sec%60;return m>0?`${m}m
 loadProgress();
 takeSnapshot();
 buildPeriodicTable();
+// Welcome back toast on return visits
+if(S.totalXP>0){
+  const lastBadge=S.badges.filter(b=>b.unlocked).slice(-1)[0];
+  const msg=lastBadge
+    ? `Welcome back, Sedona! 👋\nLast badge: ${lastBadge.icon} ${lastBadge.name}`
+    : `Welcome back, Sedona! 👋\nBest streak: ${S.bestStreak} in a row`;
+  setTimeout(()=>{
+    const t=document.getElementById('badge-toast');
+    t.innerHTML=msg.replace('\n','<br>');
+    t.classList.add('on');
+    setTimeout(()=>t.classList.remove('on'),4000);
+  },600);
+}
 // Apply session config to DOM
 document.getElementById('home-sub-el').textContent=`${SESSION_SUBJECT} · Session ${SESSION_NUM}`;
 document.getElementById('sb-name-el').textContent=`Session ${SESSION_NUM} — ${SESSION_TITLE}`;
