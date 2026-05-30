@@ -1805,6 +1805,18 @@ function renderHaniDash(){
       </div>
     </div>
     <div class="hani-section">
+      <div class="hani-section-title">📅 Active Session</div>
+      <div class="hani-card">
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Select which session Sedona is studying today. Flashcards will show only that session's content. Practice games draw from all sessions.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${SESSIONS.map((s,i)=>`
+            <button onclick="setActiveSession(${i})" id="sess-btn-${i}" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${i===ACTIVE_SESSION?'var(--purple)':'var(--gray-200)'};background:${i===ACTIVE_SESSION?'#ede9fe':'white'};color:${i===ACTIVE_SESSION?'var(--purple-dark)':'var(--gray-700)'};">
+              ${i===ACTIVE_SESSION?'✅ ':''}Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:0.7;">${s.date} · ${s.subject}</span>
+            </button>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="hani-section">
       <div class="hani-section-title">🧪 Test Mode</div>
       <div class="hani-card">
         <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Preview questions and flows without recording any of Sedona's progress. XP, mistakes, badges, and streaks will <strong>not</strong> be saved while active.</div>
