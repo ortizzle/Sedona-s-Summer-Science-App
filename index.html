@@ -1919,6 +1919,75 @@ function doReset(){
 
 // ─── TEST MODE ────────────────────────────────────────────────────────────
 let TEST_MODE=false;
+// ─── WELCOME & CHECK-IN ───────────────────────────────────────────────────
+const CHECKIN_STEPS=[
+  {
+    icon:'😊',
+    q:'How are you feeling today?',
+    sub:'Be honest — there are no wrong answers here.',
+    emojis:['😔','😕','😐','🙂','😄'],
+    labels:['Rough','Meh','Okay','Good','Great'],
+    key:'feeling'
+  },
+  {
+    icon:'🧠',
+    q:'How confident do you feel about today\'s topic?',
+    sub:'1 = totally new to me, 5 = I\'ve got this!',
+    emojis:['😰','😬','🤔','💪','🌟'],
+    labels:['Lost','Unsure','Getting it','Confident','Crushing it'],
+    key:'confidence'
+  }
+];
+let checkinAnswers={};
+let checkinStep=0;
+
+function chooseSedona(){
+  checkinAnswers={};checkinStep=0;
+  renderCheckinStep();
+  go('checkin');
+}
+function chooseHani(){
+  go('hani');
+}
+function renderCheckinStep(){
+  const step=CHECKIN_STEPS[checkinStep];
+  document.getElementById('checkin-step-icon').textContent=step.icon;
+  document.getElementById('checkin-q-text').textContent=step.q;
+  document.getElementById('checkin-q-sub').textContent=step.sub;
+  document.getElementById('checkin-step-indicator').textContent=`${checkinStep+1} of ${CHECKIN_STEPS.length}`;
+  document.getElementById('checkin-next-btn').classList.remove('ready');
+  const scale=document.getElementById('emoji-scale');
+  scale.innerHTML=step.emojis.map((e,i)=>`
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <button class="emoji-btn" onclick="selectCheckin(${i})" id="ci-btn-${i}">${e}</button>
+      <span class="emoji-label">${step.labels[i]}</span>
+    </div>`).join('');
+}
+function selectCheckin(idx){
+  document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('ci-btn-'+idx).classList.add('selected');
+  checkinAnswers[CHECKIN_STEPS[checkinStep].key]=idx+1;
+  document.getElementById('checkin-next-btn').classList.add('ready');
+}
+function checkinNext(){
+  if(!checkinAnswers[CHECKIN_STEPS[checkinStep].key])return;
+  checkinStep++;
+  if(checkinStep<CHECKIN_STEPS.length){
+    renderCheckinStep();
+  } else {
+    // Save check-in
+    S.checkIns.push({
+      ts:Date.now(),
+      feeling:checkinAnswers.feeling,
+      confidence:checkinAnswers.confidence,
+      session:getSession().num
+    });
+    if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
+    saveProgress();
+    go('home');
+  }
+}
+
 function setActiveSession(idx){
   ACTIVE_SESSION=idx;
   applySession();
