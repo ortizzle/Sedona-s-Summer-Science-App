@@ -1778,7 +1778,32 @@ function renderHaniDash(){
     return `<div class="time-row"><span class="time-q">${e.q.slice(0,55)}…</span><span class="time-val" style="color:${e.correct?'#166534':'#991b1b'}">${e.correct?'✓':'✗'} ${sec}s</span></div>`;
   }).join('') || '<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No Sprint Quiz data yet.</div>';
 
+  // Build check-in history
+  const feelEmojis=['','😔','😕','😐','🙂','😄'];
+  const confEmojis=['','😰','😬','🤔','💪','🌟'];
+  const recentCheckIns=[...S.checkIns].reverse().slice(0,5);
+  const checkInRows=recentCheckIns.length?recentCheckIns.map(c=>{
+    const d=new Date(c.ts);
+    const timeStr=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    const sess=SESSIONS.find(s=>s.num===c.session);
+    return `<div class="time-row">
+      <span class="time-q" style="flex:1;">${timeStr}<br><span style="font-size:10px;color:var(--gray-500);">${sess?sess.title:'Unknown session'}</span></span>
+      <span style="font-size:18px;margin:0 4px;" title="Feeling">${feelEmojis[c.feeling]||'?'}</span>
+      <span style="font-size:18px;" title="Confidence">${confEmojis[c.confidence]||'?'}</span>
+    </div>`;}).join('')
+  :'<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No check-ins yet.</div>';
+
   dash.innerHTML=`
+    <div class="hani-section">
+      <div class="hani-section-title">💭 Sedona's Check-ins</div>
+      <div class="hani-card">
+        <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding:0 2px;">
+          <span>Session</span><span>Mood &nbsp; Confidence</span>
+        </div>
+        ${checkInRows}
+        <div style="font-size:11px;color:var(--gray-500);margin-top:8px;line-height:1.4;">😊 = feeling · 💪 = confidence in today's topic (1–5)</div>
+      </div>
+    </div>
     <div class="hani-section">
       <div class="hani-section-title">📊 Overall Progress</div>
       <div class="hani-card">
