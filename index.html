@@ -572,6 +572,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 
 <!-- OVERLAYS -->
+<div id="test-mode-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#2dd4bf,#0891b2);color:white;padding:10px 16px;font-size:13px;font-weight:800;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,0.2);">
+  <span>🧪 TEST MODE — nothing is being recorded</span>
+  <button onclick="exitTestMode()" style="background:rgba(255,255,255,0.25);border:none;color:white;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:800;cursor:pointer;">Exit ✕</button>
+</div>
 <div class="flash-overlay" id="s-fc"></div>
 <div class="flash-overlay" id="s-qz"></div>
 <div class="flash-overlay" id="s-lv"></div>
@@ -1638,6 +1642,13 @@ function renderHaniDash(){
         <div id="import-msg" style="display:none;font-size:12px;color:#166534;font-weight:600;padding:6px 0;"></div>
       </div>
     </div>
+    <div class="hani-section">
+      <div class="hani-section-title">🧪 Test Mode</div>
+      <div class="hani-card">
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Preview questions and flows without recording any of Sedona's progress. XP, mistakes, badges, and streaks will <strong>not</strong> be saved while active.</div>
+        <button onclick="enterTestMode()" style="width:100%;padding:13px;background:linear-gradient(135deg,#2dd4bf,#0891b2);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;">🧪 Enter Test Mode</button>
+      </div>
+    </div>
     <div class="hani-section" style="margin-bottom:32px;">
       <div class="hani-section-title">🔄 Session Management</div>
       <div class="hani-card">
@@ -1665,6 +1676,28 @@ function doReset(){
   renderHaniDash();
   showBadgeToast({icon:'✅',name:'Session reset! Fresh start.'});
 }
+
+// ─── TEST MODE ────────────────────────────────────────────────────────────
+let TEST_MODE=false;
+function enterTestMode(){
+  TEST_MODE=true;
+  document.getElementById('test-mode-banner').style.display='flex';
+  go('home');
+}
+function exitTestMode(){
+  TEST_MODE=false;
+  document.getElementById('test-mode-banner').style.display='none';
+  go('hani');
+}
+// Wrap save/record functions to be no-ops in test mode
+const _saveProgress=saveProgress;
+saveProgress=function(){if(!TEST_MODE)_saveProgress();};
+const _addXP=addXP;
+addXP=function(n,el){if(TEST_MODE){if(el){const e=document.getElementById(el);if(e)e.textContent='TEST';}return;}_addXP(n,el);};
+const _trackMistake=trackMistake;
+trackMistake=function(a,b,c,d){if(!TEST_MODE)_trackMistake(a,b,c,d);};
+const _checkBadge=checkBadge;
+checkBadge=function(id){if(!TEST_MODE)_checkBadge(id);};
 
 // ─── INIT ─────────────────────────────────────────────────────────────────
 // ─── STUDY TIME TRACKER ───────────────────────────────────────────────────
