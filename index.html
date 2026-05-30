@@ -1886,12 +1886,26 @@ if(S.totalXP>0){
     setTimeout(()=>t.classList.remove('on'),4000);
   },600);
 }
-// Apply session config to DOM
-document.getElementById('home-sub-el').textContent=`${SESSION_SUBJECT} · Session ${SESSION_NUM}`;
-document.getElementById('sb-name-el').textContent=`Session ${SESSION_NUM} — ${SESSION_TITLE}`;
-document.getElementById('sb-date-el').innerHTML=`${SESSION_DATE} · ${SESSION_SUBJECT} &nbsp;· <span style="font-size:12px;opacity:0.85;">tap to learn more ›</span>`;
-document.getElementById('modal-session-date').textContent=`${SESSION_DATE} · NGSS Unit 3`;
+applySession();
 renderHome();
+function applySession(){
+  const s=getSession();
+  document.getElementById('home-sub-el').textContent=`${s.subject} · Session ${s.num}`;
+  document.getElementById('sb-name-el').textContent=`Session ${s.num} — ${s.title}`;
+  document.getElementById('sb-date-el').innerHTML=`${s.date} · ${s.subject} &nbsp;· <span style="font-size:12px;opacity:0.85;">tap to learn more ›</span>`;
+  document.getElementById('modal-session-date').textContent=`${s.date} · ${s.unit}`;
+  // Update lesson modal content dynamically
+  const modal=document.getElementById('lesson-modal');
+  if(modal){
+    modal.querySelector('[style*="SESSION"]').textContent=`📚 SESSION ${s.num}`;
+    modal.querySelector('[style*="font-size:20px"]').textContent=s.title;
+    modal.querySelector('[style*="font-size:14px"]').innerHTML=`<strong>Why this matters:</strong> ${s.why}`;
+    const conceptsEl=modal.querySelector('[style*="flex-direction:column;gap:8px"]');
+    if(conceptsEl)conceptsEl.innerHTML=s.concepts.map(c=>`<div><strong>${c.title}</strong><br>${c.body}</div>`).join('');
+    const fEl=modal.querySelector('[style*="monospace;font-size:13px"]');
+    if(fEl)fEl.innerHTML=s.formulas.replace(/\n/g,'<br>');
+  }
+}
 </script>
 
 <!-- RANK MAP MODAL -->
