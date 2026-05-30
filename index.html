@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Sedona's Advanced Science Lab</title>
+<style>
+:root {
+  --purple:#7c3aed;--purple-light:#a78bfa;--purple-dark:#4c1d95;
+  --green:#16a34a;--red:#dc2626;--yellow:#ca8a04;--teal:#0d9488;
+  --orange:#ea580c;--navy:#0d2137;--cream:#faf7f0;--parchment:#f0ebe0;
+  --bg:#f5f3ff;--white:#ffffff;
+  --gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-500:#6b7280;--gray-700:#374151;--gray-900:#111827;
+  --radius:18px;--radius-sm:12px;
+  --shadow:0 6px 24px rgba(124,58,237,0.18);--shadow-sm:0 2px 8px rgba(0,0,0,0.09);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--gray-900);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+.screen{display:none;width:100%;max-width:480px;min-height:100vh;flex-direction:column;padding-bottom:32px;}
+.screen.active{display:flex;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 10px;position:sticky;top:0;background:var(--bg);z-index:10;}
+.back-btn{background:var(--white);border:none;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;}
+.nav-title{font-weight:700;font-size:15px;color:var(--gray-700);}
+.nav-badge{background:var(--purple);color:white;border-radius:20px;padding:4px 11px;font-size:13px;font-weight:700;}
+
+/* HOME */
+.home-hero{display:flex;align-items:center;gap:10px;padding:12px 20px 10px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-bottom:1px solid #ddd6fe;position:sticky;top:0;z-index:100;}
+.logo{font-size:28px;animation:float 3s ease-in-out infinite;line-height:1;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.home-title{font-size:17px;font-weight:900;color:var(--purple-dark);}
+.home-sub{font-size:11px;color:var(--gray-500);margin-top:1px;}
+.xp-section{padding:0 20px 14px;}
+.xp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.xp-lv{font-weight:700;font-size:13px;color:var(--purple);}
+.xp-amt{font-size:12px;color:var(--gray-500);}
+.xp-track{height:10px;background:var(--gray-200);border-radius:999px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:999px;transition:width .5s ease;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 14px 14px;}
+.stat{background:var(--white);border-radius:var(--radius-sm);padding:8px 4px;text-align:center;box-shadow:var(--shadow-sm);}
+.stat-icon{font-size:16px;margin-bottom:1px;}
+.stat-val{font-size:16px;font-weight:800;color:var(--purple-dark);}
+.stat-lbl{font-size:10px;color:var(--gray-500);margin-top:1px;}
+.session-banner{margin:0 20px 16px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));border-radius:var(--radius);padding:16px;color:white;}
+.sb-label{font-size:11px;opacity:.75;text-transform:uppercase;letter-spacing:1px;}
+.sb-name{font-size:16px;font-weight:800;margin-top:4px;}
+.sb-date{font-size:12px;opacity:.7;margin-top:3px;}
+.pt-btn{margin:0 20px 16px;background:linear-gradient(135deg,#0d9488,#0f766e);border:none;border-radius:var(--radius-sm);padding:14px 18px;color:white;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:10px;width:calc(100% - 40px);}
+.pt-btn-txt{text-align:left;}
+.pt-btn-title{font-size:15px;font-weight:800;}
+.pt-btn-sub{font-size:12px;opacity:.85;margin-top:1px;}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 16px;}
+.mode-card{background:var(--white);border-radius:var(--radius);padding:16px 12px;text-align:center;box-shadow:var(--shadow-sm);cursor:pointer;border:2px solid transparent;transition:all .2s;}
+.mode-card:active{transform:scale(.97);}
+.mc-icon{font-size:32px;margin-bottom:6px;}
+.mc-title{font-size:14px;font-weight:800;color:var(--purple-dark);}
+.mc-desc{font-size:11px;color:var(--gray-500);line-height:1.4;}
+.section-header{padding:0 20px 10px;font-size:14px;font-weight:800;color:var(--gray-700);display:flex;align-items:center;gap:8px;}
+
+/* GROWTH ZONE (renamed Mistake Journal) */
+.gz-list{padding:0 20px 16px;display:flex;flex-direction:column;gap:8px;}
+.gz-item{background:var(--white);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow-sm);border-left:4px solid var(--teal);cursor:pointer;transition:all .2s;}
+.gz-item:active{transform:scale(.98);}
+.gz-q{font-size:13px;font-weight:600;color:var(--gray-900);margin-bottom:3px;}
+.gz-count{font-size:11px;color:var(--teal);font-weight:700;}
+.gz-answer{margin-top:10px;background:#f0fdfa;border-radius:8px;padding:10px 12px;font-size:12px;color:#134e4a;line-height:1.5;display:none;}
+.gz-item.open .gz-answer{display:block;}
+.gz-empty{text-align:center;color:var(--gray-500);font-size:13px;padding:12px 20px;}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 20px 20px;}
+.badge-item{background:var(--white);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;box-shadow:var(--shadow-sm);position:relative;}
+.badge-item.locked{opacity:.3;filter:grayscale(1);}
+.badge-icon{font-size:26px;}
+.badge-name{font-size:11px;font-weight:700;color:var(--purple-dark);margin-top:4px;line-height:1.3;}
+.badge-new{position:absolute;top:-5px;right:-5px;background:var(--orange);color:white;border-radius:99px;font-size:9px;font-weight:800;padding:2px 6px;}
+.hani-btn{margin:0 20px 20px;background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border:none;border-radius:var(--radius-sm);padding:14px 18px;color:white;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:10px;width:calc(100% - 40px);}
+.res-btn{margin:0 20px 0;background:linear-gradient(135deg,#0d4f6e,#1a6b8a);border:none;border-radius:var(--radius-sm);padding:14px 18px;color:white;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:10px;width:calc(100% - 40px);}
+
+/* PERIODIC TABLE */
+.pt-wrap{padding:10px 0 0;overflow:hidden;}
+.pt-scroll{overflow-x:auto;padding:0 16px 12px;-webkit-overflow-scrolling:touch;}
+.pt-grid{display:grid;grid-template-columns:repeat(18,30px);grid-template-rows:repeat(7,30px);gap:2px;width:max-content;}
+.el{width:30px;height:30px;border-radius:4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .15s;position:relative;}
+.el:active{transform:scale(.9);}
+.el-num{font-size:7px;font-weight:700;opacity:.8;line-height:1;}
+.el-sym{font-size:11px;font-weight:900;line-height:1.1;}
+.el.alkali{background:#fca5a5;color:#7f1d1d;}
+.el.alkaline{background:#fdba74;color:#7c2d12;}
+.el.transition{background:#fde68a;color:#713f12;}
+.el.metalloid{background:#6ee7b7;color:#064e3b;}
+.el.nonmetal{background:#93c5fd;color:#1e3a5f;}
+.el.halogen{background:#a5f3fc;color:#164e63;}
+.el.noble{background:#c4b5fd;color:#3b0764;}
+.el.metal{background:#d1d5db;color:#374151;}
+.el.unknown{background:#e5e7eb;color:#6b7280;}
+.el.gap{background:transparent;cursor:default;}
+.el.selected{outline:3px solid var(--purple);z-index:2;}
+.pt-legend{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px;}
+.pt-leg-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;}
+.pt-leg-dot{width:12px;height:12px;border-radius:3px;}
+.el-detail{margin:0 16px;background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);}
+.el-detail-header{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.el-big-sym{font-size:48px;font-weight:900;color:var(--purple-dark);line-height:1;}
+.el-detail-info{flex:1;}
+.el-detail-name{font-size:18px;font-weight:800;color:var(--gray-900);}
+.el-detail-num{font-size:13px;color:var(--gray-500);}
+.el-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.el-detail-row{background:var(--gray-100);border-radius:8px;padding:8px 10px;}
+.el-detail-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-500);font-weight:700;}
+.el-detail-value{font-size:14px;font-weight:800;color:var(--purple-dark);margin-top:2px;}
+.el-detail-note{margin-top:10px;background:#ede9fe;border-radius:8px;padding:10px 12px;font-size:13px;color:var(--purple-dark);line-height:1.5;}
+
+/* FLASHCARDS — Chemistry Lab Aesthetic */
+.fc-bar{display:flex;align-items:center;gap:10px;padding:8px 20px;}
+.fc-bar-track{flex:1;height:8px;background:var(--gray-200);border-radius:999px;overflow:hidden;}
+.fc-bar-fill{height:100%;background:var(--purple);border-radius:999px;transition:width .4s;}
+.fc-bar-txt{font-size:13px;font-weight:600;color:var(--gray-500);white-space:nowrap;}
+.fc-status{text-align:center;padding:4px 20px 8px;font-size:13px;color:var(--gray-500);min-height:24px;}
+.card-area{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 20px;perspective:1000px;}
+.flip-card{width:100%;max-width:400px;height:270px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);position:relative;}
+.flip-card.flipped{transform:rotateY(180deg);}
+.card-face{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:var(--radius);backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;}
+/* Parchment front */
+.card-front{
+  background:linear-gradient(145deg,#faf7f0,#f0ebe0);
+  border:2px solid #c8b99a;
+  box-shadow:4px 4px 0 #b8a080,8px 8px 20px rgba(0,0,0,0.18);
+  transform:rotateY(0deg);
+}
+/* Chemistry blue back */
+.card-back{
+  background:linear-gradient(145deg,#0d2137,#1a3d5c,#0d5c6e);
+  transform:rotateY(180deg);
+  border:2px solid #1a6b8a;
+  box-shadow:4px 4px 0 #0a1f2e,8px 8px 20px rgba(0,0,0,0.3);
+}
+.card-term{font-family:Georgia,'Times New Roman',serif;font-size:21px;font-weight:700;text-align:center;color:#2c1810;line-height:1.3;}
+.card-eq{background:#1a1a2e;color:#38bdf8;font-family:'Courier New',Courier,monospace;padding:10px 18px;border-radius:8px;font-size:20px;letter-spacing:3px;margin:12px 0 4px;border-left:4px solid #38bdf8;font-weight:700;}
+.card-hint-text{font-size:12px;color:var(--gray-500);margin-top:10px;font-style:italic;}
+.card-def{font-size:14px;line-height:1.6;text-align:center;color:#e0f2fe;font-family:Georgia,serif;}
+.card-eq-back{background:rgba(56,189,248,0.15);color:#38bdf8;font-family:'Courier New',monospace;padding:8px 16px;border-radius:8px;font-size:18px;letter-spacing:2px;margin:10px 0;border:1px solid rgba(56,189,248,0.3);}
+.card-back .card-hint-text{color:rgba(255,255,255,.5);margin-top:14px;}
+.fc-btns{display:flex;gap:12px;padding:10px 20px 0;}
+.fc-btn{flex:1;padding:14px;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:7px;}
+.fc-btn:active{transform:scale(.96);}
+.fc-no{background:#fee2e2;color:#991b1b;}
+.fc-yes{background:#dcfce7;color:#166534;}
+.fc-hint-label{text-align:center;padding:6px;font-size:12px;color:var(--gray-500);}
+
+/* QUIZ / LEVELS shared */
+.quiz-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 20px 12px;}
+.qs-box{background:var(--white);border-radius:var(--radius-sm);padding:10px;text-align:center;box-shadow:var(--shadow-sm);}
+.qs-val{font-size:19px;font-weight:800;color:var(--purple-dark);}
+.qs-lbl{font-size:11px;color:var(--gray-500);}
+.timer-bar{height:6px;background:var(--gray-200);margin:0 20px 12px;border-radius:999px;overflow:hidden;}
+.timer-fill{height:100%;background:var(--green);border-radius:999px;transition:width .9s linear,background .3s;}
+.timer-fill.warn{background:var(--orange);}
+.timer-fill.danger{background:var(--red);}
+.timer-hidden{opacity:0;transition:opacity .3s;}
+.timer-visible{opacity:1;}
+.q-card{margin:0 20px 12px;background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);}
+.q-label{font-size:11px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+.q-text{font-size:16px;font-weight:700;line-height:1.5;color:var(--gray-900);}
+.opts{display:flex;flex-direction:column;gap:9px;padding:0 20px;}
+.opt{background:var(--white);border:2px solid var(--gray-200);border-radius:var(--radius-sm);padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;transition:all .18s;text-align:left;}
+.opt:active{transform:scale(.98);}
+.opt .opt-letter{width:26px;height:26px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--gray-500);flex-shrink:0;}
+.opt.correct{background:#dcfce7;border-color:var(--green);color:#166534;}
+.opt.correct .opt-letter{background:var(--green);color:white;}
+.opt.wrong{background:#fee2e2;border-color:var(--red);color:#991b1b;}
+.opt.wrong .opt-letter{background:var(--red);color:white;}
+.opt.show-right{background:#dcfce7;border-color:var(--green);color:#166534;}
+.opt.show-right .opt-letter{background:var(--green);color:white;}
+.exp-box{margin:10px 20px 0;background:#ede9fe;border-radius:var(--radius-sm);padding:14px 16px;display:none;border-left:4px solid var(--purple);}
+.exp-box.on{display:block;}
+.exp-title{font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;color:var(--purple);}
+.exp-main{font-size:13px;line-height:1.65;color:var(--gray-900);}
+.exp-tip{margin-top:9px;background:#fff7ed;border-radius:8px;padding:9px 11px;font-size:12px;color:#9a3412;border-left:3px solid var(--orange);}
+.exp-tip strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--orange);margin-bottom:3px;}
+.exp-mnemonic{margin-top:8px;background:#fef9c3;border-radius:8px;padding:9px 11px;font-size:12px;color:#713f12;border-left:3px solid #ca8a04;}
+.exp-mnemonic strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#854d0e;margin-bottom:3px;}
+.next-btn{display:none;margin:12px 20px 0;width:calc(100% - 40px);padding:15px;background:var(--purple);color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:800;cursor:pointer;transition:transform .15s;}
+.next-btn.on{display:block;}
+.next-btn:active{transform:scale(.98);}
+.hint-row{display:flex;justify-content:flex-end;padding:0 20px 6px;}
+.hint-btn{background:var(--white);border:2px solid #eab308;border-radius:var(--radius-sm);padding:7px 12px;font-size:12px;font-weight:700;color:#854d0e;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s;}
+.hint-btn:active{transform:scale(.96);}
+.hint-btn:disabled{opacity:.4;cursor:not-allowed;}
+.hint-box{margin:0 20px 6px;background:#fefce8;border:1px solid #fde047;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:#713f12;display:none;line-height:1.5;}
+.hint-box.on{display:block;}
+
+/* LEVELS */
+.lv-tabs{display:flex;gap:10px;padding:10px 20px;}
+.lv-tab{flex:1;padding:10px 4px;border-radius:var(--radius-sm);border:2px solid var(--gray-200);background:var(--white);font-size:12px;font-weight:600;color:var(--gray-500);cursor:pointer;text-align:center;transition:all .2s;}
+.lv-tab.active{background:var(--purple);border-color:var(--purple);color:white;}
+.lv-tab.locked{opacity:.4;cursor:not-allowed;}
+.lv-tab.passed{background:#16a34a;border-color:#16a34a;color:white;}
+.lv-prog{padding:4px 20px 8px;}
+.lv-prog-row{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);margin-bottom:4px;}
+.lv-bar-track{height:8px;background:var(--gray-200);border-radius:999px;overflow:hidden;}
+.lv-bar-fill{height:100%;background:var(--green);border-radius:999px;transition:width .4s;}
+
+/* SURVIVAL = QUICK QUESTIONS */
+.sv-header{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 12px;}
+.sv-hearts{font-size:22px;letter-spacing:3px;}
+.sv-score-wrap{text-align:right;}
+.sv-score-val{font-size:24px;font-weight:800;color:var(--red);}
+.sv-score-lbl{font-size:11px;color:var(--gray-500);}
+
+/* RESULTS */
+.results{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:36px 24px;text-align:center;}
+.r-trophy{font-size:80px;margin-bottom:12px;animation:pop .7s ease;}
+@keyframes pop{0%{transform:scale(.3);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+.r-title{font-size:26px;font-weight:900;color:var(--purple-dark);margin-bottom:6px;}
+.r-sub{font-size:14px;color:var(--gray-500);margin-bottom:24px;}
+.r-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-bottom:24px;}
+.r-stat{background:var(--gray-100);border-radius:var(--radius-sm);padding:12px;text-align:center;}
+.r-stat-val{font-size:24px;font-weight:800;color:var(--purple-dark);}
+.r-stat-lbl{font-size:11px;color:var(--gray-500);margin-top:2px;}
+.r-xp{background:linear-gradient(135deg,var(--purple-dark),var(--purple));border-radius:var(--radius-sm);padding:14px 18px;color:white;font-size:15px;font-weight:800;margin-bottom:16px;width:100%;}
+.play-again{width:100%;padding:15px;background:var(--purple);color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:800;cursor:pointer;}
+
+/* OVERLAYS / POPUPS */
+.flash-overlay{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:100;opacity:0;}
+@keyframes flash-g{0%{opacity:1;}100%{opacity:0;}}
+@keyframes flash-r{0%{opacity:1;}100%{opacity:0;}}
+.fl{background:rgba(22,163,74,.15);animation:flash-g .55s ease forwards;}
+.fr{background:rgba(220,38,38,.15);animation:flash-r .55s ease forwards;}
+.fa{background:rgba(234,179,8,.15);animation:flash-g .55s ease forwards;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+.shake{animation:shake .35s ease;}
+.streak-pop{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) scale(0);background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:var(--radius);padding:18px 36px;font-size:22px;font-weight:800;color:white;z-index:200;transition:transform .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;text-align:center;}
+.streak-pop.on{transform:translate(-50%,-50%) scale(1);}
+/* FIXED badge toast — fully hidden when off */
+.badge-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(300px);background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:var(--radius);padding:14px 22px;font-size:14px;font-weight:800;z-index:300;transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.2);white-space:nowrap;}
+.badge-toast.on{transform:translateX(-50%) translateY(0);}
+.confetti-piece{position:fixed;pointer-events:none;z-index:999;animation:confetti-fall linear forwards;}
+@keyframes confetti-fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(105vh) rotate(720deg);opacity:0;}}
+
+/* HANI'S HANGOUT */
+.hani-lock{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:40px 24px;text-align:center;}
+.hani-lock-icon{font-size:64px;margin-bottom:16px;}
+.hani-lock-title{font-size:22px;font-weight:900;color:#1e3a5f;margin-bottom:8px;}
+.hani-lock-sub{font-size:13px;color:var(--gray-500);margin-bottom:24px;}
+.hani-input{width:100%;padding:14px 18px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-size:16px;text-align:center;letter-spacing:4px;outline:none;font-family:monospace;margin-bottom:12px;}
+.hani-input:focus{border-color:#2d5a8e;}
+.hani-unlock-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1e3a5f,#2d5a8e);color:white;border:none;border-radius:var(--radius-sm);font-size:16px;font-weight:800;cursor:pointer;}
+.hani-err{color:var(--red);font-size:13px;margin-top:8px;min-height:20px;}
+.hani-content{padding:0 0 20px;}
+.hani-section{margin:16px 20px 0;}
+.hani-section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1e3a5f;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.hani-card{background:var(--white);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow-sm);margin-bottom:10px;}
+.hani-stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.hani-stat{background:var(--gray-100);border-radius:8px;padding:10px;text-align:center;}
+.hani-stat-val{font-size:20px;font-weight:800;color:#1e3a5f;}
+.hani-stat-lbl{font-size:11px;color:var(--gray-500);}
+.topic-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100);}
+.topic-row:last-child{border-bottom:none;}
+.topic-q{font-size:12px;color:var(--gray-700);flex:1;padding-right:8px;}
+.topic-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;}
+.topic-badge.strong{background:#dcfce7;color:#166534;}
+.topic-badge.weak{background:#fee2e2;color:#991b1b;}
+.topic-badge.neutral{background:var(--gray-100);color:var(--gray-500);}
+.insight-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;line-height:1.65;color:#1e3a5f;border-left:4px solid #2d5a8e;}
+.time-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--gray-100);font-size:12px;}
+.time-row:last-child{border-bottom:none;}
+.time-q{color:var(--gray-700);flex:1;}
+.time-val{font-weight:700;color:#1e3a5f;min-width:50px;text-align:right;}
+
+/* RESOURCES */
+.res-list{padding:0 20px;display:flex;flex-direction:column;gap:12px;}
+.res-item{background:var(--white);border-radius:var(--radius-sm);padding:16px;box-shadow:var(--shadow-sm);text-decoration:none;display:block;border:2px solid transparent;transition:border-color .2s;}
+.res-item:active{border-color:var(--teal);}
+.res-icon{font-size:28px;margin-bottom:8px;}
+.res-title{font-size:15px;font-weight:800;color:var(--purple-dark);margin-bottom:4px;}
+.res-desc{font-size:12px;color:var(--gray-500);line-height:1.5;}
+.res-url{font-size:11px;color:var(--teal);margin-top:6px;word-break:break-all;}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="s-home" class="screen active">
+  <div class="home-hero">
+    <div class="logo">⚗️</div>
+    <div>
+      <div class="home-title">Sedona's Advanced Science Lab</div>
+      <div class="home-sub" id="home-sub-el">Chemistry · Session 1</div>
+    </div>
+  </div>
+  <div class="session-banner" onclick="showLessonSummary()" style="cursor:pointer;margin-top:0;border-radius:0;margin-left:0;margin-right:0;">
+    <div class="sb-label">📚 Today's Session</div>
+    <div class="sb-name" id="sb-name-el">Session 1 — Atoms, Isotopes &amp; Ions</div>
+    <div class="sb-date" id="sb-date-el">Friday, May 30 · Chemistry &nbsp;· <span style="font-size:12px;opacity:0.85;">tap to learn more ›</span></div>
+  </div>
+  <!-- Lesson Summary Modal -->
+  <div id="lesson-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+      <div style="background:linear-gradient(135deg,#6d28d9,#7c3aed);padding:20px;color:white;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.85;margin-bottom:4px;">📚 SESSION 1</div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:2px;">Atoms, Isotopes &amp; Ions</div>
+        <div style="font-size:13px;opacity:0.8;" id="modal-session-date">Friday, May 30 · NGSS Unit 3</div>
+      </div>
+      <div style="padding:20px;font-family:system-ui,sans-serif;">
+        <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 16px;"><strong>Why this matters:</strong> Everything in the universe — your body, the air, your phone — is made of atoms. Understanding atomic structure is the foundation of all chemistry. Once you know how atoms are built, you can predict how elements behave and why the periodic table is arranged the way it is.</p>
+        <div style="background:#f5f3ff;border-left:4px solid #7c3aed;border-radius:8px;padding:14px;margin-bottom:16px;">
+          <div style="font-weight:700;color:#5b21b6;margin-bottom:10px;font-size:13px;">🔑 KEY CONCEPTS</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#374151;">
+            <div><strong>⚛️ Atomic Number &amp; Mass Number</strong><br>Atomic number = # of protons (defines the element). Mass number = protons + neutrons. Use the MAN formula: M = A + N.</div>
+            <div><strong>🧬 Isotopes</strong><br>Same element, different neutron counts. Same atomic number, different mass numbers. Example: Carbon-12 vs Carbon-14.</div>
+            <div><strong>⚡ Ions</strong><br>Atoms that gained or lost electrons. Lose electrons → positive ion (cation). Gain electrons → negative ion (anion). Charge = protons − electrons.</div>
+            <div><strong>⚖️ Average Atomic Mass</strong><br>A weighted average of all isotopes based on their natural abundance. That's why the periodic table shows decimals!</div>
+            <div><strong>🌊 Valence Electrons</strong><br>Electrons in the outermost shell. They determine how an element reacts. Group number = valence electrons (for main-group elements).</div>
+            <div><strong>📈 Periodic Trends</strong><br>Across a period (→): atomic radius shrinks, electronegativity increases. Down a group (↓): atomic radius grows, electronegativity decreases.</div>
+          </div>
+        </div>
+        <div style="background:#ecfdf5;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#166534;">
+          <strong>💡 Quick Formulas to Remember:</strong><br>
+          <span style="font-family:monospace;font-size:13px;">Mass # = Protons + Neutrons<br>Charge = Protons − Electrons<br>Neutrons = Mass # − Atomic #</span>
+        </div>
+        <button onclick="document.getElementById('lesson-modal').style.display='none'" style="width:100%;padding:12px;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Got it! Let's study 🚀</button>
+      </div>
+    </div>
+  </div>
+  <div class="xp-section" onclick="showRankMap()" style="cursor:pointer;">
+    <div class="xp-row">
+      <span class="xp-lv"><span id="h-lv-num" style="background:var(--purple);color:white;border-radius:99px;padding:1px 7px;font-size:11px;margin-right:5px;">Lv 1</span><span id="h-lv-name">Atom Explorer</span></span>
+      <span class="xp-amt" id="h-xp-amt">0 XP &nbsp;<span style="font-size:10px;opacity:0.6;">tap for ranks ›</span></span>
+    </div>
+    <div class="xp-track"><div class="xp-fill" id="h-xp-fill" style="width:0%"></div></div>
+    <div style="font-size:10px;color:var(--gray-500);margin-top:3px;text-align:right;" id="h-xp-next">Next: Isotope Apprentice at 100 XP</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-icon">❓</div><div class="stat-val" id="h-answered">0</div><div class="stat-lbl">Answered</div></div>
+    <div class="stat"><div class="stat-icon">⚡</div><div class="stat-val" id="h-streak">0</div><div class="stat-lbl">Best Streak</div></div>
+    <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" id="h-mastered">0</div><div class="stat-lbl">Mastered</div></div>
+    <div class="stat"><div class="stat-icon">🏅</div><div class="stat-val" id="h-badges">0</div><div class="stat-lbl">Badges</div></div>
+  </div>
+  <button class="pt-btn" onclick="go('pt')">
+    <span style="font-size:28px;">🧪</span>
+    <div class="pt-btn-txt"><div class="pt-btn-title">Periodic Table Reference</div><div class="pt-btn-sub">Tap any element to see details</div></div>
+  </button>
+  <div style="padding:0 20px 4px;"><div style="font-size:14px;font-weight:800;color:var(--gray-700);margin-bottom:12px;">🎮 Practice Games</div></div>
+  <div class="mode-grid">
+    <div class="mode-card" onclick="go('fc')"><div class="mc-icon">🃏</div><div class="mc-title">Flashcards</div><div class="mc-desc">Flip &amp; memorize with spaced repetition</div></div>
+    <div class="mode-card" onclick="go('qq')"><div class="mc-icon">❤️</div><div class="mc-title">Quick Questions</div><div class="mc-desc">3 hearts. Answer fast. Don't slip up.</div></div>
+    <div class="mode-card" onclick="go('lv')"><div class="mc-icon">🎯</div><div class="mc-title">Levels</div><div class="mc-desc">Easy → Medium → Hard</div></div>
+    <div class="mode-card" onclick="go('qz')"><div class="mc-icon">⏱️</div><div class="mc-title">Sprint Quiz</div><div class="mc-desc">30 sec · wrong answers come back · final boss</div></div>
+  </div>
+  <div class="section-header">🌱 Growth Zone <span id="gz-count" style="background:#dcfce7;color:#166534;border-radius:99px;padding:2px 8px;font-size:11px;"></span></div>
+  <div class="gz-list" id="gz-list"><div class="gz-empty">No misses yet — keep it going! 🎯</div></div>
+  <div class="section-header">🏅 Achievements</div>
+  <div class="badge-grid" id="badge-grid"></div>
+  <button class="hani-btn" onclick="go('hani')">
+    <span style="font-size:24px;">🔬</span>
+    <div style="text-align:left;"><div style="font-size:15px;font-weight:800;">Hani's Hangout</div><div style="font-size:12px;opacity:.8;margin-top:1px;">Tutor &amp; parent insights · passcode required</div></div>
+  </button>
+  <button class="res-btn" onclick="go('res')" style="margin-top:10px;">
+    <span style="font-size:24px;">🔗</span>
+    <div style="text-align:left;"><div style="font-size:15px;font-weight:800;">Student Resources</div><div style="font-size:12px;opacity:.8;margin-top:1px;">Interactive tools &amp; references</div></div>
+  </button>
+</div>
+
+<!-- PERIODIC TABLE -->
+<div id="s-pt" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="go('home')">←</button>
+    <span class="nav-title">🧪 Periodic Table</span>
+    <span class="nav-badge" style="background:var(--teal)">Ref</span>
+  </div>
+  <div class="pt-wrap">
+    <div class="pt-scroll"><div class="pt-grid" id="pt-grid"></div></div>
+    <div class="pt-legend">
+      <div class="pt-leg-item"><div class="pt-leg-dot" style="background:#fca5a5"></div>Alkali</div>
+      <div class="pt-leg-item"><div class="pt-leg-dot" style="background:#fdba74"></div>Alk. Earth</div>
+      <div class="pt-leg-item"><div class="pt-leg-dot" style="background:#fde68a"></div>Transition</div>
+      <div class="pt-leg-item"><div class="pt-leg-dot" style="background:#6ee7b7"></div>Metalloid</div>
+      <div class="pt-leg-item"><div class="pt-leg-dot" style="background:#93c5fd"></div>Nonmetal</div>
+      <div class="pt-leg-item"><div class="pt-leg-dot" style="background:#a5f3fc"></div>Halogen</div>
+      <div class="pt-leg-item"><div class="pt-leg-dot" style="background:#c4b5fd"></div>Noble Gas</div>
+    </div>
+    <div class="el-detail" id="el-detail" style="display:none;"></div>
+    <div style="text-align:center;padding:16px 20px;font-size:12px;color:var(--gray-500);">Tap any element · Elements 1–20 are the class focus</div>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="s-fc-screen" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="go('home')">←</button>
+    <span class="nav-title">🃏 Flashcards</span>
+    <span class="nav-badge" id="fc-xp-badge">+0 XP</span>
+  </div>
+  <div class="fc-bar">
+    <div class="fc-bar-track"><div class="fc-bar-fill" id="fc-bar-fill" style="width:0%"></div></div>
+    <span class="fc-bar-txt" id="fc-bar-txt">0/15</span>
+  </div>
+  <div class="fc-status" id="fc-status"></div>
+  <div class="card-area">
+    <div class="flip-card" id="flip-card" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div class="card-term" id="fc-term">Loading…</div>
+        <div class="card-eq" id="fc-eq" style="display:none;"></div>
+        <div class="card-hint-text">Tap to reveal · tap again to flip back</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-def" id="fc-def"></div>
+        <div class="card-eq-back" id="fc-eq-back" style="display:none;"></div>
+        <div class="card-hint-text">Tap card to flip back</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:4px 20px 0;">
+    <button onclick="skipFC()" style="background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;padding:4px 12px;text-decoration:underline;">Skip for now →</button>
+  </div>
+  <div id="fc-ans-area" style="display:none;">
+    <div class="fc-btns">
+      <button class="fc-btn fc-no" onclick="answerFC('no')">✗ Still Learning</button>
+      <button class="fc-btn fc-almost" onclick="answerFC('almost')" style="background:#fef9c3;color:#854d0e;flex:1.1;">〜 Almost</button>
+      <button class="fc-btn fc-yes" onclick="answerFC('yes')">✓ Got It!</button>
+    </div>
+    <div class="fc-hint-label">Flip the card first, then rate your confidence</div>
+  </div>
+</div>
+
+<!-- SPRINT QUIZ (was Timed Quiz) -->
+<div id="s-qz-screen" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="stopQuiz();go('home')">←</button>
+    <span class="nav-title">⏱️ Sprint Quiz</span>
+    <span class="nav-badge" id="qz-xp-badge">+0 XP</span>
+  </div>
+  <div class="quiz-stats">
+    <div class="qs-box"><div class="qs-val" id="qz-score">0</div><div class="qs-lbl">Score</div></div>
+    <div class="qs-box"><div class="qs-val" id="qz-streak">0 ⚡</div><div class="qs-lbl">Streak</div></div>
+    <div class="qs-box"><div class="qs-val" id="qz-correct">0/0</div><div class="qs-lbl">Correct</div></div>
+  </div>
+  <div class="timer-bar timer-hidden" id="qz-timer-bar"><div class="timer-fill" id="qz-timer" style="width:100%"></div></div>
+  <div class="hint-row"><button class="hint-btn" id="qz-hint-btn" onclick="useHint('qz')">💡 Hint <span style="font-size:10px;opacity:.7;">(−5 XP)</span></button></div>
+  <div class="hint-box" id="qz-hint-box"></div>
+  <div class="q-card"><div class="q-label" id="qz-q-label">QUESTION 1</div><div class="q-text" id="qz-q-text"></div></div>
+  <div class="opts" id="qz-opts"></div>
+  <div class="exp-box" id="qz-exp"></div>
+  <div style="display:flex;gap:8px;padding:0 20px 4px;">
+    <button class="next-btn" id="qz-next" onclick="nextQuiz()" style="flex:1;">Next →</button>
+    <button id="qz-skip" onclick="skipQuiz()" style="background:var(--gray-200);color:var(--gray-500);border:none;border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;font-weight:700;cursor:pointer;">Skip</button>
+  </div>
+</div>
+
+<!-- LEVELS -->
+<div id="s-lv-screen" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="go('home')">←</button>
+    <span class="nav-title">🎯 Levels</span>
+    <span class="nav-badge" id="lv-xp-badge">+0 XP</span>
+  </div>
+  <div class="lv-tabs">
+    <div class="lv-tab active" id="lv-tab-1" onclick="switchLv(1)">⭐ Easy</div>
+    <div class="lv-tab locked" id="lv-tab-2" onclick="switchLv(2)">⭐⭐ Med</div>
+    <div class="lv-tab locked" id="lv-tab-3" onclick="switchLv(3)">⭐⭐⭐ Hard</div>
+  </div>
+  <div class="lv-prog">
+    <div class="lv-prog-row"><span id="lv-prog-txt">0/5 mastered</span><span id="lv-prog-pct">0%</span></div>
+    <div class="lv-bar-track"><div class="lv-bar-fill" id="lv-bar-fill" style="width:0%"></div></div>
+  </div>
+  <div class="hint-row"><button class="hint-btn" id="lv-hint-btn" onclick="useHint('lv')">💡 Hint <span style="font-size:10px;opacity:.7;">(−5 XP)</span></button></div>
+  <div class="hint-box" id="lv-hint-box"></div>
+  <div class="q-card"><div class="q-label" id="lv-q-label">QUESTION 1</div><div class="q-text" id="lv-q-text"></div></div>
+  <div class="opts" id="lv-opts"></div>
+  <div class="exp-box" id="lv-exp"></div>
+  <button class="next-btn" id="lv-next" onclick="nextLv()">Next →</button>
+</div>
+
+<!-- QUICK QUESTIONS (was Survival) -->
+<div id="s-qq-screen" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="go('home')">←</button>
+    <span class="nav-title">❤️ Quick Questions</span>
+    <span class="nav-badge" id="qq-xp-badge">+0 XP</span>
+  </div>
+  <div class="sv-header">
+    <div class="sv-hearts" id="qq-hearts">❤️❤️❤️</div>
+    <div class="sv-score-wrap"><div class="sv-score-val" id="qq-score">0</div><div class="sv-score-lbl">points</div></div>
+  </div>
+  <div class="hint-row"><button class="hint-btn" id="qq-hint-btn" onclick="useHint('qq')">💡 Hint <span style="font-size:10px;opacity:.7;">(−5 XP)</span></button></div>
+  <div class="hint-box" id="qq-hint-box"></div>
+  <div class="q-card"><div class="q-label" id="qq-q-label">QUESTION 1</div><div class="q-text" id="qq-q-text"></div></div>
+  <div class="opts" id="qq-opts"></div>
+  <div class="exp-box" id="qq-exp"></div>
+  <button class="next-btn" id="qq-next" onclick="nextQQ()">Next →</button>
+</div>
+
+<!-- RESULTS -->
+<div id="s-res" class="screen">
+  <div class="results">
+    <div class="r-trophy" id="r-trophy">🏆</div>
+    <div class="r-title" id="r-title">Round Complete!</div>
+    <div class="r-sub" id="r-sub"></div>
+    <div class="r-stats">
+      <div class="r-stat"><div class="r-stat-val" id="r-correct">0</div><div class="r-stat-lbl">Correct</div></div>
+      <div class="r-stat"><div class="r-stat-val" id="r-pct">0%</div><div class="r-stat-lbl">Accuracy</div></div>
+      <div class="r-stat"><div class="r-stat-val" id="r-streak">0</div><div class="r-stat-lbl">Best Streak</div></div>
+      <div class="r-stat"><div class="r-stat-val" id="r-xp-earned">+0</div><div class="r-stat-lbl">XP Earned</div></div>
+    </div>
+    <div class="r-xp" id="r-xp-bar">⚡ Total: 0 XP — Atom Explorer</div>
+    <button class="play-again" onclick="playAgain()">Play Again 🔄</button>
+    <button id="r-retake" class="play-again" style="display:none;margin-top:10px;background:linear-gradient(135deg,var(--orange),#c2410c);color:white;" onclick="retakeSprint()">⏱️ Retake Sprint (new questions)</button>
+    <button class="play-again" style="margin-top:10px;background:var(--gray-200);color:var(--gray-700);" onclick="go('home')">← Home</button>
+  </div>
+</div>
+
+<!-- HANI'S HANGOUT -->
+<div id="s-hani" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="go('home')">←</button>
+    <span class="nav-title">🔬 Hani's Hangout</span>
+    <span class="nav-badge" style="background:#1e3a5f;">Private</span>
+  </div>
+  <div id="hani-lock-view" class="hani-lock">
+    <div class="hani-lock-icon">🔐</div>
+    <div class="hani-lock-title">Tutor &amp; Parent Portal</div>
+    <div class="hani-lock-sub">Analytics and insights for Hani and the family. Enter the passcode to continue.</div>
+    <input class="hani-input" id="hani-input" type="password" placeholder="enter passcode" onkeydown="if(event.key==='Enter')tryUnlock()">
+    <button class="hani-unlock-btn" onclick="tryUnlock()">Unlock →</button>
+    <div class="hani-err" id="hani-err"></div>
+  </div>
+  <div id="hani-dash" class="hani-content" style="display:none;"></div>
+</div>
+
+<!-- RESOURCES -->
+<div id="s-res-screen" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="go('home')">←</button>
+    <span class="nav-title">🔗 Student Resources</span>
+    <span class="nav-badge" style="background:var(--teal)">Free</span>
+  </div>
+  <div style="padding:12px 20px 16px;font-size:13px;color:var(--gray-500);line-height:1.5;">Interactive tools to explore chemistry beyond the app. Tap any card to open.</div>
+  <div class="res-list">
+    <a class="res-item" href="https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_all.html" target="_blank">
+      <div class="res-icon">⚛️</div>
+      <div class="res-title">Build an Atom — PhET</div>
+      <div class="res-desc">Drag protons, neutrons, and electrons to build atoms. See the element name, symbol, and charge update in real time. Perfect for understanding atomic structure visually.</div>
+      <div class="res-url">phet.colorado.edu · Build-an-Atom</div>
+    </a>
+    <a class="res-item" href="https://pubchem.ncbi.nlm.nih.gov/ptable/" target="_blank">
+      <div class="res-icon">🧬</div>
+      <div class="res-title">Interactive Periodic Table — PubChem</div>
+      <div class="res-desc">Full periodic table from the National Institutes of Health. Click any element for detailed properties, electron configuration, and real-world uses.</div>
+      <div class="res-url">pubchem.ncbi.nlm.nih.gov · Periodic Table</div>
+    </a>
+    <a class="res-item" href="https://drive.google.com/drive/folders/1dCbeblGC-AB3V6YCLKYq0_UFJx1KIt3h" target="_blank">
+      <div class="res-icon">📁</div>
+      <div class="res-title">Class Materials — Google Drive</div>
+      <div class="res-desc">All session notes, worksheets, and lesson plans from Sedona's Chemistry Unit 3 folder. Includes quizlets, practice problems, and tutor resources.</div>
+      <div class="res-url">drive.google.com · Sedona's Chemistry Folder</div>
+    </a>
+  </div>
+</div>
+
+<!-- OVERLAYS -->
+<div class="flash-overlay" id="s-fc"></div>
+<div class="flash-overlay" id="s-qz"></div>
+<div class="flash-overlay" id="s-lv"></div>
+<div class="flash-overlay" id="s-qq"></div>
+<div class="streak-pop" id="streak-pop"></div>
+<div class="badge-toast" id="badge-toast"></div>
+
+<script>
+// ─── PERIODIC TABLE DATA ───────────────────────────────────────────────────
+const ELEMENTS_DATA=[
+  [1,'H','Hydrogen',1.008,1,1,'nonmetal',1,'none','Nonmetal in Group 1A. Has 1 valence electron but forms H⁺ (not a metal). The only element in Period 1 besides He.'],
+  [2,'He','Helium',4.003,18,1,'noble',2,'none','Noble gas. Full valence shell (2e⁻). NEVER forms ions. Most stable element.'],
+  [3,'Li','Lithium',6.941,1,2,'alkali',1,'1+','Alkali metal. 1 valence electron → loses it → Li⁺. Very reactive — explodes in water!'],
+  [4,'Be','Beryllium',9.012,2,2,'alkaline',2,'2+','Alkaline earth metal. 2 valence electrons → loses both → Be²⁺.'],
+  [5,'B','Boron',10.811,13,2,'metalloid',3,'varies','Metalloid. Properties between metal and nonmetal. Semiconductor.'],
+  [6,'C','Carbon',12.011,14,2,'nonmetal',4,'none','Nonmetal. Basis of all organic chemistry. Has 3 natural isotopes: C-12, C-13, C-14.'],
+  [7,'N','Nitrogen',14.007,15,2,'nonmetal',5,'3−','Nonmetal. 5 valence electrons → gains 3 → N³⁻ (nitride). Diatomic: N₂.'],
+  [8,'O','Oxygen',15.999,16,2,'nonmetal',6,'2−','Nonmetal. 6 valence electrons → gains 2 → O²⁻ (oxide). Diatomic: O₂. Most abundant element in Earth\'s crust.'],
+  [9,'F','Fluorine',18.998,17,2,'halogen',7,'1−','Halogen. 7 valence electrons → gains 1 → F⁻. Most reactive nonmetal. Highest electronegativity.'],
+  [10,'Ne','Neon',20.180,18,2,'noble',8,'none','Noble gas. Full valence shell (8e⁻). Inert. Na⁺, Mg²⁺, F⁻, O²⁻, N³⁻ all have 10 electrons = same as Ne.'],
+  [11,'Na','Sodium',22.990,1,3,'alkali',1,'1+','Alkali metal. 1 valence electron → Na⁺. Has 11 protons. Neutral: 11e⁻. As Na⁺: 10e⁻ (same as Ne).'],
+  [12,'Mg','Magnesium',24.305,2,3,'alkaline',2,'2+','Alkaline earth metal. 2 valence electrons → Mg²⁺. Has 12 protons, 12 neutrons, 12 electrons (neutral).'],
+  [13,'Al','Aluminum',26.982,13,3,'metal',3,'3+','Metal. 3 valence electrons → Al³⁺. Most abundant metal in Earth\'s crust.'],
+  [14,'Si','Silicon',28.086,14,3,'metalloid',4,'varies','Metalloid. Most important semiconductor. Basis of computer chips.'],
+  [15,'P','Phosphorus',30.974,15,3,'nonmetal',5,'3−','Nonmetal. 5 valence electrons → gains 3 → P³⁻ (phosphide). Found in DNA.'],
+  [16,'S','Sulfur',32.065,16,3,'nonmetal',6,'2−','Nonmetal. 6 valence electrons → gains 2 → S²⁻ (sulfide). Yellow solid.'],
+  [17,'Cl','Chlorine',35.453,17,3,'halogen',7,'1−','Halogen. 7 valence electrons → Cl⁻. Two isotopes: Cl-35 (75%) and Cl-37 (25%). Average mass ≈ 35.45.'],
+  [18,'Ar','Argon',39.948,18,3,'noble',8,'none','Noble gas. Full shell (8e⁻). Inert. K⁺, Ca²⁺, Cl⁻, S²⁻ all have 18 electrons = same as Ar.'],
+  [19,'K','Potassium',39.098,1,4,'alkali',1,'1+','Alkali metal. 1 valence electron → K⁺. Similar to Na. Atomic mass ≈ 39.1.'],
+  [20,'Ca','Calcium',40.078,2,4,'alkaline',2,'2+','Alkaline earth metal. 2 valence electrons → Ca²⁺. Most common Ca²⁺ ion in living things (bones, teeth). As Ca²⁺: 18e⁻ (same as Ar).'],
+  [21,'Sc','Scandium',44.956,3,4,'transition',null,null,null],
+  [22,'Ti','Titanium',47.867,4,4,'transition',null,null,null],
+  [23,'V','Vanadium',50.942,5,4,'transition',null,null,null],
+  [24,'Cr','Chromium',51.996,6,4,'transition',null,null,null],
+  [25,'Mn','Manganese',54.938,7,4,'transition',null,null,null],
+  [26,'Fe','Iron',55.845,8,4,'transition',null,null,null],
+  [27,'Co','Cobalt',58.933,9,4,'transition',null,null,null],
+  [28,'Ni','Nickel',58.693,10,4,'transition',null,null,null],
+  [29,'Cu','Copper',63.546,11,4,'transition',null,null,null],
+  [30,'Zn','Zinc',65.38,12,4,'transition',null,null,null],
+  [31,'Ga','Gallium',69.723,13,4,'metal',null,null,null],
+  [32,'Ge','Germanium',72.630,14,4,'metalloid',null,null,null],
+  [33,'As','Arsenic',74.922,15,4,'metalloid',null,null,null],
+  [34,'Se','Selenium',78.971,16,4,'nonmetal',null,null,null],
+  [35,'Br','Bromine',79.904,17,4,'halogen',null,'1−','Halogen. 7 valence electrons → Br⁻. Exists as liquid at room temperature (rare for a nonmetal). Diatomic: Br₂.'],
+  [36,'Kr','Krypton',83.798,18,4,'noble',8,'none','Noble gas. Full shell. Inert.'],
+];
+
+// ─── SESSION CONFIG (update each session) ─────────────────────────────────
+const SESSION_NUM = 1;
+const SESSION_TITLE = 'Atoms, Isotopes & Ions';
+const SESSION_DATE = 'Friday, May 30'; // update each session
+const SESSION_SUBJECT = 'Chemistry';
+
+// ─── FLASHCARD DATA ────────────────────────────────────────────────────────
+const CARDS=[
+  {id:1,term:'Atomic Number (Z)',eq:null,def:'Number of protons in the nucleus — defines the element\'s identity. NEVER changes. Same element = same Z, always.',hint:'Z = proton count. Carbon is always 6 protons. Oxygen is always 8.'},
+  {id:2,term:'Mass Number (A)',eq:'A = p⁺ + n⁰',def:'Protons plus neutrons. Electrons weigh almost nothing (0 AMU) so they don\'t count. Always a whole number.',hint:'A = Add protons + neutrons. Electrons have 0 AMU — too light to count!'},
+  {id:3,term:'MAN Formula',eq:'M − A = N',def:'Mass number minus Atomic Number equals Neutrons. Use this every time you need to find how many neutrons an atom has.',hint:'MAN: Mass minus Atomic Number gives Neutrons. M−A=N!'},
+  {id:4,term:'Isotope',eq:null,def:'Same element (same protons, same Z), different neutron count → different mass number. C-12, C-13, C-14 are all carbon.',hint:'Iso- means "same" — same element, different mass. Neutrons change, protons don\'t.'},
+  {id:5,term:'Cation',eq:'loses e⁻ → +',def:'Positive ion — formed when an atom LOSES electrons. More protons than electrons → net positive charge.',hint:'CATion — the CAT lost its electrons and is positively furious!'},
+  {id:6,term:'Anion',eq:'gains e⁻ → −',def:'Negative ion — formed when an atom GAINS electrons. More electrons than protons → net negative charge.',hint:'ANion — A Negative ion. Gained electrons → more negative.'},
+  {id:7,term:'Neutral Atom Rule',eq:'p⁺ = e⁻',def:'In a neutral atom, protons = electrons → net charge of zero. Atomic number = electron count. This is your starting point for all ion problems.',hint:'Neutral = balanced. + protons cancel − electrons exactly.'},
+  {id:8,term:'Ion Charge Formula',eq:'Charge = P − E',def:'Charge equals Protons minus Electrons. Positive result = cation. Negative result = anion. Rearranged: P = Charge + E.',hint:'Charge = P − E. More protons = positive. More electrons = negative.'},
+  {id:9,term:'Average Atomic Mass',eq:'Σ(mass × abundance)',def:'Weighted average of all naturally occurring isotopes. Multiply each isotope mass by its decimal abundance, then add them all together.',hint:'Convert % to decimal first (75% → 0.75). Multiply, then add.'},
+  {id:10,term:'Group 1A — Alkali Metals',eq:'1 valence e⁻ → +1',def:'1 valence electron → loses it → forms +1 ions (Li⁺, Na⁺, K⁺). Most reactive metals. Explode in water!',hint:'Group 1A = 1 valence electron = loses 1 = +1 charge.'},
+  {id:11,term:'Group 2A — Alkaline Earth',eq:'2 valence e⁻ → +2',def:'2 valence electrons → loses both → forms +2 ions (Mg²⁺, Ca²⁺, Sr²⁺)',hint:'Group 2 = 2 valence electrons = loses 2 = +2 charge.'},
+  {id:12,term:'Group 7A — Halogens',eq:'7 valence e⁻ → −1',def:'7 valence electrons → gains 1 → forms −1 ions (F⁻, Cl⁻, Br⁻). Most reactive nonmetals.',hint:'Group 17 has 7 valence e⁻. Needs 1 more = −1 charge.'},
+  {id:13,term:'Group 6A Ions',eq:'6 valence e⁻ → −2',def:'6 valence electrons → gains 2 → forms −2 ions (O²⁻, S²⁻)',hint:'Group 16 has 6 valence e⁻. Needs 2 more to reach 8 (octet) = −2.'},
+  {id:14,term:'Noble Gases (Group 8A)',eq:'8 e⁻ = stable',def:'Full valence shell (8e⁻, He has 2e⁻) → chemically inert → NEVER form ions. This is why all other atoms form ions — to match noble gas electron count.',hint:'Full shell = stable = no need to gain or lose electrons.'},
+  {id:15,term:'Isotope Notation',eq:'A on top, Z on bottom',def:'A (mass number) at top-left. Z (atomic number) at bottom-left. Box = element symbol. Example: ⁹C₆ means Carbon with mass 9, 6 protons.',hint:'Top number = mass (A). Bottom = atomic number (Z). A = p⁺ + n⁰.'},
+];
+
+const QS=[
+  // LEVEL 1 — Easy
+  {id:1,lv:1,q:'What determines the identity of an element?',
+   opts:['Neutrons','Electrons','Protons','Mass number'],ans:2,
+   hint:'What makes carbon always carbon and oxygen always oxygen? It\'s not the mass.',
+   ex:{main:'The atomic number = number of protons defines the element. Change the proton count and you get a completely different element. C always has 6 protons; O always has 8. You can change neutrons (isotopes) or electrons (ions) — it\'s still the same element. Change protons → completely different element.',tip:'\'Atomic number\' and \'proton count\' mean the same thing on any exam.',mnemonic:'Protons = Personality. P is for both Protons and Personality of the element.'}},
+  {id:2,lv:1,q:'A neutral atom has equal numbers of protons and ___?',
+   opts:['Neutrons','Electrons','Nucleons','Ions'],ans:1,
+   hint:'\'Neutral\' means no net charge — what cancels out the positive protons?',
+   ex:{main:'In a neutral atom, positive protons and negative electrons balance perfectly → net charge = zero. The moment you add or remove electrons, you get an ion. Neutrons have no charge at all. From class notes: \'neutral element: p⁺ = e⁻ (no charge)\'.',tip:'If a question says \'neutral atom,\' write protons = electrons. This is your starting point for ALL ion problems.',mnemonic:'Neutral = Neither positive nor negative. P = E for balance.'}},
+  {id:3,lv:1,q:'What does the acronym MAN help you calculate?',
+   opts:['Molar Atomic Number','Mass And Neutrons','Mass minus Atomic Number = Neutrons','Maximum Atomic Neutrons'],ans:2,
+   hint:'Your class notes use MAN to calculate the number of neutrons.',
+   ex:{main:'MAN = Mass number − Atomic Number = Neutrons. For example, Cl-35 (mass number 35) with 17 protons: 35 − 17 = 18 neutrons. This formula comes directly from A = p⁺ + n⁰, rearranged to n⁰ = A − Z.',tip:'MAN works for every element and every isotope. Memorize it.',mnemonic:'MAN: Mass minus Atomic Number = Neutrons. M−A=N!'}},
+  {id:4,lv:1,q:'What is the mass number of an atom with 6 protons and 7 neutrons?',
+   opts:['6','7','13','42'],ans:2,
+   hint:'Mass number = protons + neutrons. Just add the two numbers given.',
+   ex:{main:'A = p⁺ + n⁰ = 6 + 7 = 13. This is carbon-13 (¹³C), an isotope of carbon. Carbon-12 (6p + 6n) is the most common isotope, and carbon-14 (6p + 8n) is radioactive and used in carbon dating!',tip:'Mass number is always a whole number = sum of protons + neutrons only (electrons have 0 AMU).',mnemonic:'A = Add. Mass number = Add protons + neutrons.'}},
+  {id:5,lv:1,q:'An atom that LOSES electrons becomes a ___?',
+   opts:['Isotope','Anion','Cation','Neutron'],ans:2,
+   hint:'Losing electrons removes negative charge, leaving a net positive charge.',
+   ex:{main:'Losing electrons removes negative charge → atom has more protons than electrons → net positive → cation (+). Gaining electrons → more negative → anion (−). Isotopes are about neutrons changing, not electrons.',tip:'CATion = positive (the \'t\' looks like a \'+\'). ANion = negative (AN = A Negative).',mnemonic:'The CAT lost electrons — it\'s positively furious! The AN(t) gained electrons — it\'s negatively charged.'}},
+  {id:6,lv:1,q:'Which element group NEVER forms ions?',
+   opts:['Alkali metals','Halogens','Noble gases','Transition metals'],ans:2,
+   hint:'Think about which group already has a full valence shell — they have nothing to gain or lose.',
+   ex:{main:'Noble gases (Group 8A) have full valence shells: He has 2e⁻, and Ne, Ar, Kr, Xe all have 8e⁻. A full shell = stability. They have no reason to gain or lose electrons, so they never form ions. This is the \'octet rule\' — 8 valence electrons = maximum stability.',tip:'Noble gases = inert = unreactive. Group 8A = full valence shell = no ions, ever.',mnemonic:'Full shell = stable. Noble gases are chemically satisfied — they don\'t need to react with anyone!'}},
+  {id:7,lv:1,q:'Sodium has atomic number 11. How many electrons does neutral Na have?',
+   opts:['23','12','11','22'],ans:2,
+   hint:'Neutral atom rule: protons = electrons. What\'s the atomic number?',
+   ex:{main:'Neutral atom → p⁺ = e⁻. Z = 11 protons → 11 electrons. The 23 is Na\'s mass number (not electron count). Na also has 12 neutrons (23 − 11 = 12 using MAN).',tip:'Mass number ≠ electron count. Always use atomic number for electrons in a neutral atom.',mnemonic:'Na: 11 protons, 11 electrons, 12 neutrons. The atomic number (11) is the electron count for neutral atoms.'}},
+  // LEVEL 2 — Medium
+  {id:8,lv:2,q:'Chlorine-35 has 17 protons. How many neutrons does it have?',
+   opts:['35','17','18','52'],ans:2,
+   hint:'Use MAN: Mass minus Atomic Number = Neutrons. What\'s A? What\'s Z?',
+   ex:{main:'MAN: 35 − 17 = 18 neutrons. \'Chlorine-35\' gives the mass number directly (35); the periodic table gives Z = 17. Cl-37 has 20 neutrons (37 − 17). That\'s why Cl\'s average atomic mass ≈ 35.45 — it\'s a weighted average of mostly Cl-35 (~75%) and some Cl-37 (~25%).',tip:'Isotope names always give you the mass number directly. Element name = look up protons on the periodic table.',mnemonic:'MAN: Cl-35 mass(35) minus atomic number(17) = 18 neutrons. M−A=N!'}},
+  {id:9,lv:2,q:'An ion has 11 protons and 10 electrons. What is its charge?',
+   opts:['−1','+1','+2','0'],ans:1,
+   hint:'Charge = protons − electrons. More protons than electrons = positive charge.',
+   ex:{main:'Charge = p⁺ − e⁻ = 11 − 10 = +1. This is Na⁺ (sodium ion). Neutral Na has 11 of each. It lost 1 valence electron to achieve the electron arrangement of neon (10e⁻ = noble gas stability — that\'s WHY sodium does this).',tip:'Charge = P − E. Positive result = cation. Negative result = anion.',mnemonic:'More Protons = Positive. More Electrons = nEgativE. PCE: Protons minus = Charge → Electrons.'}},
+  {id:10,lv:2,q:'What makes two isotopes of the same element different?',
+   opts:['Same protons & neutrons','Same protons, different neutrons','Different protons, same neutrons','Different protons & neutrons'],ans:1,
+   hint:'\'Same element\' is the clue — what can\'t change if it\'s the same element?',
+   ex:{main:'Isotopes share the same atomic number (protons = same element) but differ in neutron count and mass number. C-12, C-13, and C-14 all have 6 protons but 6, 7, and 8 neutrons respectively. From the notes: \'isotope: gained or lost n⁰ → new mass number.\'',tip:'Same element = same protons. Isotopes = same element, different neutrons = different mass numbers.',mnemonic:'ISO- means \'same.\' Isotopes = SAME element (protons), different NEUTRONS = different mass.'}},
+  {id:11,lv:2,q:'Boron: B-10 (20%) and B-11 (80%). Approximate average atomic mass?',
+   opts:['10.0','10.5','10.8','11.0'],ans:2,
+   hint:'(10 × 0.20) + (11 × 0.80) — convert percentages to decimals first.',
+   ex:{main:'(10 × 0.20) + (11 × 0.80) = 2.0 + 8.8 = 10.8 amu. The average leans toward 11 because B-11 is 80% abundant. This is why atomic masses on the periodic table are decimals — they\'re weighted averages of all natural isotopes.',tip:'Convert % to decimal (20% → 0.20). The result should lean toward the more abundant isotope.',mnemonic:'More abundant = bigger pull on the average. B-11 dominates (80%) → average near 10.8.'}},
+  {id:12,lv:2,q:'Which group most easily forms +2 ions?',
+   opts:['Group 1','Group 2','Group 17','Group 16'],ans:1,
+   hint:'+2 ions lose 2 electrons. Which group has exactly 2 valence electrons to give up?',
+   ex:{main:'Group 2A (alkaline earth metals: Mg, Ca, Sr, Ba) have 2 valence electrons. Losing both gives noble gas configuration and +2 charge. Group 1A loses 1 → +1. Group 17 gains 1 → −1. Group 16 gains 2 → −2. From class notes: \'Group 2A: alkaline earth metals → form a 2+ charge.\'',tip:'For main group metals: group A-number = valence electrons = electrons lost = ion charge.',mnemonic:'Group # = ion charge for Groups 1A and 2A. Group 2 → 2 electrons to lose → +2.'}},
+  {id:13,lv:2,q:'As you move DOWN a group on the periodic table, atomic radius...',
+   opts:['Decreases','Stays the same','Increases','Depends on the group'],ans:2,
+   hint:'More shells = bigger atom. What happens to the number of electron shells as you go down?',
+   ex:{main:'Atomic radius increases down a group because each new period adds an electron shell. More shells = larger atom. For example: Li < Na < K < Rb (all Group 1A). From the notes: \'Atomic radius increases down a group due to an increasing number of electron shells.\'',tip:'Periodic trend: down a group → more shells → bigger radius. Fr (bottom-left) has the largest radius.',mnemonic:'Going DOWN the group = going DOWN in size... wait, no! More shells = BIGGER. Down = Bigger radius.'}},
+  // LEVEL 3 — Hard
+  {id:14,lv:3,q:'An unknown ion has 18 electrons and a 2+ charge. How many protons?',
+   opts:['16','18','20','22'],ans:2,
+   hint:'Rearrange charge = P − E to solve for P. What is P = charge + E?',
+   ex:{main:'Charge = p⁺ − e⁻ → +2 = p⁺ − 18 → p⁺ = 20 = Calcium (Ca²⁺)! Ca loses 2 electrons to achieve the electron arrangement of argon (18e⁻ = noble gas). From the notes: \'Ca²⁺ → 20 − 2 = 18 electrons → same as Ar.\'',tip:'Rearrange: protons = charge + electrons. PCE formula works both ways.',mnemonic:'PCE flipped: Protons = Charge + Electrons. If charge = +2 and e⁻ = 18: P = 2 + 18 = 20 = Calcium!'}},
+  {id:15,lv:3,q:'Copper: Cu-63 (69.17%) and Cu-65 (30.83%). Average atomic mass?',
+   opts:['63.00','63.62','64.00','64.50'],ans:1,
+   hint:'Use precise masses: Cu-63 ≈ 62.93, Cu-65 ≈ 64.93. Multiply each by its decimal abundance.',
+   ex:{main:'(62.93 × 0.6917) + (64.93 × 0.3083) ≈ 43.52 + 20.02 ≈ 63.54 amu, closest to 63.62. The periodic table shows Cu as 63.546 amu. The result leans toward 63 because Cu-63 is ~70% abundant.',tip:'Use the precise isotope masses given — not round numbers. Exams often provide them.',mnemonic:'Cu-63 dominates (69%) → average stays near 63, not 64. Weighted toward the majority.'}},
+  {id:16,lv:3,q:'Which correctly compares Cl-35 and Cl-37?',
+   opts:['Same mass, different protons','Same protons, different electrons','Different protons, same neutrons','Same protons, different neutrons'],ans:3,
+   hint:'Both are chlorine — what must be identical? What does -35 vs -37 tell you?',
+   ex:{main:'Both are Cl (17 protons — same element). Cl-35 has 18 neutrons (MAN: 35 − 17); Cl-37 has 20 neutrons (37 − 17). Same protons, different neutrons = definition of isotopes. Their average mass ≈ 35.45 because Cl-35 is ~75% abundant.',tip:'Isotope ID: same atomic number = same element. Different mass number = different neutrons (via MAN).',mnemonic:'Cl-35 and Cl-37 are isotope twins: same proton family (17), different neutron weight.'}},
+  {id:17,lv:3,q:'An atom has 8 protons, 8 neutrons, and 10 electrons. What is it?',
+   opts:['Neutral oxygen','O⁺ cation','O²⁻ anion','Neon atom'],ans:2,
+   hint:'8 protons = what element? Then: charge = protons − electrons = ?',
+   ex:{main:'8 protons = Oxygen. Charge = 8 − 10 = −2 → O²⁻ (oxide anion). It appears in every metal oxide: MgO, Na₂O, CaO, Fe₂O₃. O²⁻ has 10 electrons — the same as neon. That noble gas configuration is the driving force behind all ion formation.',tip:'Step 1: identify element from protons. Step 2: calculate charge from P − E.',mnemonic:'O²⁻ is the most common anion in the Earth\'s crust. 8 protons, 10 electrons = −2 charge.'}},
+  {id:18,lv:3,q:'What is the charge of an ion with 15 protons and 18 electrons?',
+   opts:['+3','−3','+18','−15'],ans:1,
+   hint:'Charge = P − E. More electrons than protons = negative result.',
+   ex:{main:'Charge = 15 − 18 = −3 → P³⁻ (phosphide). Phosphorus is in Group 5A (5 valence electrons) and needs 3 more to reach 8 (octet rule). From class notes: \'Group 5A nonmetals (N, P) form a 3− charge → gain 3 ve⁻ to get a full valence shell.\'',tip:'Negative P − E = anion. P³⁻, N³⁻ (Group 5A) and O²⁻, S²⁻ (Group 6A) are key anions to know.',mnemonic:'Group 5A: 5 + 3 = 8 valence electrons needed → gains 3 → −3 charge. 18 − 15 = 3 gained.'}},
+  {id:19,lv:3,q:'As you move LEFT to RIGHT across Period 3, first ionization energy...',
+   opts:['Decreases','Stays the same','Increases','First decreases then increases'],ans:2,
+   hint:'Which family on the left gives up electrons easily? Which on the right resists losing electrons?',
+   ex:{main:'Ionization energy increases left to right across a period. Na (Group 1A, far left) loses 1e⁻ very easily. Cl (Group 7A) wants to GAIN electrons — lots of energy needed to remove one. Ar (Group 8A) has a full shell — maximum energy needed. From notes: \'1st ionization energy increases to the right across a period.\'',tip:'Left = metals that love to lose electrons (low ionization energy). Right = nonmetals that hate losing electrons (high ionization energy).',mnemonic:'Left to right: metals → nonmetals → noble gases. Ionization energy climbs because atoms increasingly resist losing electrons.'}},
+  {id:20,lv:3,q:'A neutral Ca atom (Z=20) loses 2 electrons to form Ca²⁺. How many electrons does Ca²⁺ have?',
+   opts:['22','20','18','16'],ans:2,
+   hint:'Start with neutral Ca\'s electron count. Then subtract what was lost.',
+   ex:{main:'Neutral Ca (Z=20) has 20 electrons. It loses 2 to form Ca²⁺: 20 − 2 = 18 electrons. 18 electrons = same as Argon (noble gas). This is WHY Ca forms 2+ — it achieves noble gas stability! From class notes: \'Ca2+ → 20−2=18 → same as Ar.\'',tip:'Every ion has the same number of electrons as its nearest noble gas. This is the driving force for ion formation.',mnemonic:'Ca²⁺ is isoelectronic with Ar (18e⁻). The octet rule at work — atoms form ions to get noble gas electron counts.'}},
+];
+
+const LEVELS_META=[
+  {xp:0,name:'Atom Explorer'},{xp:100,name:'Isotope Apprentice'},
+  {xp:250,name:'Ion Investigator'},{xp:450,name:'Electron Master'},
+  {xp:700,name:'Chem Wizard'},{xp:1000,name:'Science Champion'},
+];
+
+const BADGES_DEF=[
+  {id:'first_correct',icon:'🎯',name:'First Hit',desc:'Answer your very first question correctly.',unlocked:false,new:false},
+  {id:'perfect_quiz',icon:'💯',name:'Perfect Sprint',desc:'Score 100% on a Sprint Quiz — all 10 questions correct.',unlocked:false,new:false},
+  {id:'streak_5',icon:'🔥',name:'On Fire',desc:'Answer 5 questions in a row correctly without a mistake.',unlocked:false,new:false},
+  {id:'streak_10',icon:'🌋',name:'Unstoppable',desc:'Answer 10 questions in a row correctly — an incredible streak!',unlocked:false,new:false},
+  {id:'fc_complete',icon:'🃏',name:'Card Shark',desc:'Complete a full round of Flashcards from start to finish.',unlocked:false,new:false},
+  {id:'levels_complete',icon:'🏔️',name:'Summit',desc:'Pass all three levels (Easy, Medium, and Hard) in Levels mode.',unlocked:false,new:false},
+  {id:'qq_10',icon:'💚',name:'Survivor',desc:'Answer 10 questions correctly in Quick Questions mode.',unlocked:false,new:false},
+  {id:'xp_250',icon:'⚡',name:'Energy Surge',desc:'Earn a total of 250 XP across all activities.',unlocked:false,new:false},
+  {id:'xp_500',icon:'🌟',name:'Star Pupil',desc:'Earn a total of 500 XP — you\'re mastering this material!',unlocked:false,new:false},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────
+const S={
+  totalXP:0,bestStreak:0,masteredCards:0,lastMode:'fc',
+  studySeconds:0,// total seconds spent in app
+  mistakes:{},
+  timingLog:[],// [{qId,q,correct,ms,mode}]
+  quizSessions:[],// [{score,correct,total,pct,ts}]
+  haniUnlocked:false,
+  badges:BADGES_DEF.map(b=>({...b})),
+  fc:{deck:[],wrong:[],idx:0,mastered:0,phase:'main',flipped:false,sessionXP:0},
+  qz:{qs:[],retry:[],idx:0,score:0,streak:0,correct:0,total:0,timeLeft:30,tInt:null,answered:false,phase:'main',sessionXP:0,hintUsed:false,qStart:0},
+  lv:{curLv:1,unlocked:[1],passed:[],qs:[],wrong:[],mastered:new Set(),idx:0,phase:'main',streak:0,sessionXP:0,hintUsed:false},
+  qq:{qs:[],idx:0,hearts:3,score:0,correct:0,streak:0,sessionXP:0,hintUsed:false},
+};
+
+// ─── LOCALSTORAGE ─────────────────────────────────────────────────────────
+function saveProgress(){
+  try{
+    localStorage.setItem('sedona_asl_s1',JSON.stringify({
+      totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,
+      studySeconds:S.studySeconds,
+      mistakes:S.mistakes,timingLog:S.timingLog,quizSessions:S.quizSessions,
+      badges:S.badges.map(b=>({id:b.id,unlocked:b.unlocked,earnedAt:b.earnedAt}))
+    }));
+  }catch(e){}
+}
+function loadProgress(){
+  try{
+    const d=JSON.parse(localStorage.getItem('sedona_asl_s1')||'null');
+    if(!d)return;
+    S.totalXP=d.totalXP||0;S.bestStreak=d.bestStreak||0;S.masteredCards=d.masteredCards||0;
+    S.studySeconds=d.studySeconds||0;
+    S.mistakes=d.mistakes||{};S.timingLog=d.timingLog||[];S.quizSessions=d.quizSessions||[];
+    if(d.badges)d.badges.forEach(sb=>{const b=S.badges.find(b=>b.id===sb.id);if(b){b.unlocked=sb.unlocked;b.earnedAt=sb.earnedAt||null;}});
+  }catch(e){}
+}
+
+function exportProgress(){
+  const data=localStorage.getItem('sedona_asl_s1')||'{}';
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  const d=new Date();
+  a.download=`sedona-progress-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.click();URL.revokeObjectURL(a.href);
+}
+function importProgress(evt){
+  const file=evt.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      localStorage.setItem('sedona_asl_s1',JSON.stringify(d));
+      loadProgress();renderHome();renderHaniDash();
+      const msg=document.getElementById('import-msg');
+      msg.textContent='✅ Progress restored! XP: '+d.totalXP+', Streak: '+d.bestStreak;
+      msg.style.display='block';
+      setTimeout(()=>msg.style.display='none',4000);
+    }catch(err){
+      const msg=document.getElementById('import-msg');
+      msg.textContent='❌ Invalid file — could not import.';
+      msg.style.color='#991b1b';msg.style.display='block';
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value='';// reset so same file can be re-imported
+}
+
+// ─── PERIODIC TABLE ───────────────────────────────────────────────────────
+function buildPeriodicTable(){
+  const grid=document.getElementById('pt-grid');
+  const placed={};
+  ELEMENTS_DATA.forEach(el=>{placed[`${el[5]},${el[4]}`]=el;});
+  for(let p=1;p<=4;p++){
+    for(let g=1;g<=18;g++){
+      const el=placed[`${p},${g}`];
+      const div=document.createElement('div');
+      if(!el){div.className='el gap';}
+      else{
+        div.className='el '+el[6];
+        div.innerHTML=`<span class="el-num">${el[0]}</span><span class="el-sym">${el[1]}</span>`;
+        div.onclick=()=>showElementDetail(el);
+        if(el[0]<=20)div.style.fontWeight='900';
+        else div.style.opacity='0.7';
+      }
+      div.style.gridColumn=g;div.style.gridRow=p;
+      grid.appendChild(div);
+    }
+  }
+}
+function showElementDetail(el){
+  document.querySelectorAll('.el.selected').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.el').forEach(div=>{
+    const num=div.querySelector('.el-num');
+    if(num&&num.textContent===String(el[0]))div.classList.add('selected');
+  });
+  const det=document.getElementById('el-detail');
+  const ve=el[7]!==null?el[7]:'—';
+  const ion=el[8]||'—';
+  const note=el[9]||'Details not required for this class level.';
+  const typeLabel={alkali:'Alkali Metal',alkaline:'Alkaline Earth Metal',transition:'Transition Metal',metalloid:'Metalloid',nonmetal:'Nonmetal',halogen:'Halogen',noble:'Noble Gas',metal:'Metal',unknown:'Unknown'}[el[6]]||el[6];
+  const typeColor={alkali:'#fca5a5',alkaline:'#fdba74',transition:'#fde68a',metalloid:'#6ee7b7',nonmetal:'#93c5fd',halogen:'#a5f3fc',noble:'#c4b5fd',metal:'#d1d5db'}[el[6]]||'#e5e7eb';
+  det.style.display='block';
+  det.innerHTML=`
+    <div class="el-detail-header">
+      <div class="el-big-sym">${el[1]}</div>
+      <div class="el-detail-info">
+        <div class="el-detail-name">${el[2]}</div>
+        <div class="el-detail-num">Atomic #: ${el[0]} · <span style="background:${typeColor};padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;">${typeLabel}</span></div>
+      </div>
+    </div>
+    <div class="el-detail-grid">
+      <div class="el-detail-row"><div class="el-detail-label">Atomic Mass</div><div class="el-detail-value">${el[3]} amu</div></div>
+      <div class="el-detail-row"><div class="el-detail-label">Period / Group</div><div class="el-detail-value">${el[5]} / ${el[4]}</div></div>
+      <div class="el-detail-row"><div class="el-detail-label">Valence e⁻</div><div class="el-detail-value">${ve}</div></div>
+      <div class="el-detail-row"><div class="el-detail-label">Common Ion</div><div class="el-detail-value">${ion}</div></div>
+    </div>
+    <div class="el-detail-note">${note}</div>
+  `;
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ─── SESSION SUMMARY ──────────────────────────────────────────────────────
+let _snapXP=0,_snapQs=0,_snapBadges=0,_snapMastered=0,_lastCompletedMode=null;
+function takeSnapshot(){
+  _snapXP=S.totalXP;_snapQs=S.timingLog.length;
+  _snapBadges=S.badges.filter(b=>b.unlocked).length;
+  _snapMastered=S.masteredCards;
+}
+function markActivityComplete(mode){_lastCompletedMode=mode;}
+function maybeShowSummary(){
+  const xpDelta=S.totalXP-_snapXP;
+  const qDelta=S.timingLog.length-_snapQs;
+  const badgeDelta=S.badges.filter(b=>b.unlocked).length-_snapBadges;
+  const masteredDelta=S.masteredCards-_snapMastered;
+  if(!_lastCompletedMode||qDelta<1)return;
+  const newBadges=S.badges.filter(b=>b.unlocked&&b.earnedAt&&Date.now()-b.earnedAt<60000);
+  const weak=Object.entries(S.mistakes).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,3)
+    .map(([id])=>{const q=QS.find(q=>q.id===+id);return q?q.q.slice(0,60)+'…':null;}).filter(Boolean);
+  const modal=document.getElementById('summary-modal');
+  document.getElementById('sum-xp').textContent='+'+xpDelta+' XP';
+  document.getElementById('sum-qs').textContent=qDelta+' questions';
+  document.getElementById('sum-mastered').textContent=masteredDelta>0?masteredDelta+' cards mastered':'—';
+  document.getElementById('sum-badges').innerHTML=newBadges.length
+    ?newBadges.map(b=>`${b.icon} ${b.name}`).join(' · ')
+    :'No new badges this round';
+  document.getElementById('sum-weak').innerHTML=weak.length
+    ?'<ul style="margin:0;padding-left:16px;">'+weak.map(w=>`<li>${w}</li>`).join('')+'</ul>'
+    :'<span style="color:#166534;">Nothing — great work!</span>';
+  modal.style.display='block';
+  _lastCompletedMode=null;takeSnapshot();
+}
+
+// ─── NAV ──────────────────────────────────────────────────────────────────
+function go(mode){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  if(mode==='home'){document.getElementById('s-home').classList.add('active');renderHome();maybeShowSummary();return;}
+  if(mode==='pt'){document.getElementById('s-pt').classList.add('active');return;}
+  if(mode==='fc'){document.getElementById('s-fc-screen').classList.add('active');startFC();return;}
+  if(mode==='qz'){document.getElementById('s-qz-screen').classList.add('active');startQuiz();return;}
+  if(mode==='lv'){document.getElementById('s-lv-screen').classList.add('active');startLevels();return;}
+  if(mode==='qq'){document.getElementById('s-qq-screen').classList.add('active');startQQ();return;}
+  if(mode==='res'){document.getElementById('s-res-screen').classList.add('active');return;}
+  if(mode==='hani'){document.getElementById('s-hani').classList.add('active');if(!S.haniUnlocked){showHaniLock();}else{renderHaniDash();}return;}
+  if(mode==='res-screen'){document.getElementById('s-res').classList.add('active');return;}
+  if(mode==='res'){document.getElementById('s-res-screen').classList.add('active');return;}
+}
+
+// ─── HOME ─────────────────────────────────────────────────────────────────
+function renderHome(){
+  updateXPBar();
+  const totalAnswered=S.timingLog.length;
+  document.getElementById('h-answered').textContent=totalAnswered;
+  document.getElementById('h-streak').textContent=S.bestStreak;
+  document.getElementById('h-mastered').textContent=S.masteredCards;
+  document.getElementById('h-badges').textContent=S.badges.filter(b=>b.unlocked).length;
+  renderGrowthZone();renderBadges();
+}
+function renderGrowthZone(){
+  const list=document.getElementById('gz-list'),ctr=document.getElementById('gz-count');
+  const entries=Object.entries(S.mistakes).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){list.innerHTML='<div class="gz-empty">No misses yet — keep it going! 🎯</div>';ctr.textContent='';return;}
+  ctr.textContent=entries.length;
+  list.innerHTML=entries.slice(0,6).map(([id,count])=>{
+    const q=QS.find(q=>q.id===+id);
+    if(!q)return '';
+    const ansText=q.opts[q.ans];
+    const tip=q.ex&&q.ex.mnemonic?q.ex.mnemonic:'';
+    return `<div class="gz-item" id="gz-item-${id}" onclick="toggleGZ(event,this)">
+      <div class="gz-q">${q.q}</div>
+      <div class="gz-count">📈 Missed ${count} time${count>1?'s':''} · tap to review</div>
+      <div class="gz-answer">
+        <strong style="color:#0f766e;">✓ Answer:</strong> ${ansText}<br>
+        <span style="color:#374151;font-size:12px;margin-top:6px;display:block;">${q.ex&&q.ex.main?q.ex.main.slice(0,180)+'…':''}</span>
+        ${tip?`<span style="color:#0f766e;font-weight:700;font-size:11px;display:block;margin-top:8px;">💡 ${tip}</span>`:''}
+        <button onclick="markUnderstood(event,${id})" style="margin-top:12px;width:100%;padding:10px;background:#dcfce7;color:#166534;border:2px solid #86efac;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">✅ I understand this now! (+15 XP)</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleGZ(e,el){
+  if(e.target.tagName==='BUTTON')return;
+  el.classList.toggle('open');
+}
+function markUnderstood(e,id){
+  e.stopPropagation();
+  S.mistakes[id]=0;
+  addXP(15,'h-xp-amt');
+  saveProgress();
+  renderGrowthZone();
+  renderHome();
+  showBadgeToast({icon:'✅',name:'Growth Zone cleared! +15 XP'});
+}
+function renderBadges(){
+  document.getElementById('badge-grid').innerHTML=S.badges.map((b,i)=>`
+    <div class="badge-item${b.unlocked?'':' locked'}" onclick="toggleBadgeInfo(${i})" style="cursor:pointer;">
+      ${b.new?'<div class="badge-new">NEW</div>':''}
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-info" id="badge-info-${i}" style="display:none;margin-top:6px;font-size:10px;color:var(--gray-500);line-height:1.5;text-align:left;border-top:1px solid var(--gray-200);padding-top:6px;">${b.unlocked?`✅ <strong style="color:#166534;">Earned!</strong><br>${b.desc}${b.earnedAt?`<br><span style="color:#6d28d9;font-weight:600;">🕐 ${new Date(b.earnedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}, ${new Date(b.earnedAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</span>`:''}` : '🔒 <em>'+b.desc+'</em>'}</div>
+    </div>`).join('');
+  S.badges.forEach(b=>b.new=false);
+}
+function toggleBadgeInfo(i){
+  const el=document.getElementById('badge-info-'+i);
+  if(el)el.style.display=el.style.display==='none'?'block':'none';
+}
+function checkBadge(id){
+  if(!id)return;
+  const b=S.badges.find(b=>b.id===id);
+  if(b&&!b.unlocked){b.unlocked=true;b.new=true;b.earnedAt=Date.now();showBadgeToast(b);saveProgress();}
+}
+function showBadgeToast(b){
+  const t=document.getElementById('badge-toast');
+  t.textContent=`🏅 Badge: ${b.icon} ${b.name}!`;
+  t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3000);
+}
+
+// ─── XP ───────────────────────────────────────────────────────────────────
+function getLvInfo(){
+  let lv=0;
+  for(let i=0;i<LEVELS_META.length;i++)if(S.totalXP>=LEVELS_META[i].xp)lv=i;
+  const cur=LEVELS_META[lv],next=LEVELS_META[lv+1];
+  const pct=next?Math.min(100,Math.round((S.totalXP-cur.xp)/(next.xp-cur.xp)*100)):100;
+  return{lv,name:cur.name,pct,next};
+}
+function addXP(n,badgeEl){
+  S.totalXP+=n;
+  if(S.totalXP>=250)checkBadge('xp_250');
+  if(S.totalXP>=500)checkBadge('xp_500');
+  updateXPBar();saveProgress();
+  if(badgeEl){const el=document.getElementById(badgeEl);if(el)el.textContent='+'+S.totalXP+' XP';}
+}
+function updateXPBar(){
+  const i=getLvInfo();
+  document.getElementById('h-lv-num').textContent='Lv '+(i.lv+1);
+  document.getElementById('h-lv-name').textContent=i.name;
+  document.getElementById('h-xp-amt').textContent=S.totalXP+' XP';
+  document.getElementById('h-xp-fill').style.width=i.pct+'%';
+  const nextEl=document.getElementById('h-xp-next');
+  if(nextEl)nextEl.textContent=i.next?`Next: ${i.next.name} at ${i.next.xp} XP`:'🏆 Max level reached!';
+}
+function showStreak(n){
+  if(n<3)return;
+  const p=document.getElementById('streak-pop');
+  p.textContent=n>=10?'🌋 '+n+' Streak!!!':n>=5?'🔥 '+n+' Streak!':'🔥 '+n+' in a row!';
+  p.classList.add('on');setTimeout(()=>p.classList.remove('on'),1500);
+  if(n>=5)checkBadge('streak_5');if(n>=10)checkBadge('streak_10');
+}
+function launchConfetti(count){
+  count=count||60;
+  const colors=['#7c3aed','#a78bfa','#16a34a','#fbbf24','#f59e0b','#dc2626','#0d9488'];
+  for(let i=0;i<count;i++){
+    const c=document.createElement('div');c.className='confetti-piece';
+    c.style.cssText=`left:${Math.random()*100}vw;top:0;width:${8+Math.random()*8}px;height:${8+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.8}s;`;
+    document.body.appendChild(c);setTimeout(()=>c.remove(),4000);
+  }
+}
+function useHint(mode){
+  const m=S[mode];
+  const deck=mode==='qz'?(m.phase==='main'?m.qs:m.retry):mode==='lv'?(m.phase==='main'?m.qs:m.wrong):m.qs;
+  const item=deck[m.idx];
+  if(!item||m.hintUsed)return;
+  if(S.totalXP<20){showBadgeToast({icon:'⚠️',name:'Need 20 XP for a hint!'});return;}
+  S.totalXP=Math.max(0,S.totalXP-5);m.hintUsed=true;updateXPBar();saveProgress();
+  document.getElementById(mode+'-hint-box').textContent='💡 '+item.hint;
+  document.getElementById(mode+'-hint-box').classList.add('on');
+  document.getElementById(mode+'-hint-btn').disabled=true;
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+function buildOpts(cid,opts,handler){
+  const letters=['A','B','C','D'];
+  document.getElementById(cid).innerHTML=opts.map((o,i)=>
+    `<div class="opt" onclick="${handler}(${i})" id="${cid}-opt-${i}"><span class="opt-letter">${letters[i]}</span>${o}</div>`
+  ).join('');
+}
+function revealOpts(cid,sel,ans){
+  [0,1,2,3].forEach(i=>{
+    const el=document.getElementById(cid+'-opt-'+i);if(!el)return;
+    el.onclick=null;
+    if(i===ans)el.classList.add(sel===ans?'correct':'show-right');
+    else if(i===sel)el.classList.add('wrong');
+  });
+}
+function showExp(id,ok,ex){
+  const el=document.getElementById(id);
+  el.innerHTML=`
+    <div class="exp-title">${ok?'✅ Correct!':'❌ Not quite — here\'s why:'}</div>
+    <div class="exp-main">${ex.main}</div>
+    ${ex.tip?`<div class="exp-tip"><strong>📌 Exam Tip</strong>${ex.tip}</div>`:''}
+    ${ex.mnemonic?`<div class="exp-mnemonic"><strong>🧠 Memory Hook</strong>${ex.mnemonic}</div>`:''}
+  `;
+  el.classList.add('on');
+}
+function flash(sid,ok){
+  const el=document.getElementById(sid);
+  el.className='flash-overlay '+(ok===null?'fa':ok?'fl':'fr');
+  setTimeout(()=>el.className='flash-overlay',650);
+}
+function trackMistake(qId,mode,ms,correct){
+  S.mistakes[qId]=(S.mistakes[qId]||0)+(correct?0:1);
+  // log timing
+  const q=QS.find(q=>q.id===qId);
+  if(q&&ms){
+    S.timingLog.push({qId,q:q.q,correct,ms,mode,ts:Date.now()});
+    // keep last 200 entries
+    if(S.timingLog.length>200)S.timingLog=S.timingLog.slice(-200);
+  }
+  saveProgress();
+}
+
+// ─── FLASHCARDS ───────────────────────────────────────────────────────────
+function startFC(){
+  const f=S.fc;
+  f.deck=shuffle(CARDS);f.wrong=[];f.idx=0;f.mastered=0;f.phase='main';f.flipped=false;f.sessionXP=0;
+  renderFC();
+}
+function renderFC(){
+  const f=S.fc;
+  const deck=f.phase==='main'?f.deck:f.wrong;
+  if(f.idx>=deck.length){
+    if(f.phase==='main'&&f.wrong.length){f.phase='retry';f.idx=0;f.wrong=shuffle(f.wrong);renderFC();return;}
+    S.masteredCards=Math.max(S.masteredCards,f.mastered);saveProgress();
+    checkBadge('fc_complete');showRes('fc',f.mastered,CARDS.length,f.sessionXP);return;
+  }
+  const card=deck[f.idx];
+  document.getElementById('fc-bar-fill').style.width=Math.round(f.idx/deck.length*100)+'%';
+  document.getElementById('fc-bar-txt').textContent=f.idx+'/'+deck.length;
+  document.getElementById('fc-status').textContent=f.phase==='retry'?'🔁 Reviewing missed cards':'';
+  document.getElementById('fc-term').textContent=card.term;
+  // Equation display
+  const eqFront=document.getElementById('fc-eq');
+  const eqBack=document.getElementById('fc-eq-back');
+  // Equation only on the back — showing it on the front gives away the answer
+  eqFront.style.display='none';
+  if(card.eq){eqBack.textContent=card.eq;eqBack.style.display='block';}
+  else{eqBack.style.display='none';}
+  document.getElementById('fc-def').textContent=card.def;
+  document.getElementById('flip-card').classList.remove('flipped');
+  f.flipped=false;
+  document.getElementById('fc-ans-area').style.display='none';
+  document.getElementById('fc-xp-badge').textContent='+'+f.sessionXP+' XP';
+}
+function flipCard(){
+  const f=S.fc;
+  f.flipped=!f.flipped;
+  document.getElementById('flip-card').classList.toggle('flipped',f.flipped);
+  document.getElementById('fc-ans-area').style.display=f.flipped?'block':'none';
+}
+function answerFC(level){
+  const f=S.fc;
+  const deck=f.phase==='main'?f.deck:f.wrong;
+  const card=deck[f.idx];
+  if(level==='yes'){
+    f.mastered++;f.idx++;f.sessionXP+=10;addXP(10,'fc-xp-badge');
+    flash('s-fc',true);checkBadge('first_correct');
+  } else if(level==='almost'){
+    // Re-queue near the end, no XP, no wrong list
+    deck.splice(f.idx,1);
+    const insertAt=Math.min(f.idx+3,deck.length);
+    deck.splice(insertAt,0,card);
+    flash('s-fc',null);// neutral flash
+  } else {
+    if(f.phase==='main')f.wrong.push(card);f.idx++;flash('s-fc',false);
+  }
+  renderFC();
+}
+function skipFC(){
+  // Move current card to end of deck so it comes back, no XP change
+  const f=S.fc;
+  const deck=f.phase==='main'?f.deck:f.wrong;
+  const card=deck.splice(f.idx,1)[0];
+  deck.push(card);
+  renderFC();
+}
+
+// ─── SPRINT QUIZ (30s, timer shows last 15s) ─────────────────────────────
+const QZ_COUNT=10; // questions per sprint
+function startQuiz(){
+  const q=S.qz;
+  q.qs=shuffle(QS).slice(0,QZ_COUNT);q.idx=0;q.score=0;q.streak=0;q.correct=0;q.total=0;
+  q.answered=false;q.sessionXP=0;q.hintUsed=false;
+  stopQuiz();renderQ();
+}
+function stopQuiz(){clearInterval(S.qz.tInt);}
+function renderQ(){
+  const q=S.qz;
+  if(q.idx>=q.qs.length){
+    stopQuiz();if(q.total&&Math.round(q.correct/q.total*100)===100)checkBadge('perfect_quiz');
+    showRes('qz',q.correct,q.total,q.sessionXP);return;
+  }
+  q.hintUsed=false;const item=q.qs[q.idx];
+  q.qStart=Date.now();
+  document.getElementById('qz-q-label').textContent='QUESTION '+(q.idx+1)+' / '+QZ_COUNT;
+  document.getElementById('qz-q-text').textContent=item.q;
+  buildOpts('qz-opts',item.opts,'handleQA');
+  document.getElementById('qz-exp').className='exp-box';
+  document.getElementById('qz-exp').innerHTML='';
+  document.getElementById('qz-next').className='next-btn';
+  document.getElementById('qz-hint-box').className='hint-box';
+  document.getElementById('qz-hint-btn').disabled=false;
+  // Timer bar: hidden until last 15s
+  const bar=document.getElementById('qz-timer-bar');
+  bar.className='timer-bar timer-hidden';
+  q.answered=false;
+  const skipBtn=document.getElementById('qz-skip');
+  if(skipBtn)skipBtn.style.display='inline-block';
+  startTimer();
+}
+function startTimer(){
+  const q=S.qz;q.timeLeft=30;
+  const fill=document.getElementById('qz-timer');
+  const bar=document.getElementById('qz-timer-bar');
+  fill.style.width='100%';fill.className='timer-fill';
+  clearInterval(q.tInt);
+  q.tInt=setInterval(()=>{
+    q.timeLeft--;
+    // Only show timer bar in last 15 seconds
+    if(q.timeLeft<=15){
+      bar.className='timer-bar timer-visible';
+      fill.style.width=Math.round(q.timeLeft/15*100)+'%';
+      if(q.timeLeft<=5)fill.className='timer-fill danger';
+      else if(q.timeLeft<=8)fill.className='timer-fill warn';
+    }
+    if(q.timeLeft<=0){clearInterval(q.tInt);if(!q.answered)handleQA(-1);}
+  },1000);
+}
+function handleQA(sel){
+  const q=S.qz;if(q.answered)return;q.answered=true;stopQuiz();
+  const ms=Date.now()-q.qStart;
+  const item=q.qs[q.idx];const ok=sel===item.ans;
+  q.total++;
+  if(ok){
+    q.score+=10+(q.streak*2);q.streak++;q.correct++;
+    q.sessionXP+=15;addXP(15,'qz-xp-badge');
+    showStreak(q.streak);S.bestStreak=Math.max(S.bestStreak,q.streak);
+    flash('s-qz',true);checkBadge('first_correct');
+  } else {
+    q.streak=0;flash('s-qz',false);
+  }
+  trackMistake(item.id,'qz',ms,ok);
+  document.getElementById('qz-score').textContent=q.score;
+  document.getElementById('qz-streak').textContent=q.streak+' ⚡';
+  document.getElementById('qz-correct').textContent=q.correct+'/'+q.total;
+  revealOpts('qz-opts',sel,item.ans);showExp('qz-exp',ok,item.ex);
+  const isLast=q.idx===QZ_COUNT-1;
+  document.getElementById('qz-next').textContent=isLast?'See Results →':'Next →';
+  document.getElementById('qz-next').classList.add('on');
+  const skipBtn=document.getElementById('qz-skip');
+  if(skipBtn)skipBtn.style.display='none';
+}
+function nextQuiz(){S.qz.idx++;S.qz.hintUsed=false;renderQ();}
+function skipQuiz(){
+  // Skip = counts as unanswered (no score, no mistake log), moves to next
+  const q=S.qz;
+  if(q.answered)return;
+  stopQuiz();
+  q.idx++;
+  renderQ();
+}
+
+// ─── LEVELS ───────────────────────────────────────────────────────────────
+function startLevels(){
+  const l=S.lv;l.curLv=1;l.unlocked=[1];l.passed=[];l.sessionXP=0;l.streak=0;loadLv(1);updateLvTabs();
+}
+function loadLv(lv){
+  const l=S.lv;l.curLv=lv;l.qs=shuffle(QS.filter(q=>q.lv===lv));
+  l.wrong=[];l.mastered=new Set();l.idx=0;l.phase='main';l.hintUsed=false;renderLvQ();
+}
+function switchLv(n){if(S.lv.unlocked.includes(n))loadLv(n);}
+function updateLvTabs(){
+  const l=S.lv;[1,2,3].forEach(n=>{
+    const t=document.getElementById('lv-tab-'+n);t.className='lv-tab';
+    if(l.passed.includes(n))t.classList.add('passed');
+    else if(l.unlocked.includes(n))t.classList.add(n===l.curLv?'active':'');
+    else t.classList.add('locked');
+  });
+}
+function renderLvQ(){
+  const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;
+  if(l.idx>=deck.length){
+    if(l.phase==='main'&&l.wrong.length){l.phase='retry';l.idx=0;renderLvQ();return;}
+    if(!l.passed.includes(l.curLv))l.passed.push(l.curLv);
+    l.sessionXP+=50;addXP(50,'lv-xp-badge');launchConfetti(40);
+    if(l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
+    updateLvTabs();
+    if(l.passed.length===3){checkBadge('levels_complete');launchConfetti(80);}
+    document.getElementById('lv-next').textContent=l.curLv<3?'🎉 Passed! Unlock Next Level ↗':'🏆 All Levels Complete!';
+    document.getElementById('lv-next').classList.add('on');
+    document.getElementById('lv-q-text').textContent='Level '+(l.curLv<3?l.curLv+' complete! Next level unlocked.':'3 complete!');
+    document.getElementById('lv-opts').innerHTML='';return;
+  }
+  l.hintUsed=false;const item=deck[l.idx];
+  const pct=Math.round(l.mastered.size/5*100);
+  document.getElementById('lv-prog-txt').textContent=l.mastered.size+'/5 mastered';
+  document.getElementById('lv-prog-pct').textContent=pct+'%';
+  document.getElementById('lv-bar-fill').style.width=pct+'%';
+  document.getElementById('lv-q-label').textContent='LEVEL '+l.curLv+' · Q'+(l.idx+1);
+  document.getElementById('lv-q-text').textContent=item.q;
+  buildOpts('lv-opts',item.opts,'handleLvA');
+  document.getElementById('lv-exp').className='exp-box';document.getElementById('lv-exp').innerHTML='';
+  document.getElementById('lv-next').className='next-btn';
+  document.getElementById('lv-hint-box').className='hint-box';document.getElementById('lv-hint-btn').disabled=false;
+}
+function handleLvA(sel){
+  const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;const item=deck[l.idx];const ok=sel===item.ans;
+  if(ok){
+    l.mastered.add(item.id);l.sessionXP+=20;addXP(20,'lv-xp-badge');
+    l.streak++;showStreak(l.streak);S.bestStreak=Math.max(S.bestStreak,l.streak);
+    flash('s-lv',true);checkBadge('first_correct');
+    if(l.phase==='main')l.idx++;else l.wrong.splice(l.idx,1);
+  } else {
+    l.streak=0;
+    if(l.phase==='main'){l.wrong.push(item);l.idx++;}
+    else{const w=l.wrong.splice(l.idx,1)[0];l.wrong.push(w);}
+    trackMistake(item.id,'lv',null,false);flash('s-lv',false);
+  }
+  revealOpts('lv-opts',sel,item.ans);showExp('lv-exp',ok,item.ex);
+  document.getElementById('lv-next').classList.add('on');
+}
+function nextLv(){
+  const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;
+  if(l.idx>=deck.length){if(l.curLv<3&&l.unlocked.includes(l.curLv+1))loadLv(l.curLv+1);else go('home');return;}
+  renderLvQ();
+}
+
+// ─── QUICK QUESTIONS (Survival) ───────────────────────────────────────────
+function startQQ(){
+  const qq=S.qq;qq.qs=shuffle(QS);qq.idx=0;qq.hearts=3;qq.score=0;qq.correct=0;qq.streak=0;qq.sessionXP=0;qq.hintUsed=false;
+  updQQHearts();document.getElementById('qq-score').textContent=0;renderQQ();
+}
+function updQQHearts(){
+  const h=S.qq.hearts;
+  document.getElementById('qq-hearts').textContent=h<=0?'💔':['','❤️','❤️❤️','❤️❤️❤️'][h]||'❤️❤️❤️';
+}
+function renderQQ(){
+  const qq=S.qq;
+  if(qq.idx>=qq.qs.length||qq.hearts<=0){if(qq.correct>=10)checkBadge('qq_10');showRes('qq',qq.correct,qq.idx,qq.sessionXP);return;}
+  qq.hintUsed=false;const item=qq.qs[qq.idx];
+  document.getElementById('qq-q-label').textContent='SURVIVAL · Q'+(qq.idx+1);
+  document.getElementById('qq-q-text').textContent=item.q;
+  buildOpts('qq-opts',item.opts,'handleQQA');
+  document.getElementById('qq-exp').className='exp-box';document.getElementById('qq-exp').innerHTML='';
+  document.getElementById('qq-next').className='next-btn';
+  document.getElementById('qq-hint-box').className='hint-box';document.getElementById('qq-hint-btn').disabled=false;
+}
+function handleQQA(sel){
+  const qq=S.qq;const item=qq.qs[qq.idx];const ok=sel===item.ans;
+  if(ok){
+    qq.score+=10;qq.correct++;qq.streak++;
+    document.getElementById('qq-score').textContent=qq.score;
+    qq.sessionXP+=25;addXP(25,'qq-xp-badge');
+    showStreak(qq.streak);S.bestStreak=Math.max(S.bestStreak,qq.streak);
+    flash('s-qq',true);checkBadge('first_correct');
+  } else {
+    qq.streak=0;qq.hearts--;updQQHearts();
+    const h=document.getElementById('qq-hearts');h.classList.add('shake');setTimeout(()=>h.classList.remove('shake'),350);
+    trackMistake(item.id,'qq',null,false);flash('s-qq',false);
+  }
+  revealOpts('qq-opts',sel,item.ans);showExp('qq-exp',ok,item.ex);
+  if(qq.hearts<=0)document.getElementById('qq-next').textContent='💔 Game Over — See Results';
+  document.getElementById('qq-next').classList.add('on');
+}
+function nextQQ(){S.qq.idx++;if(S.qq.hearts<=0){showRes('qq',S.qq.correct,S.qq.idx,S.qq.sessionXP);return;}renderQQ();}
+
+// ─── RESULTS ─────────────────────────────────────────────────────────────
+const RANK_REWARDS=[
+  'Starting point — dive in!',
+  '🔓 Unlock: Reverse Flashcards (definition → term)',
+  '🔓 Unlock: Boss Quiz — 15 harder questions',
+  '🔓 Unlock: Lab at Night dark theme',
+  '🔓 Unlock: 1.5× XP multiplier on all answers',
+  '🏆 Unlock: Science Champion title + a note from Hani',
+];
+function showRankMap(){
+  const curLv=getLvInfo().lv;
+  const body=document.getElementById('rank-map-body');
+  const icons=['⚗️','🔬','⚡','🧬','🌋','🏆'];
+  const colors=['#7c3aed','#2563eb','#0d9488','#d97706','#dc2626','#4c1d95'];
+  body.innerHTML=LEVELS_META.map((lv,i)=>{
+    const next=LEVELS_META[i+1];
+    const isCurrent=i===curLv;
+    const isDone=i<curLv;
+    const isLocked=i>curLv;
+    const xpRange=next?`${lv.xp}–${next.xp-1} XP`:`${lv.xp}+ XP`;
+    const progressPct=isCurrent&&next?Math.min(100,Math.round((S.totalXP-lv.xp)/(next.xp-lv.xp)*100)):isDone?100:0;
+    return `<div style="display:flex;gap:12px;margin-bottom:${i<LEVELS_META.length-1?'0':'0'};">
+      <!-- Timeline spine -->
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+        <div style="width:36px;height:36px;border-radius:50%;background:${isDone?colors[i]:isCurrent?colors[i]:'#e5e7eb'};display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid ${isDone||isCurrent?colors[i]:'#d1d5db'};box-shadow:${isCurrent?'0 0 0 4px '+colors[i]+'33':''}">${isDone?'✓':isLocked?'🔒':icons[i]}</div>
+        ${i<LEVELS_META.length-1?`<div style="width:2px;flex:1;min-height:24px;background:${isDone?colors[i]:'#e5e7eb'};margin:2px 0;"></div>`:''}
+      </div>
+      <!-- Content -->
+      <div style="flex:1;padding-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-weight:800;font-size:14px;color:${isLocked?'#9ca3af':colors[i]};">Lv ${i+1} · ${lv.name}</span>
+          ${isCurrent?'<span style="background:'+colors[i]+';color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;">YOU ARE HERE</span>':''}
+          ${isDone?'<span style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;">✓ Completed</span>':''}
+        </div>
+        <div style="font-size:11px;color:#9ca3af;margin:1px 0 4px;">${xpRange}</div>
+        ${isCurrent?`<div style="background:#f3f4f6;border-radius:6px;height:5px;margin-bottom:5px;overflow:hidden;"><div style="height:100%;background:${colors[i]};width:${progressPct}%;border-radius:6px;transition:width .4s;"></div></div>
+        <div style="font-size:10px;color:${colors[i]};font-weight:600;margin-bottom:4px;">${progressPct}% · ${next?next.xp-S.totalXP+' XP to next rank':''}</div>`:''}
+        <div style="font-size:12px;color:${isLocked?'#9ca3af':'#374151'};line-height:1.4;">${RANK_REWARDS[i]}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('rank-modal').style.display='block';
+}
+function showLessonSummary(){
+  document.getElementById('lesson-modal').style.display='block';
+}
+function showRes(mode,correct,total,xpRaw){
+  const pct=total?Math.round(correct/total*100):0;
+  const trophy=pct===100?'🏆':pct>=80?'🥇':pct>=60?'🥈':'🥉';
+  const titles={fc:'Flashcard Round Done!',qz:'Sprint Quiz Complete!',lv:'Level Complete!',qq:'Quick Questions Done!'};
+  document.getElementById('r-trophy').textContent=trophy;
+  document.getElementById('r-title').textContent=titles[mode]||'Done!';
+  document.getElementById('r-sub').textContent=pct===100?'Flawless! Every question — you nailed it! 🎯':pct>=80?'Excellent work, Sedona! 💪':pct>=60?'Good effort — check the Growth Zone for weak spots.':'Keep going — review and try again!';
+  document.getElementById('r-correct').textContent=correct+'/'+total;
+  document.getElementById('r-pct').textContent=pct+'%';
+  document.getElementById('r-streak').textContent=S.bestStreak;
+  document.getElementById('r-xp-earned').textContent='+'+xpRaw;
+  const info=getLvInfo();
+  document.getElementById('r-xp-bar').textContent='⚡ Total: '+S.totalXP+' XP — '+info.name;
+  if(pct===100){launchConfetti(80);checkBadge('perfect_quiz');}
+  // Log Sprint Quiz sessions
+  if(mode==='qz'&&total>0){
+    S.quizSessions.push({score:S.qz.score,correct,total,pct,ts:Date.now()});
+    if(S.quizSessions.length>20)S.quizSessions=S.quizSessions.slice(-20);
+    saveProgress();
+  }
+  // Show retake button only for Sprint Quiz
+  const retakeBtn=document.getElementById('r-retake');
+  if(retakeBtn)retakeBtn.style.display=mode==='qz'?'block':'none';
+  S.lastMode=mode;markActivityComplete(mode);go('res');
+}
+function playAgain(){go(S.lastMode);}
+function retakeSprint(){
+  // Fresh random 10 — guaranteed different order, likely different questions
+  go('qz');
+}
+
+// ─── HANI'S HANGOUT ───────────────────────────────────────────────────────
+function showHaniLock(){
+  document.getElementById('hani-lock-view').style.display='flex';
+  document.getElementById('hani-dash').style.display='none';
+  document.getElementById('hani-input').value='';
+  document.getElementById('hani-err').textContent='';
+}
+function tryUnlock(){
+  const val=document.getElementById('hani-input').value.trim().toLowerCase();
+  if(val==='jazzclub'){
+    S.haniUnlocked=true;
+    document.getElementById('hani-lock-view').style.display='none';
+    renderHaniDash();
+  } else {
+    document.getElementById('hani-err').textContent='Incorrect passcode. Try again.';
+    document.getElementById('hani-input').value='';
+  }
+}
+function renderHaniDash(){
+  const dash=document.getElementById('hani-dash');
+  dash.style.display='block';
+
+  // Compute stats
+  const totalQ=QS.length;
+  const mistakeEntries=Object.entries(S.mistakes);
+  const totalMisses=mistakeEntries.reduce((s,[,c])=>s+c,0);
+  const log=S.timingLog;
+  const sprintLog=log.filter(e=>e.mode==='qz');
+
+  // Accuracy by question
+  const qStats=QS.map(q=>{
+    const misses=S.mistakes[q.id]||0;
+    const attempts=sprintLog.filter(e=>e.qId===q.id);
+    const corrects=attempts.filter(e=>e.correct).length;
+    const avgMs=attempts.length?Math.round(attempts.reduce((s,e)=>s+e.ms,0)/attempts.length):null;
+    return{q,misses,attempts:attempts.length,corrects,avgMs};
+  }).sort((a,b)=>b.misses-a.misses);
+
+  // Weak vs strong
+  const weak=qStats.filter(s=>s.misses>=2);
+  const strong=qStats.filter(s=>s.misses===0&&s.attempts>0);
+
+  // Insight text
+  let insight='';
+  if(weak.length===0&&S.totalXP===0){
+    insight='No activity yet — Sedona hasn\'t started studying. Encourage her to begin with Flashcards!';
+  } else if(weak.length===0){
+    insight=`Great session! Sedona has earned ${S.totalXP} XP with a best streak of ${S.bestStreak}. No repeated mistakes detected — she\'s building strong foundations.`;
+  } else {
+    const weakTopics=weak.slice(0,3).map(s=>s.q.q.slice(0,60)+'…').join('; ');
+    insight=`Sedona shows strong momentum (${S.totalXP} XP, ${S.bestStreak} best streak) but needs focused review on: ${weakTopics}. Recommend drilling these in the Growth Zone before the exam.`;
+  }
+
+  // Strengths & opportunities
+  const strengthList=strong.slice(0,4).map(s=>`<li>${s.q.q.slice(0,70)}</li>`).join('') || '<li style="color:var(--gray-500)">Complete more activities to identify strengths.</li>';
+  const opportunityList=weak.slice(0,4).map(s=>`<li>${s.q.q.slice(0,70)} <em style="color:#991b1b">(missed ${s.misses}×)</em></li>`).join('') || '<li style="color:#166534">No repeated mistakes — great work!</li>';
+
+  // Quiz session history
+  const sessionRows=S.quizSessions.length?[...S.quizSessions].reverse().map((sess,i)=>{
+    const d=new Date(sess.ts);
+    const label=i===0?'Latest':'Retake '+(S.quizSessions.length-1-i===0?'(1st)':'#'+(S.quizSessions.length-i));
+    const timeStr=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    const color=sess.pct>=80?'#166534':sess.pct>=60?'#854d0e':'#991b1b';
+    return `<div class="time-row"><span class="time-q"><strong>${label}</strong> · ${timeStr}</span><span class="time-val" style="color:${color}">${sess.correct}/${sess.total} · ${sess.pct}%</span></div>`;
+  }).join('') : '<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No Sprint Quiz attempts yet.</div>';
+
+  // Timing table (sprint quiz — recent responses)
+  const timingRows=sprintLog.slice(-10).reverse().map(e=>{
+    const sec=(e.ms/1000).toFixed(1);
+    return `<div class="time-row"><span class="time-q">${e.q.slice(0,55)}…</span><span class="time-val" style="color:${e.correct?'#166534':'#991b1b'}">${e.correct?'✓':'✗'} ${sec}s</span></div>`;
+  }).join('') || '<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No Sprint Quiz data yet.</div>';
+
+  dash.innerHTML=`
+    <div class="hani-section">
+      <div class="hani-section-title">📊 Overall Progress</div>
+      <div class="hani-card">
+        <div class="hani-stat-grid">
+          <div class="hani-stat"><div class="hani-stat-val">${S.totalXP}</div><div class="hani-stat-lbl">Total XP</div></div>
+          <div class="hani-stat"><div class="hani-stat-val">${S.bestStreak}</div><div class="hani-stat-lbl">Best Streak</div></div>
+          <div class="hani-stat"><div class="hani-stat-val">${S.masteredCards}</div><div class="hani-stat-lbl">Cards Mastered</div></div>
+          <div class="hani-stat"><div class="hani-stat-val">${fmtStudyTime(S.studySeconds)}</div><div class="hani-stat-lbl">Study Time</div></div>
+          <div class="hani-stat"><div class="hani-stat-val">${S.timingLog.length}</div><div class="hani-stat-lbl">Qs Answered</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="hani-section">
+      <div class="hani-section-title">💡 Tutor Insight</div>
+      <div class="insight-box">${insight}</div>
+    </div>
+    <div class="hani-section">
+      <div class="hani-section-title">✅ Strengths</div>
+      <div class="hani-card"><ul style="padding-left:16px;font-size:12px;color:#166534;line-height:1.7;">${strengthList}</ul></div>
+    </div>
+    <div class="hani-section">
+      <div class="hani-section-title">📈 Opportunity Areas</div>
+      <div class="hani-card"><ul style="padding-left:16px;font-size:12px;color:var(--gray-700);line-height:1.7;">${opportunityList}</ul></div>
+    </div>
+    <div class="hani-section">
+      <div class="hani-section-title">⏱️ Sprint Quiz — Full Analysis</div>
+      <div class="hani-card" style="padding:0;overflow:hidden;">
+        <div style="padding:12px 14px 8px;background:#f5f3ff;border-bottom:1px solid #ddd6fe;">
+          <div style="font-size:11px;font-weight:700;color:#6d28d9;letter-spacing:.5px;margin-bottom:8px;">ATTEMPT HISTORY</div>
+          ${sessionRows}
+        </div>
+        <div style="padding:12px 14px 8px;">
+          <div style="font-size:11px;font-weight:700;color:#374151;letter-spacing:.5px;margin-bottom:8px;">QUESTION BREAKDOWN</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px;">
+            <thead><tr style="color:var(--gray-500);border-bottom:1px solid var(--gray-200);">
+              <th style="text-align:left;padding:4px 6px;font-weight:600;">Question</th>
+              <th style="text-align:center;padding:4px 6px;font-weight:600;">Attempts</th>
+              <th style="text-align:center;padding:4px 6px;font-weight:600;">Correct</th>
+              <th style="text-align:center;padding:4px 6px;font-weight:600;">Misses</th>
+              <th style="text-align:center;padding:4px 6px;font-weight:600;">Avg Time</th>
+            </tr></thead>
+            <tbody>
+              ${qStats.map(s=>{
+                const pct=s.attempts?Math.round(s.corrects/s.attempts*100):null;
+                const color=s.misses===0&&s.attempts>0?'#166534':s.misses>=3?'#991b1b':s.misses>=1?'#854d0e':'#9ca3af';
+                const avgSec=s.avgMs?(s.avgMs/1000).toFixed(1)+'s':'—';
+                const label=s.misses===0&&s.attempts>0?'✓':s.misses>=1?'✗ '+s.misses:'—';
+                return `<tr style="border-bottom:1px solid var(--gray-100);">
+                  <td style="padding:5px 6px;color:#374151;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.q.q.slice(0,45)}…</td>
+                  <td style="text-align:center;padding:5px 6px;color:var(--gray-500);">${s.attempts||'—'}</td>
+                  <td style="text-align:center;padding:5px 6px;color:#166534;">${s.attempts?s.corrects:'—'}</td>
+                  <td style="text-align:center;padding:5px 6px;font-weight:700;color:${color};">${label}</td>
+                  <td style="text-align:center;padding:5px 6px;color:var(--gray-500);">${avgSec}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="hani-section">
+      <div class="hani-section-title">⚡ Response Times (Sprint Quiz)</div>
+      <div class="hani-card">${timingRows}</div>
+    </div>
+    <div class="hani-section" style="margin-bottom:20px;">
+      <div class="hani-section-title">🏅 Badges Earned</div>
+      <div class="hani-card" style="display:flex;flex-wrap:wrap;gap:10px;">
+        ${S.badges.filter(b=>b.unlocked).map(b=>`<span style="font-size:13px;">${b.icon} ${b.name}</span>`).join(', ')||'<span style="color:var(--gray-500);font-size:13px;">No badges yet — keep studying!</span>'}
+      </div>
+    </div>
+    <div class="hani-section">
+      <div class="hani-section-title">💾 Progress Backup</div>
+      <div class="hani-card">
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Export Sedona's progress as a file to carry between devices. Import it back on any device to restore her XP, badges, and history.</div>
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
+          <button onclick="exportProgress()" style="flex:1;padding:12px;background:#ede9fe;color:#6d28d9;border:2px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📤 Export Progress</button>
+          <label style="flex:1;padding:12px;background:#ecfdf5;color:#166534;border:2px solid #86efac;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;text-align:center;display:block;">
+            📥 Import Progress
+            <input type="file" accept=".json" onchange="importProgress(event)" style="display:none;">
+          </label>
+        </div>
+        <div id="import-msg" style="display:none;font-size:12px;color:#166534;font-weight:600;padding:6px 0;"></div>
+      </div>
+    </div>
+    <div class="hani-section" style="margin-bottom:32px;">
+      <div class="hani-section-title">🔄 Session Management</div>
+      <div class="hani-card">
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Reset all progress for a fresh session. Use before a new tutoring session so Sedona starts with a clean slate. <strong style="color:#991b1b;">This cannot be undone.</strong></div>
+        <button onclick="confirmReset()" style="width:100%;padding:13px;background:#fee2e2;color:#991b1b;border:2px solid #fca5a5;border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;">🗑️ Reset Session Progress</button>
+        <div id="reset-confirm" style="display:none;margin-top:12px;background:#fff7ed;border-radius:var(--radius-sm);padding:12px;border:2px solid #f97316;">
+          <div style="font-size:13px;font-weight:700;color:#9a3412;margin-bottom:10px;">⚠️ Are you sure? All XP, streaks, badges, and history will be cleared.</div>
+          <div style="display:flex;gap:10px;">
+            <button onclick="doReset()" style="flex:1;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;">Yes, Reset</button>
+            <button onclick="document.getElementById('reset-confirm').style.display='none'" style="flex:1;padding:10px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function confirmReset(){
+  document.getElementById('reset-confirm').style.display='block';
+}
+function doReset(){
+  try{localStorage.removeItem('sedona_asl_s1');}catch(e){}
+  S.totalXP=0;S.bestStreak=0;S.masteredCards=0;S.mistakes={};S.timingLog=[];S.quizSessions=[];S.haniUnlocked=true;
+  S.badges=BADGES_DEF.map(b=>({...b}));
+  renderHome();
+  renderHaniDash();
+  showBadgeToast({icon:'✅',name:'Session reset! Fresh start.'});
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+// ─── STUDY TIME TRACKER ───────────────────────────────────────────────────
+let _studyTimer=null;
+function startStudyTimer(){if(_studyTimer)return;_studyTimer=setInterval(()=>{S.studySeconds++;if(S.studySeconds%30===0)saveProgress();},1000);}
+function stopStudyTimer(){if(_studyTimer){clearInterval(_studyTimer);_studyTimer=null;saveProgress();}}
+document.addEventListener('visibilitychange',()=>{document.hidden?stopStudyTimer():startStudyTimer();});
+startStudyTimer();
+function fmtStudyTime(sec){const m=Math.floor(sec/60),s=sec%60;return m>0?`${m}m ${s}s`:`${s}s`;}
+
+loadProgress();
+takeSnapshot();
+buildPeriodicTable();
+// Apply session config to DOM
+document.getElementById('home-sub-el').textContent=`${SESSION_SUBJECT} · Session ${SESSION_NUM}`;
+document.getElementById('sb-name-el').textContent=`Session ${SESSION_NUM} — ${SESSION_TITLE}`;
+document.getElementById('sb-date-el').innerHTML=`${SESSION_DATE} · ${SESSION_SUBJECT} &nbsp;· <span style="font-size:12px;opacity:0.85;">tap to learn more ›</span>`;
+document.getElementById('modal-session-date').textContent=`${SESSION_DATE} · NGSS Unit 3`;
+renderHome();
+</script>
+
+<!-- RANK MAP MODAL -->
+<div id="rank-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="max-width:420px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.4);">
+    <div style="background:linear-gradient(135deg,#4c1d95,#6d28d9);padding:18px 20px;color:white;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.8;margin-bottom:4px;">⚗️ XP RANK PROGRESSION</div>
+      <div style="font-size:18px;font-weight:800;">Your Chemistry Journey</div>
+      <div style="font-size:12px;opacity:0.75;margin-top:2px;">Earn XP by answering questions, mastering flashcards, and completing quizzes</div>
+    </div>
+    <div style="padding:16px 20px 20px;" id="rank-map-body"></div>
+  </div>
+</div>
+
+<!-- ACTIVITY SUMMARY MODAL -->
+<div id="summary-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9998;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="max-width:420px;margin:20px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.35);">
+    <div style="background:linear-gradient(135deg,#6d28d9,#0d9488);padding:18px 20px;color:white;text-align:center;">
+      <div style="font-size:32px;margin-bottom:6px;">🎉</div>
+      <div style="font-size:18px;font-weight:800;">Nice work, Sedona!</div>
+      <div style="font-size:12px;opacity:0.8;margin-top:2px;">Here's what you did this round</div>
+    </div>
+    <div style="padding:18px 20px;display:grid;grid-template-columns:1fr 1fr;gap:10px;font-family:system-ui,sans-serif;">
+      <div style="background:#f5f3ff;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:#6d28d9;" id="sum-xp">+0 XP</div>
+        <div style="font-size:11px;color:#6d28d9;margin-top:2px;">XP Earned</div>
+      </div>
+      <div style="background:#ecfdf5;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:#0f766e;" id="sum-qs">0</div>
+        <div style="font-size:11px;color:#0f766e;margin-top:2px;">Questions Answered</div>
+      </div>
+      <div style="background:#fef9c3;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:15px;font-weight:700;color:#854d0e;" id="sum-mastered">—</div>
+        <div style="font-size:11px;color:#854d0e;margin-top:2px;">Flashcards</div>
+      </div>
+      <div style="background:#fce7f3;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:13px;font-weight:700;color:#9d174d;" id="sum-badges">—</div>
+        <div style="font-size:11px;color:#9d174d;margin-top:2px;">Badges</div>
+      </div>
+    </div>
+    <div style="padding:0 20px 18px;font-family:system-ui,sans-serif;">
+      <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;">🌱 Review before next time:</div>
+      <div id="sum-weak" style="font-size:12px;color:#374151;line-height:1.6;"></div>
+      <button onclick="document.getElementById('summary-modal').style.display='none'" style="margin-top:14px;width:100%;padding:12px;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Keep it up! 🚀</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
