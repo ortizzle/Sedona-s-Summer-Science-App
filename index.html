@@ -741,7 +741,7 @@ function getSession(){ return SESSIONS[ACTIVE_SESSION]; }
 // ─── FLASHCARD DATA ────────────────────────────────────────────────────────
 const CARDS=[
   // ── Session 1: Chemistry — Atoms, Isotopes & Ions ──
-  {session:1,id:1,term:'Atomic Number (Z)',eq:null,def:'Number of protons in the nucleus — defines the element\'s identity. NEVER changes. Same element = same Z, always.',hint:'Z = proton count. Carbon is always 6 protons. Oxygen is always 8.'},
+  {id:1,term:'Atomic Number (Z)',eq:null,def:'Number of protons in the nucleus — defines the element\'s identity. NEVER changes. Same element = same Z, always.',hint:'Z = proton count. Carbon is always 6 protons. Oxygen is always 8.'},
   {id:2,term:'Mass Number (A)',eq:'A = p⁺ + n⁰',def:'Protons plus neutrons. Electrons weigh almost nothing (0 AMU) so they don\'t count. Always a whole number.',hint:'A = Add protons + neutrons. Electrons have 0 AMU — too light to count!'},
   {id:3,term:'MAN Formula',eq:'M − A = N',def:'Mass number minus Atomic Number equals Neutrons. Use this every time you need to find how many neutrons an atom has.',hint:'MAN: Mass minus Atomic Number gives Neutrons. M−A=N!'},
   {id:4,term:'Isotope',eq:null,def:'Same element (same protons, same Z), different neutron count → different mass number. C-12, C-13, C-14 are all carbon.',hint:'Iso- means "same" — same element, different mass. Neutrons change, protons don\'t.'},
