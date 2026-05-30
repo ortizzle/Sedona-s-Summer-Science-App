@@ -712,6 +712,23 @@ const SESSIONS = [
 ];
 
 // Active session — Hani sets this before each study session
+  // ── Combined review sessions (auto-populated as sessions are added) ──
+  {
+    num: null, combined: true, subject: 'Chemistry',
+    title: 'All Chemistry', date: 'Chemistry Review',
+    unit: 'All Chemistry Sessions', icon: '⚗️',
+    why: 'Review everything from all Chemistry sessions combined — great for cumulative exam prep.',
+    concepts: [], formulas: '',
+  },
+  {
+    num: null, combined: true, subject: 'Physics',
+    title: 'All Physics', date: 'Physics Review',
+    unit: 'All Physics Sessions', icon: '⚡',
+    why: 'Review everything from all Physics sessions combined — great for cumulative exam prep.',
+    concepts: [], formulas: '',
+  },
+];
+
 let ACTIVE_SESSION = 0; // index into SESSIONS array
 
 function getSession(){ return SESSIONS[ACTIVE_SESSION]; }
