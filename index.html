@@ -1751,11 +1751,13 @@ let TEST_MODE=false;
 function enterTestMode(){
   TEST_MODE=true;
   document.getElementById('test-mode-banner').style.display='flex';
+  document.querySelectorAll('.nav').forEach(n=>n.style.paddingTop='52px');
   go('home');
 }
 function exitTestMode(){
   TEST_MODE=false;
   document.getElementById('test-mode-banner').style.display='none';
+  document.querySelectorAll('.nav').forEach(n=>n.style.paddingTop='');
   go('hani');
 }
 // Wrap save/record functions to be no-ops in test mode
