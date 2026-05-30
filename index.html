@@ -1853,6 +1853,12 @@ function doReset(){
 
 // ─── TEST MODE ────────────────────────────────────────────────────────────
 let TEST_MODE=false;
+function setActiveSession(idx){
+  ACTIVE_SESSION=idx;
+  applySession();
+  renderHaniDash();
+  showBadgeToast({icon:'📅',name:`Session ${SESSIONS[idx].num} active — ${SESSIONS[idx].title}`});
+}
 function enterTestMode(){
   TEST_MODE=true;
   document.getElementById('test-mode-banner').style.display='flex';
