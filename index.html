@@ -1930,8 +1930,15 @@ function renderHaniDash(){
     <div class="hani-section">
       <div class="hani-section-title">🧪 Test Mode</div>
       <div class="hani-card">
-        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Preview questions and flows without recording any of Sedona's progress. XP, mistakes, badges, and streaks will <strong>not</strong> be saved while active.</div>
-        <button onclick="enterTestMode()" style="width:100%;padding:13px;background:linear-gradient(135deg,#2dd4bf,#0891b2);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;">🧪 Enter Test Mode</button>
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Two ways to test — pick based on what you want to verify.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button onclick="enterTestMode(false)" style="padding:13px;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;text-align:left;border:2px solid #2dd4bf;background:rgba(45,212,191,0.08);color:#0f766e;">
+            🧪 Preview Mode<br><span style="font-size:11px;font-weight:600;opacity:0.8;">No XP, no badges, no recording — just browse questions and flows safely.</span>
+          </button>
+          <button onclick="enterTestMode(true)" style="padding:13px;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;text-align:left;border:2px solid var(--purple);background:#ede9fe;color:var(--purple-dark);">
+            ⚡ Full Test Run<br><span style="font-size:11px;font-weight:600;opacity:0.8;">Records XP, badges & streaks so you can verify everything works. Reset progress after.</span>
+          </button>
+        </div>
       </div>
     </div>
     <div class="hani-section" style="margin-bottom:32px;">
