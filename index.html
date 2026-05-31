@@ -2180,10 +2180,22 @@ function haniQFilter(sessionFilter, btn){
   }).join('');
 }
 function setActiveSession(idx){
+  const prevSubject=getSession().subject;
   ACTIVE_SESSION=idx;
   applySession();
   renderHaniDash();
   showBadgeToast({icon:'📅',name:`Session ${SESSIONS[idx].num} active — ${SESSIONS[idx].title}`},true);
+  // Multi-session badge: triggered when switching to a different subject
+  if(!getSession().combined&&getSession().subject!==prevSubject){
+    const subjects=new Set(SESSIONS.filter(s=>!s.combined&&s.num).map(s=>s.subject));
+    const studiedSubjects=new Set([prevSubject,getSession().subject]);
+    if(studiedSubjects.size>1)checkBadge('multi_session');
+  }
+}
+function trackModeUsed(mode){
+  if(TEST_MODE&&!TEST_RECORD)return;
+  S.modesUsed.add(mode);
+  if(S.modesUsed.size>=4)checkBadge('all_modes');
 }
 let TEST_RECORD=false;
 function enterTestMode(record){
