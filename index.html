@@ -1453,7 +1453,9 @@ function skipFC(){
 const QZ_COUNT=10; // questions per sprint
 function startQuiz(){
   const q=S.qz;
-  q.qs=shuffle(QS).slice(0,QZ_COUNT);q.idx=0;q.score=0;q.streak=0;q.correct=0;q.total=0;
+  const activeNum=getSession().num||99;
+  q.qs=shuffle(QS.filter(q=>!q.session||q.session<=activeNum)).slice(0,QZ_COUNT).map(shuffleOpts);
+  q.idx=0;q.score=0;q.streak=0;q.correct=0;q.total=0;
   q.answered=false;q.sessionXP=0;q.hintUsed=false;
   stopQuiz();renderQ();
 }
