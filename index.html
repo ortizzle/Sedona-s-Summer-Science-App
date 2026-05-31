@@ -2098,15 +2098,15 @@ function haniQFilter(sessionFilter, btn){
   });
   btn.style.background='var(--purple)';btn.style.color='white';btn.style.borderColor='var(--purple)';
   // Filter questions
-  const sprintLog=S.timingLog.filter(e=>e.mode==='qz');
+  const allLog=S.timingLog;
   const filtered=sessionFilter==='all'?QS:QS.filter(q=>q.session===sessionFilter);
   const stats=filtered.map(q=>{
-    const misses=S.mistakes[q.id]||0;
-    const attempts=sprintLog.filter(e=>e.qId===q.id);
-    const corrects=attempts.filter(e=>e.correct).length;
-    const avgMs=attempts.length?Math.round(attempts.reduce((s,e)=>s+e.ms,0)/attempts.length):null;
-    return{q,misses,attempts:attempts.length,corrects,avgMs};
-  }).sort((a,b)=>b.misses-a.misses);
+    const allAttempts=allLog.filter(e=>e.qId===q.id);
+    const misses=allAttempts.filter(e=>!e.correct).length;
+    const corrects=allAttempts.filter(e=>e.correct).length;
+    const avgMs=allAttempts.length?Math.round(allAttempts.reduce((s,e)=>s+e.ms,0)/allAttempts.length):null;
+    return{q,misses,attempts:allAttempts.length,corrects,avgMs};
+  }).sort((a,b)=>b.misses-a.misses||b.attempts-a.attempts);
   const list=document.getElementById('q-breakdown-list');
   if(!list)return;
   list.innerHTML=stats.map((s)=>{
