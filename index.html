@@ -2337,14 +2337,15 @@ function enterTestMode(record){
   document.getElementById('test-mode-label').textContent=record
     ?'⚡ FULL TEST RUN — XP & badges are recording'
     :'🧪 PREVIEW MODE — nothing is being recorded';
-  document.querySelectorAll('.nav').forEach(n=>n.style.paddingTop='52px');
-  go('home');
+  // Push all screen content down so nav back buttons are never hidden under the banner
+  document.querySelectorAll('.screen').forEach(s=>s.style.paddingTop='44px');
+  // Don't call go() here — let the caller decide where to navigate
 }
 function exitTestMode(){
   TEST_MODE=false;TEST_RECORD=false;
   document.getElementById('test-mode-banner').style.display='none';
-  document.querySelectorAll('.nav').forEach(n=>n.style.paddingTop='');
-  go('hani');
+  document.querySelectorAll('.screen').forEach(s=>s.style.paddingTop='');
+  go('welcome'); // Always return to welcome so the right person can log in
 }
 // Wrap save/record functions to be no-ops in test mode
 const _saveProgress=saveProgress;
