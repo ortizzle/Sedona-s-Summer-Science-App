@@ -1262,6 +1262,7 @@ function markUnderstood(e,id){
   e.stopPropagation();
   S.mistakes[id]=0;
   addXP(15,'h-xp-amt');
+  checkBadge('growth_cleared');
   saveProgress();
   renderGrowthZone();
   renderHome();
