@@ -2141,7 +2141,7 @@ function setActiveSession(idx){
   ACTIVE_SESSION=idx;
   applySession();
   renderHaniDash();
-  showBadgeToast({icon:'📅',name:`Session ${SESSIONS[idx].num} active — ${SESSIONS[idx].title}`});
+  showBadgeToast({icon:'📅',name:`Session ${SESSIONS[idx].num} active — ${SESSIONS[idx].title}`},true);
 }
 let TEST_RECORD=false;
 function enterTestMode(record){
