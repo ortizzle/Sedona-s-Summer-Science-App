@@ -2099,13 +2099,16 @@ function exitTestMode(){
 }
 // Wrap save/record functions to be no-ops in test mode
 const _saveProgress=saveProgress;
-saveProgress=function(){if(!TEST_MODE)_saveProgress();};
+saveProgress=function(){if(!TEST_MODE||TEST_RECORD)_saveProgress();};
 const _addXP=addXP;
-addXP=function(n,el){if(TEST_MODE){if(el){const e=document.getElementById(el);if(e)e.textContent='TEST';}return;}_addXP(n,el);};
+addXP=function(n,el){
+  if(TEST_MODE&&!TEST_RECORD){if(el){const e=document.getElementById(el);if(e)e.textContent='TEST';}return;}
+  _addXP(n,el);
+};
 const _trackMistake=trackMistake;
-trackMistake=function(a,b,c,d){if(!TEST_MODE)_trackMistake(a,b,c,d);};
+trackMistake=function(a,b,c,d){if(!TEST_MODE||TEST_RECORD)_trackMistake(a,b,c,d);};
 const _checkBadge=checkBadge;
-checkBadge=function(id){if(!TEST_MODE)_checkBadge(id);};
+checkBadge=function(id){if(!TEST_MODE||TEST_RECORD)_checkBadge(id);};
 
 // ─── INIT ─────────────────────────────────────────────────────────────────
 // ─── STUDY TIME TRACKER ───────────────────────────────────────────────────
