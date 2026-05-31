@@ -1607,6 +1607,8 @@ function renderLvQ(){
     if(perfected&&!l.passed.includes(l.curLv))l.passed.push(l.curLv);
     l.sessionXP+=perfected?50:20;addXP(perfected?50:20,'lv-xp-badge');
     if(perfected)launchConfetti(40);
+    if(perfected&&l.curLv===1)checkBadge('level_easy');
+    if(perfected&&l.curLv===2)checkBadge('level_medium');
     if(perfected&&l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
     updateLvTabs();
     if(l.passed.length===3){checkBadge('levels_complete');launchConfetti(80);}
