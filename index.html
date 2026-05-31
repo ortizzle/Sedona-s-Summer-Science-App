@@ -1752,13 +1752,14 @@ function renderHaniDash(){
   const sprintLog=log.filter(e=>e.mode==='qz');
 
   // Accuracy by question
-  const qStats=QS.map(q=>{
+  const buildQStats=(qs)=>qs.map(q=>{
     const misses=S.mistakes[q.id]||0;
     const attempts=sprintLog.filter(e=>e.qId===q.id);
     const corrects=attempts.filter(e=>e.correct).length;
     const avgMs=attempts.length?Math.round(attempts.reduce((s,e)=>s+e.ms,0)/attempts.length):null;
     return{q,misses,attempts:attempts.length,corrects,avgMs};
   }).sort((a,b)=>b.misses-a.misses);
+  const qStats=buildQStats(QS);
 
   // Weak vs strong
   const weak=qStats.filter(s=>s.misses>=2);
