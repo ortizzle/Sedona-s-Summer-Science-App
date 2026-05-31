@@ -1547,7 +1547,7 @@ function startLevels(){
 }
 function loadLv(lv){
   const l=S.lv;const activeNum=getSession().num||99;
-  l.curLv=lv;l.qs=shuffle(QS.filter(q=>q.lv===lv&&(!q.session||q.session<=activeNum))).map(shuffleOpts);
+  l.curLv=lv;l.qs=shuffle(QS.filter(q=>q.lv===lv&&(!q.session||q.session<=activeNum))).slice(0,10).map(shuffleOpts);
   l.wrong=[];l.mastered=new Set();l.idx=0;l.phase='main';l.hintUsed=false;renderLvQ();
 }
 function switchLv(n){if(S.lv.unlocked.includes(n))loadLv(n);}
