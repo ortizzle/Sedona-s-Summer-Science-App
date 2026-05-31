@@ -698,27 +698,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="nav">
     <button class="back-btn" onclick="go('home')">←</button>
     <span class="nav-title">🔗 Sedona's Resources</span>
-    <span class="nav-badge" style="background:var(--teal)">Free</span>
+    <span class="nav-badge" style="background:var(--teal)" id="res-badge">Session 1</span>
   </div>
-  <div style="padding:12px 20px 16px;font-size:13px;color:var(--gray-500);line-height:1.5;">Interactive tools to explore chemistry beyond the app. Tap any card to open.</div>
+  <div style="padding:12px 20px 4px;font-size:13px;color:var(--gray-500);line-height:1.5;" id="res-intro">Tap any card to open. Resources update with each session.</div>
+  <div class="res-list" id="res-list-dynamic"></div>
+  <div style="padding:12px 20px 4px;">
+    <div style="font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">📚 Always Available</div>
+  </div>
   <div class="res-list">
-    <a class="res-item" href="https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_all.html" target="_blank">
-      <div class="res-icon">⚛️</div>
-      <div class="res-title">Build an Atom — PhET</div>
-      <div class="res-desc">Drag protons, neutrons, and electrons to build atoms. See the element name, symbol, and charge update in real time. Perfect for understanding atomic structure visually.</div>
-      <div class="res-url">phet.colorado.edu · Build-an-Atom</div>
-    </a>
     <a class="res-item" href="https://pubchem.ncbi.nlm.nih.gov/ptable/" target="_blank">
       <div class="res-icon">🧬</div>
       <div class="res-title">Interactive Periodic Table — PubChem</div>
-      <div class="res-desc">Full periodic table from the National Institutes of Health. Click any element for detailed properties, electron configuration, and real-world uses.</div>
+      <div class="res-desc">Full periodic table from the NIH. Click any element for detailed properties, electron configuration, and real-world uses.</div>
       <div class="res-url">pubchem.ncbi.nlm.nih.gov · Periodic Table</div>
     </a>
     <a class="res-item" href="https://drive.google.com/drive/folders/1dCbeblGC-AB3V6YCLKYq0_UFJx1KIt3h" target="_blank">
       <div class="res-icon">📁</div>
-      <div class="res-title">Class Materials — Google Drive</div>
-      <div class="res-desc">All session notes, worksheets, and lesson plans from Sedona's Chemistry Unit 3 folder. Includes quizlets, practice problems, and tutor resources.</div>
-      <div class="res-url">drive.google.com · Sedona's Chemistry Folder</div>
+      <div class="res-title">All Class Materials — Google Drive</div>
+      <div class="res-desc">All session notes, worksheets, and lesson plans for both Chemistry and Physics units.</div>
+      <div class="res-url">drive.google.com · Sedona's Study Folder</div>
     </a>
   </div>
 </div>
