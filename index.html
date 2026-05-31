@@ -2523,6 +2523,7 @@ function scoreColor(pct){
 function endSedonaSession(){
   // Quick reflection modal
   const modal=document.createElement('div');
+  modal.id='end-session-modal';
   modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
   modal.innerHTML=`
     <div style="background:white;border-radius:20px;padding:24px;max-width:340px;width:100%;text-align:center;">
