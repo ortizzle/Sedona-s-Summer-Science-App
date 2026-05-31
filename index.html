@@ -408,7 +408,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <span class="nav-title" style="color:var(--purple-dark);">Quick Check-in</span>
     <span id="checkin-step-indicator" style="font-size:12px;color:var(--gray-500);font-weight:600;">1 of 5</span>
   </div>
-  <div class="checkin-screen" style="justify-content:flex-start;padding-top:24px;">
+  <div class="checkin-screen" style="justify-content:flex-start;padding-top:16px;">
+    <!-- Today's session banner -->
+    <div id="checkin-session-banner" style="background:linear-gradient(135deg,var(--purple-dark),var(--purple));border-radius:12px;padding:10px 16px;margin-bottom:20px;width:100%;max-width:320px;text-align:center;">
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Today's Session</div>
+      <div style="font-size:14px;font-weight:800;color:white;" id="checkin-session-title">Session 1</div>
+      <button onclick="changeSessionFromCheckin()" style="margin-top:6px;background:rgba(255,255,255,0.2);border:none;color:white;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;">Not right? Change ›</button>
+    </div>
     <div style="font-size:56px;margin-bottom:12px;" id="checkin-step-icon">😊</div>
     <div class="checkin-q" id="checkin-q-text">How are you feeling today?</div>
     <div class="checkin-sub" id="checkin-q-sub">Be honest — there are no wrong answers here.</div>
