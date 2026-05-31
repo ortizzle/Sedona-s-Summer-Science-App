@@ -2549,7 +2549,8 @@ function selectEndRating(n){
 function confirmEndSession(){
   if(S.checkIns.length){S.checkIns[S.checkIns.length-1].sessionRating=window._endRating||null;}
   saveProgress();
-  document.querySelectorAll('[style*="position:fixed"]').forEach(el=>{if(el.id!=='test-mode-banner')el.remove();});
+  const modal=document.getElementById('end-session-modal');
+  if(modal)modal.remove();
   go('welcome');
 }
 
