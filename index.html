@@ -1498,6 +1498,7 @@ function skipFC(){
 // ─── SPRINT QUIZ (30s, timer shows last 15s) ─────────────────────────────
 const QZ_COUNT=10; // questions per sprint
 function startQuiz(){
+  trackModeUsed('qz');
   const q=S.qz;
   const activeNum=getSession().num||99;
   q.qs=shuffle(QS.filter(q=>!q.session||q.session<=activeNum)).slice(0,QZ_COUNT).map(shuffleOpts);
