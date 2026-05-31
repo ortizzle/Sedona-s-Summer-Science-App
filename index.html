@@ -478,14 +478,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="gz-list" id="gz-list"><div class="gz-empty">No misses yet — keep it going! 🎯</div></div>
   <div class="sec-div"><div class="sec-div-line sec-div-line-l"></div><div class="sec-div-label">🏅 Achievements</div><div class="sec-div-line sec-div-line-r"></div></div>
   <div class="badge-grid" id="badge-grid"></div>
-  <div class="sec-div"><div class="sec-div-line sec-div-line-l"></div><div class="sec-div-label">🧪 Lab Rules</div><div class="sec-div-line sec-div-line-r"></div></div>
-  <div style="margin:0 20px 16px;background:rgba(255,255,255,0.88);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);">
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--gray-700);line-height:1.5;">
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">🎯</span><div><strong>Try before you hint.</strong> Give every question a real shot before spending XP on a hint. The struggle is where the learning happens.</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">🌱</span><div><strong>Mistakes are data, not failures.</strong> Every miss goes to the Growth Zone so you can review it. Wrong answers today become right answers on exam day.</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">📖</span><div><strong>Flashcards first, quiz after.</strong> Start each session with Flashcards to review the material, then level up to practice games.</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">🏆</span><div><strong>Celebrate your wins.</strong> Flip your badges, check your XP, show Hani your streak. You earned it.</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">💬</span><div><strong>Talk it out.</strong> If something isn't clicking, tell Hani. The best scientists ask questions.</div></div>
+  <!-- CLIPBOARD: Lab Rules -->
+  <div style="margin:8px 20px 20px;position:relative;filter:drop-shadow(2px 4px 10px rgba(0,0,0,0.2));">
+    <!-- Clipboard back board -->
+    <div style="background:linear-gradient(180deg,#7a5c3a,#6b4f31);border-radius:10px 10px 6px 6px;padding-bottom:6px;">
+      <!-- Metal clip -->
+      <div style="display:flex;justify-content:center;padding-top:6px;margin-bottom:0;">
+        <div style="width:56px;background:linear-gradient(180deg,#c8c8c8,#a0a0a0);border-radius:6px 6px 3px 3px;height:18px;position:relative;box-shadow:0 2px 4px rgba(0,0,0,0.3);">
+          <div style="position:absolute;top:5px;left:50%;transform:translateX(-50%);width:28px;height:10px;background:linear-gradient(180deg,#e0e0e0,#b8b8b8);border-radius:3px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>
+      <!-- Paper -->
+      <div style="margin:0 6px 6px;background:linear-gradient(180deg,#fdf8f0,#f7f0e4);border-radius:3px;padding:14px 16px 18px;
+        background-image:
+          linear-gradient(180deg,#fdf8f0,#f7f0e4),
+          repeating-linear-gradient(180deg,transparent 0px,transparent 23px,rgba(180,160,120,0.2) 23px,rgba(180,160,120,0.2) 24px);
+        background-blend-mode:multiply;">
+        <!-- Ruled lines overlay -->
+        <div style="position:absolute;inset:0;border-radius:3px;background:repeating-linear-gradient(180deg,transparent 0px,transparent 23px,rgba(160,140,100,0.15) 23px,rgba(160,140,100,0.15) 24px);pointer-events:none;"></div>
+        <!-- Red margin line -->
+        <div style="position:absolute;left:42px;top:0;bottom:0;width:1.5px;background:rgba(220,60,60,0.25);pointer-events:none;"></div>
+        <!-- Title -->
+        <div style="font-family:'Special Elite',cursive;font-size:16px;font-weight:700;color:#3a2810;margin-bottom:14px;padding-left:12px;letter-spacing:0.5px;">📋 Lab Rules — Sedona's Science Lab</div>
+        <!-- Rules -->
+        <div style="display:flex;flex-direction:column;gap:11px;font-family:'Special Elite',cursive;font-size:13px;color:#2c1810;line-height:1.55;padding-left:12px;">
+          <div style="display:flex;gap:10px;"><span style="flex-shrink:0;color:#7a5c3a;font-weight:700;">1.</span><div><strong>Try before you hint.</strong> Give every question a real shot first. The struggle is where the learning happens.</div></div>
+          <div style="display:flex;gap:10px;"><span style="flex-shrink:0;color:#7a5c3a;font-weight:700;">2.</span><div><strong>Mistakes are data, not failures.</strong> Every miss goes to the Growth Zone. Wrong answers today become right answers on exam day.</div></div>
+          <div style="display:flex;gap:10px;"><span style="flex-shrink:0;color:#7a5c3a;font-weight:700;">3.</span><div><strong>Flashcards first, quiz after.</strong> Review the material first, then level up to the practice games.</div></div>
+          <div style="display:flex;gap:10px;"><span style="flex-shrink:0;color:#7a5c3a;font-weight:700;">4.</span><div><strong>Celebrate your wins.</strong> Flip your badges, check your XP, show Hani your streak. You earned it.</div></div>
+          <div style="display:flex;gap:10px;"><span style="flex-shrink:0;color:#7a5c3a;font-weight:700;">5.</span><div><strong>Talk it out.</strong> If something isn't clicking, say so. The best scientists ask questions.</div></div>
+        </div>
+      </div>
     </div>
   </div>
   <button class="hani-btn" onclick="go('hani')">
