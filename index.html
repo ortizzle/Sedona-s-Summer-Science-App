@@ -1585,6 +1585,7 @@ function skipQuiz(){
 
 // ─── LEVELS ───────────────────────────────────────────────────────────────
 function startLevels(){
+  trackModeUsed('lv');
   const l=S.lv;l.curLv=1;l.unlocked=[1];l.passed=[];l.sessionXP=0;l.streak=0;loadLv(1);updateLvTabs();
 }
 function loadLv(lv){
