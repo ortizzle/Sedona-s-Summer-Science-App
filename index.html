@@ -1242,7 +1242,7 @@ function markUnderstood(e,id){
   saveProgress();
   renderGrowthZone();
   renderHome();
-  showBadgeToast({icon:'✅',name:'Growth Zone cleared! +15 XP'});
+  showBadgeToast({icon:'✅',name:'Growth Zone cleared! +15 XP'},true);
 }
 function renderBadges(){
   document.getElementById('badge-grid').innerHTML=S.badges.map((b,i)=>`
