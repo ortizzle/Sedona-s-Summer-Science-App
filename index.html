@@ -2079,14 +2079,20 @@ function setActiveSession(idx){
   renderHaniDash();
   showBadgeToast({icon:'📅',name:`Session ${SESSIONS[idx].num} active — ${SESSIONS[idx].title}`});
 }
-function enterTestMode(){
-  TEST_MODE=true;
-  document.getElementById('test-mode-banner').style.display='flex';
+let TEST_RECORD=false;
+function enterTestMode(record){
+  TEST_MODE=true;TEST_RECORD=!!record;
+  const banner=document.getElementById('test-mode-banner');
+  banner.style.display='flex';
+  banner.style.background=record?'linear-gradient(135deg,#7c3aed,#6d28d9)':'linear-gradient(135deg,#2dd4bf,#0891b2)';
+  document.getElementById('test-mode-label').textContent=record
+    ?'⚡ FULL TEST RUN — XP & badges are recording'
+    :'🧪 PREVIEW MODE — nothing is being recorded';
   document.querySelectorAll('.nav').forEach(n=>n.style.paddingTop='52px');
   go('home');
 }
 function exitTestMode(){
-  TEST_MODE=false;
+  TEST_MODE=false;TEST_RECORD=false;
   document.getElementById('test-mode-banner').style.display='none';
   document.querySelectorAll('.nav').forEach(n=>n.style.paddingTop='');
   go('hani');
