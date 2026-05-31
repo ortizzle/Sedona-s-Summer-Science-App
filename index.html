@@ -395,13 +395,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 <!-- CHECK-IN -->
 <div id="s-checkin" class="screen">
-  <div class="checkin-screen">
-    <div style="font-size:48px;margin-bottom:12px;" id="checkin-step-icon">😊</div>
+  <div class="nav" style="background:transparent;">
+    <button class="back-btn" onclick="checkinBack()">←</button>
+    <span class="nav-title" style="color:var(--purple-dark);">Quick Check-in</span>
+    <span id="checkin-step-indicator" style="font-size:12px;color:var(--gray-500);font-weight:600;">1 of 5</span>
+  </div>
+  <div class="checkin-screen" style="justify-content:flex-start;padding-top:24px;">
+    <div style="font-size:56px;margin-bottom:12px;" id="checkin-step-icon">😊</div>
     <div class="checkin-q" id="checkin-q-text">How are you feeling today?</div>
     <div class="checkin-sub" id="checkin-q-sub">Be honest — there are no wrong answers here.</div>
     <div class="emoji-scale" id="emoji-scale"></div>
     <button class="checkin-next" id="checkin-next-btn" onclick="checkinNext()">Continue →</button>
-    <div style="margin-top:16px;font-size:12px;color:var(--gray-500);" id="checkin-step-indicator">1 of 2</div>
   </div>
 </div>
 
