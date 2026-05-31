@@ -1263,10 +1263,15 @@ function checkBadge(id){
   const b=S.badges.find(b=>b.id===id);
   if(b&&!b.unlocked){b.unlocked=true;b.new=true;b.earnedAt=Date.now();showBadgeToast(b);saveProgress();}
 }
-function showBadgeToast(b){
+function showBadgeToast(b, system){
   const t=document.getElementById('badge-toast');
-  const msgs=[`Sedona, you earned: ${b.icon} ${b.name}!`,`Nice work, Sedona! ${b.icon} ${b.name} unlocked!`,`${b.icon} ${b.name} — way to go, Sedona!`];
-  t.innerHTML=msgs[Math.floor(Math.random()*msgs.length)];
+  if(system){
+    // Neutral system message — no name
+    t.innerHTML=`${b.icon} ${b.name}`;
+  } else {
+    const msgs=[`Sedona, you earned: ${b.icon} ${b.name}!`,`Nice work, Sedona! ${b.icon} ${b.name} unlocked!`,`${b.icon} ${b.name} — way to go, Sedona!`];
+    t.innerHTML=msgs[Math.floor(Math.random()*msgs.length)];
+  }
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),5000);
 }
 
