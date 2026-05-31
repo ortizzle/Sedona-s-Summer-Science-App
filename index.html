@@ -575,9 +575,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="card-area">
     <div class="flip-card" id="flip-card" onclick="flipCard()">
       <div class="card-face card-front">
-        <div class="card-term" id="fc-term">Loading…</div>
+        <!-- type badge -->
+        <div id="fc-type-badge" style="position:absolute;top:10px;left:12px;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;z-index:2;"></div>
+        <!-- formula card: equation is the star -->
+        <div id="fc-formula-front" style="display:none;width:100%;text-align:center;position:relative;z-index:1;">
+          <div id="fc-eq-star" style="font-family:'Special Elite',cursive;font-size:22px;font-weight:700;color:#2c1810;background:rgba(44,24,16,0.07);border:1.5px solid rgba(44,24,16,0.2);border-left:4px solid #7c3aed;border-radius:8px;padding:12px 16px;margin-bottom:10px;letter-spacing:1px;"></div>
+          <div id="fc-term-sub" style="font-family:'Caveat',cursive;font-size:16px;color:rgba(44,24,16,0.55);line-height:1.3;"></div>
+        </div>
+        <!-- definition card: term is the star -->
+        <div id="fc-def-front" style="display:block;width:100%;text-align:center;">
+          <div class="card-term" id="fc-term">Loading…</div>
+        </div>
         <div class="card-eq" id="fc-eq" style="display:none;"></div>
-        <div class="card-hint-text">Tap to reveal · tap again to flip back</div>
+        <div class="card-hint-text" id="fc-front-hint">Tap to reveal · tap again to flip back</div>
       </div>
       <div class="card-face card-back">
         <div class="card-def" id="fc-def"></div>
