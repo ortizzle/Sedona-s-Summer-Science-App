@@ -2041,6 +2041,9 @@ function checkinNext(){
       ts:Date.now(),
       feeling:checkinAnswers.feeling,
       confidence:checkinAnswers.confidence,
+      sleep:checkinAnswers.sleep,
+      distraction:checkinAnswers.distraction,
+      selfStudy:checkinAnswers.selfStudy,
       session:getSession().num
     });
     if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
