@@ -1783,17 +1783,31 @@ function renderHaniDash(){
   }).join('') || '<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No Sprint Quiz data yet.</div>';
 
   // Build check-in history
-  const feelEmojis=['','😔','😕','😐','🙂','😄'];
-  const confEmojis=['','😰','😬','🤔','💪','🌟'];
-  const recentCheckIns=[...S.checkIns].reverse().slice(0,5);
+  // Emoji lookup — index = score 1-5, reversed since scale goes great→rough
+  const ciEmojis={
+    feeling:  ['','😔','😕','😐','🙂','😄'],
+    confidence:['','😰','😬','🤔','💪','🌟'],
+    sleep:    ['','🥱','😪','😐','😌','🌙'],
+    distraction:['','🌪️','😩','😤','🤏','😌'],
+    selfStudy:['','🤷','❌','💭','🤏','✅'],
+  };
+  const recentCheckIns=[...S.checkIns].reverse().slice(0,8);
   const checkInRows=recentCheckIns.length?recentCheckIns.map(c=>{
     const d=new Date(c.ts);
     const timeStr=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     const sess=SESSIONS.find(s=>s.num===c.session);
-    return `<div class="time-row">
-      <span class="time-q" style="flex:1;">${timeStr}<br><span style="font-size:10px;color:var(--gray-500);">${sess?sess.title:'Unknown session'}</span></span>
-      <span style="font-size:18px;margin:0 4px;" title="Feeling">${feelEmojis[c.feeling]||'?'}</span>
-      <span style="font-size:18px;" title="Confidence">${confEmojis[c.confidence]||'?'}</span>
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--gray-100);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:12px;color:var(--gray-700);font-weight:600;">${timeStr}</span>
+        <span style="font-size:11px;color:var(--gray-500);">${sess?sess.title:'—'}</span>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <span title="Feeling" style="font-size:20px;">${ciEmojis.feeling[c.feeling]||'—'}</span>
+        <span title="Confidence" style="font-size:20px;">${ciEmojis.confidence[c.confidence]||'—'}</span>
+        <span title="Sleep" style="font-size:20px;">${ciEmojis.sleep[c.sleep]||'—'}</span>
+        <span title="Distractions" style="font-size:20px;">${ciEmojis.distraction[c.distraction]||'—'}</span>
+        <span title="Self-study" style="font-size:20px;">${ciEmojis.selfStudy[c.selfStudy]||'—'}</span>
+      </div>
     </div>`;}).join('')
   :'<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No check-ins yet.</div>';
 
