@@ -1689,15 +1689,33 @@ function renderFC(){
   document.getElementById('fc-bar-fill').style.width=Math.round(f.idx/deck.length*100)+'%';
   document.getElementById('fc-bar-txt').textContent=f.idx+'/'+deck.length;
   document.getElementById('fc-status').textContent=f.phase==='retry'?'🔁 Reviewing missed cards':'';
-  document.getElementById('fc-term').textContent=card.term;
-  // Equation display
-  const eqFront=document.getElementById('fc-eq');
-  const eqBack=document.getElementById('fc-eq-back');
-  // Equation only on the back — showing it on the front gives away the answer
-  eqFront.style.display='none';
-  if(card.eq){eqBack.textContent=card.eq;eqBack.style.display='block';}
-  else{eqBack.style.display='none';}
+  const isFormula=!!card.eq;
+  // Type badge
+  const badge=document.getElementById('fc-type-badge');
+  if(badge){
+    badge.textContent=isFormula?'📐 Formula':'📖 Definition';
+    badge.style.background=isFormula?'rgba(124,58,237,0.12)':'rgba(13,148,136,0.1)';
+    badge.style.color=isFormula?'var(--purple-dark)':'var(--teal)';
+  }
+  // Front: formula cards show equation as star, def cards show term
+  const formulaFront=document.getElementById('fc-formula-front');
+  const defFront=document.getElementById('fc-def-front');
+  if(isFormula){
+    formulaFront.style.display='block';defFront.style.display='none';
+    document.getElementById('fc-eq-star').textContent=card.eq;
+    document.getElementById('fc-term-sub').textContent=card.term;
+    document.getElementById('fc-front-hint').textContent='What does each part mean? Tap to reveal';
+  } else {
+    formulaFront.style.display='none';defFront.style.display='block';
+    document.getElementById('fc-term').textContent=card.term;
+    document.getElementById('fc-front-hint').textContent='Tap to reveal · tap again to flip back';
+  }
+  // Back: definition always shown; equation goes in eq-back for formula cards
   document.getElementById('fc-def').textContent=card.def;
+  const eqBack=document.getElementById('fc-eq-back');
+  if(isFormula){eqBack.textContent=card.eq;eqBack.style.display='block';}
+  else{eqBack.style.display='none';}
+  document.getElementById('fc-eq').style.display='none';
   document.getElementById('flip-card').classList.remove('flipped');
   f.flipped=false;
   document.getElementById('fc-ans-area').style.display='none';
