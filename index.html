@@ -1328,6 +1328,14 @@ function useHint(mode){
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────
 function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+// Shuffle a question's options and update ans index so correct answer moves around
+function shuffleOpts(q){
+  const indices=[0,1,2,3];
+  for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]];}
+  const newOpts=indices.map(i=>q.opts[i]);
+  const newAns=indices.indexOf(q.ans);
+  return{...q,opts:newOpts,ans:newAns};
+}
 function buildOpts(cid,opts,handler){
   const letters=['A','B','C','D'];
   document.getElementById(cid).innerHTML=opts.map((o,i)=>
