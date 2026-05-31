@@ -1424,6 +1424,7 @@ function trackMistake(qId,mode,ms,correct){
 
 // ─── FLASHCARDS ───────────────────────────────────────────────────────────
 function startFC(){
+  trackModeUsed('fc');
   const f=S.fc;
   // Flashcards: active session only, combined sessions filter by subject
   const s=getSession();
