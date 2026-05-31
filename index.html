@@ -1952,18 +1952,42 @@ const CHECKIN_STEPS=[
     icon:'😊',
     q:'How are you feeling today?',
     sub:'Be honest — there are no wrong answers here.',
-    emojis:['😔','😕','😐','🙂','😄'],
-    labels:['Rough','Meh','Okay','Good','Great'],
+    emojis:['😄','🙂','😐','😕','😔'],
+    labels:['Great','Good','Okay','Meh','Rough'],
     key:'feeling'
   },
   {
     icon:'🧠',
     q:'How confident do you feel about today\'s topic?',
-    sub:'1 = totally new to me, 5 = I\'ve got this!',
-    emojis:['😰','😬','🤔','💪','🌟'],
-    labels:['Lost','Unsure','Getting it','Confident','Crushing it'],
+    sub:'Left = totally on it, right = still figuring it out.',
+    emojis:['🌟','💪','🤔','😬','😰'],
+    labels:['Crushing it','Confident','Getting it','Unsure','Lost'],
     key:'confidence'
-  }
+  },
+  {
+    icon:'😴',
+    q:'How was your sleep last night?',
+    sub:'Sleep is a superpower for memory — no judgment!',
+    emojis:['🌙','😌','😐','😪','🥱'],
+    labels:['Amazing','Good','Okay','Not great','Rough'],
+    key:'sleep'
+  },
+  {
+    icon:'🎯',
+    q:'Is anything on your mind today?',
+    sub:'It\'s okay if life is noisy — Hani wants to know.',
+    emojis:['😌','🤏','😤','😩','🌪️'],
+    labels:['All clear','A little','Some stuff','A lot','Overwhelmed'],
+    key:'distraction'
+  },
+  {
+    icon:'📖',
+    q:'Did you study or review anything since last time?',
+    sub:'No pressure — this helps Hani plan today\'s session.',
+    emojis:['✅','🤏','💭','❌','🤷'],
+    labels:['Yes, a lot','A little','I meant to','Not really','Nope'],
+    key:'selfStudy'
+  },
 ];
 let checkinAnswers={};
 let checkinStep=0;
