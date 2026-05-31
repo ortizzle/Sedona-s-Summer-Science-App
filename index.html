@@ -1324,7 +1324,7 @@ function useHint(mode){
   const deck=mode==='qz'?(m.phase==='main'?m.qs:m.retry):mode==='lv'?(m.phase==='main'?m.qs:m.wrong):m.qs;
   const item=deck[m.idx];
   if(!item||m.hintUsed)return;
-  if(S.totalXP<20){showBadgeToast({icon:'⚠️',name:'Need 20 XP for a hint!'});return;}
+  if(S.totalXP<20){showBadgeToast({icon:'⚠️',name:'You need 20 XP to unlock a hint'},true);return;}
   S.totalXP=Math.max(0,S.totalXP-5);m.hintUsed=true;updateXPBar();saveProgress();
   document.getElementById(mode+'-hint-box').textContent='💡 '+item.hint;
   document.getElementById(mode+'-hint-box').classList.add('on');
