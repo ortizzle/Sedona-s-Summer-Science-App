@@ -1752,13 +1752,14 @@ function renderHaniDash(){
   const sprintLog=log.filter(e=>e.mode==='qz');
 
   // Accuracy by question
+  // Use ALL activity logs (not just sprint) so correct answers from Levels/QQ show up
   const buildQStats=(qs)=>qs.map(q=>{
-    const misses=S.mistakes[q.id]||0;
-    const attempts=sprintLog.filter(e=>e.qId===q.id);
-    const corrects=attempts.filter(e=>e.correct).length;
-    const avgMs=attempts.length?Math.round(attempts.reduce((s,e)=>s+e.ms,0)/attempts.length):null;
-    return{q,misses,attempts:attempts.length,corrects,avgMs};
-  }).sort((a,b)=>b.misses-a.misses);
+    const allAttempts=log.filter(e=>e.qId===q.id);
+    const misses=allAttempts.filter(e=>!e.correct).length;
+    const corrects=allAttempts.filter(e=>e.correct).length;
+    const avgMs=allAttempts.length?Math.round(allAttempts.reduce((s,e)=>s+e.ms,0)/allAttempts.length):null;
+    return{q,misses,attempts:allAttempts.length,corrects,avgMs};
+  }).sort((a,b)=>b.misses-a.misses||b.attempts-a.attempts);
   const qStats=buildQStats(QS);
 
   // Weak vs strong
