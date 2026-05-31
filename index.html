@@ -2090,6 +2090,47 @@ function checkinNext(){
   }
 }
 
+function haniQFilter(sessionFilter, btn){
+  // Update button styles
+  document.querySelectorAll('[id^="qf-"]').forEach(b=>{
+    b.style.background='white';b.style.color='var(--gray-700)';b.style.borderColor='var(--gray-200)';
+  });
+  btn.style.background='var(--purple)';btn.style.color='white';btn.style.borderColor='var(--purple)';
+  // Filter questions
+  const sprintLog=S.timingLog.filter(e=>e.mode==='qz');
+  const filtered=sessionFilter==='all'?QS:QS.filter(q=>q.session===sessionFilter);
+  const stats=filtered.map(q=>{
+    const misses=S.mistakes[q.id]||0;
+    const attempts=sprintLog.filter(e=>e.qId===q.id);
+    const corrects=attempts.filter(e=>e.correct).length;
+    const avgMs=attempts.length?Math.round(attempts.reduce((s,e)=>s+e.ms,0)/attempts.length):null;
+    return{q,misses,attempts:attempts.length,corrects,avgMs};
+  }).sort((a,b)=>b.misses-a.misses);
+  const list=document.getElementById('q-breakdown-list');
+  if(!list)return;
+  list.innerHTML=stats.map((s)=>{
+    const color=s.misses===0&&s.attempts>0?'#166534':s.misses>=3?'#991b1b':s.misses>=1?'#854d0e':'#9ca3af';
+    const dot=s.misses===0&&s.attempts>0?'🟢':s.misses>=3?'🔴':s.misses>=1?'🟡':'⚪';
+    const avgSec=s.avgMs?(s.avgMs/1000).toFixed(1)+'s':'—';
+    const sess=SESSIONS.find(sess=>sess.num===s.q.session);
+    return `<div style="border:1px solid var(--gray-200);border-radius:8px;overflow:hidden;">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;background:var(--gray-100);">
+        <span style="font-size:14px;">${dot}</span>
+        <span style="font-size:12px;color:#374151;font-weight:600;flex:1;line-height:1.4;">${s.q.q}</span>
+        ${sess?`<span style="font-size:10px;color:var(--gray-500);white-space:nowrap;">S${sess.num}</span>`:''}
+      </div>
+      <div style="display:none;padding:10px 12px;font-size:12px;color:var(--gray-700);background:white;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;text-align:center;">
+          <div style="background:var(--gray-100);border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:#374151;">${s.attempts||'0'}</div><div style="font-size:10px;color:var(--gray-500);">Attempts</div></div>
+          <div style="background:#dcfce7;border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:#166534;">${s.attempts?s.corrects:'0'}</div><div style="font-size:10px;color:#166534;">Correct</div></div>
+          <div style="background:${s.misses>0?'#fee2e2':'var(--gray-100)'};border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:${color};">${s.misses||'0'}</div><div style="font-size:10px;color:${color};">Misses</div></div>
+          <div style="background:var(--gray-100);border-radius:6px;padding:6px 4px;"><div style="font-weight:800;color:#374151;">${avgSec}</div><div style="font-size:10px;color:var(--gray-500);">Avg Time</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--gray-500);">Answer: <strong style="color:#374151;">${s.q.opts[s.q.ans]}</strong></div>
+      </div>
+    </div>`;
+  }).join('');
+}
 function setActiveSession(idx){
   ACTIVE_SESSION=idx;
   applySession();
