@@ -1954,12 +1954,21 @@ function renderHaniDash(){
         </div>
         <div style="padding:12px 14px 8px;">
           <div style="font-size:11px;font-weight:700;color:#374151;letter-spacing:.5px;margin-bottom:8px;">QUESTION BREAKDOWN</div>
+          ${(()=>{
+            // Default to active session if it has a number, else 'all'
+            const activeSess=getSession();
+            const defaultFilter=activeSess.num||'all';
+            window._haniDefaultFilter=defaultFilter;
+            return '';
+          })()}
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-            <button onclick="haniQFilter('all',this)" style="padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--purple);background:var(--purple);color:white;" id="qf-all">All</button>
-            ${SESSIONS.filter(s=>!s.combined).map(s=>`<button onclick="haniQFilter(${s.num},this)" style="padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--gray-200);background:white;color:var(--gray-700);" id="qf-${s.num}">S${s.num} ${s.subject}</button>`).join('')}
+            <button onclick="haniQFilter('all',this)" style="padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid ${window._haniDefaultFilter==='all'?'var(--purple)':'var(--gray-200)'};background:${window._haniDefaultFilter==='all'?'var(--purple)':'white'};color:${window._haniDefaultFilter==='all'?'white':'var(--gray-700)'};" id="qf-all">All</button>
+            ${SESSIONS.filter(s=>!s.combined).map(s=>{
+              const active=window._haniDefaultFilter===s.num;
+              return `<button onclick="haniQFilter(${s.num},this)" style="padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid ${active?'var(--purple)':'var(--gray-200)'};background:${active?'var(--purple)':'white'};color:${active?'white':'var(--gray-700)'};" id="qf-${s.num}">S${s.num} ${s.subject}</button>`;}).join('')}
           </div>
           <div id="q-breakdown-list" style="display:flex;flex-direction:column;gap:6px;">
-            ${buildQStats(QS).map((s,i)=>{
+            ${buildQStats(window._haniDefaultFilter==='all'?QS:QS.filter(q=>q.session===window._haniDefaultFilter)).map((s,i)=>{
               const color=s.misses===0&&s.attempts>0?'#166534':s.misses>=3?'#991b1b':s.misses>=1?'#854d0e':'#9ca3af';
               const dot=s.misses===0&&s.attempts>0?'🟢':s.misses>=3?'🔴':s.misses>=1?'🟡':'⚪';
               const avgSec=s.avgMs?(s.avgMs/1000).toFixed(1)+'s':'—';
