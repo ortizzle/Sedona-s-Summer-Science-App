@@ -1541,7 +1541,8 @@ function startLevels(){
   const l=S.lv;l.curLv=1;l.unlocked=[1];l.passed=[];l.sessionXP=0;l.streak=0;loadLv(1);updateLvTabs();
 }
 function loadLv(lv){
-  const l=S.lv;l.curLv=lv;l.qs=shuffle(QS.filter(q=>q.lv===lv));
+  const l=S.lv;const activeNum=getSession().num||99;
+  l.curLv=lv;l.qs=shuffle(QS.filter(q=>q.lv===lv&&(!q.session||q.session<=activeNum))).map(shuffleOpts);
   l.wrong=[];l.mastered=new Set();l.idx=0;l.phase='main';l.hintUsed=false;renderLvQ();
 }
 function switchLv(n){if(S.lv.unlocked.includes(n))loadLv(n);}
