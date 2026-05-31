@@ -2082,10 +2082,15 @@ function renderHaniDash(){
     const d=new Date(c.ts);
     const timeStr=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     const sess=SESSIONS.find(s=>s.num===c.session);
+    const score=calcCheckInScore(c);
+    const scoreCol=score!==null?scoreColor(score):'var(--gray-400)';
     return `<div style="padding:10px 0;border-bottom:1px solid var(--gray-100);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <span style="font-size:12px;color:var(--gray-700);font-weight:600;">${timeStr}</span>
-        <span style="font-size:11px;color:var(--gray-500);">${sess?sess.title:'—'}</span>
+        <div>
+          <span style="font-size:12px;color:var(--gray-700);font-weight:600;">${timeStr}</span>
+          <span style="font-size:11px;color:var(--gray-500);margin-left:6px;">${sess?sess.title:'—'}</span>
+        </div>
+        ${score!==null?`<span style="font-size:13px;font-weight:800;color:${scoreCol};background:${scoreCol}18;padding:2px 8px;border-radius:99px;">${score}%</span>`:''}
       </div>
       <div style="display:flex;gap:6px;align-items:center;">
         <span title="Feeling" style="font-size:20px;">${ciEmojis.feeling[c.feeling]||'—'}</span>
@@ -2093,6 +2098,7 @@ function renderHaniDash(){
         <span title="Sleep" style="font-size:20px;">${ciEmojis.sleep[c.sleep]||'—'}</span>
         <span title="Distractions" style="font-size:20px;">${ciEmojis.distraction[c.distraction]||'—'}</span>
         <span title="Self-study" style="font-size:20px;">${ciEmojis.selfStudy[c.selfStudy]||'—'}</span>
+        ${c.sessionRating?`<span title="Session rating" style="font-size:20px;margin-left:4px;">${['','😔','😐','🙂','😊','🌟'][c.sessionRating]}</span>`:''}
       </div>
     </div>`;}).join('')
   :'<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No check-ins yet.</div>';
