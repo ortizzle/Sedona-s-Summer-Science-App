@@ -2628,6 +2628,17 @@ function haniQFilter(sessionFilter, btn){
     </div>`;
   }).join('');
 }
+// ─── KATEX ────────────────────────────────────────────────────────────────
+function renderPhysicsEq(){
+  if(typeof katex==='undefined')return;
+  document.querySelectorAll('#s-physics-eq .eq-katex').forEach(el=>{
+    const latex=el.getAttribute('data-latex');
+    if(!latex)return;
+    katex.render(latex,el,{throwOnError:false,displayMode:true});
+    el.style.margin='4px 0';
+  });
+}
+
 // ─── RESOURCES ────────────────────────────────────────────────────────────
 function renderResources(){
   const s=getSession();
