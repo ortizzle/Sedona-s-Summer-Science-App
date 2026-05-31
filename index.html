@@ -2414,6 +2414,75 @@ function haniQFilter(sessionFilter, btn){
     </div>`;
   }).join('');
 }
+// ─── RESOURCES ────────────────────────────────────────────────────────────
+function renderResources(){
+  const s=getSession();
+  const badge=document.getElementById('res-badge');
+  if(badge)badge.textContent=s.combined?s.title:`Session ${s.num}`;
+  const intro=document.getElementById('res-intro');
+  if(intro)intro.textContent=`Resources for ${s.title} · ${s.subject}. Tap any card to open.`;
+  const list=document.getElementById('res-list-dynamic');
+  if(!list)return;
+  const sessionResources=(s.resources||[]);
+  if(sessionResources.length===0){list.innerHTML='<div style="padding:8px 20px 0;font-size:13px;color:var(--gray-500);">No session-specific resources yet.</div>';return;}
+  list.innerHTML=`
+    <div style="padding:12px 20px 4px;"><div style="font-size:11px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:1px;">📖 For Today's Session</div></div>
+    ${sessionResources.map(r=>`
+    <a class="res-item" href="${r.url}" target="_blank" style="margin:0 20px 0;display:block;">
+      <div class="res-icon">${r.icon}</div>
+      <div class="res-title">${r.title}</div>
+      <div class="res-desc">${r.desc}</div>
+      <div class="res-url">${r.src}</div>
+    </a>`).join('')}`;
+}
+
+// ─── CHECK-IN SCORE ───────────────────────────────────────────────────────
+function calcCheckInScore(c){
+  if(!c||!c.feeling)return null;
+  // All dimensions scored 1-5, 5=best. Sum/25*100
+  const dims=[c.feeling,c.confidence,c.sleep,c.distraction,c.selfStudy].filter(Boolean);
+  if(!dims.length)return null;
+  return Math.round(dims.reduce((a,b)=>a+b,0)/(dims.length*5)*100);
+}
+function scoreColor(pct){
+  if(pct>=80)return '#166534';
+  if(pct>=60)return '#854d0e';
+  return '#991b1b';
+}
+
+// ─── END SESSION ──────────────────────────────────────────────────────────
+function endSedonaSession(){
+  // Quick reflection modal
+  const modal=document.createElement('div');
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
+  modal.innerHTML=`
+    <div style="background:white;border-radius:20px;padding:24px;max-width:340px;width:100%;text-align:center;">
+      <div style="font-size:40px;margin-bottom:8px;">🔬</div>
+      <div style="font-size:18px;font-weight:800;color:var(--purple-dark);margin-bottom:4px;">Session Complete!</div>
+      <div style="font-size:13px;color:var(--gray-500);margin-bottom:20px;">How did today's session feel overall?</div>
+      <div style="display:flex;justify-content:center;gap:10px;margin-bottom:20px;" id="end-scale">
+        ${['😔','😐','🙂','😊','🌟'].map((e,i)=>`<button onclick="selectEndRating(${i+1})" id="end-btn-${i+1}" style="font-size:28px;padding:8px;border-radius:12px;border:2px solid transparent;background:var(--gray-100);cursor:pointer;">${e}</button>`).join('')}
+      </div>
+      <button onclick="confirmEndSession()" id="end-confirm-btn" style="width:100%;padding:13px;background:var(--purple);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;opacity:.4;" disabled>Finish Session →</button>
+      <button onclick="this.closest('[style]').remove()" style="margin-top:10px;width:100%;padding:10px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;">Keep studying</button>
+    </div>`;
+  document.body.appendChild(modal);
+  window._endRating=null;
+}
+function selectEndRating(n){
+  window._endRating=n;
+  document.querySelectorAll('[id^="end-btn-"]').forEach(b=>b.style.borderColor='transparent');
+  document.getElementById('end-btn-'+n).style.borderColor='var(--purple)';
+  const btn=document.getElementById('end-confirm-btn');
+  if(btn){btn.disabled=false;btn.style.opacity='1';}
+}
+function confirmEndSession(){
+  if(S.checkIns.length){S.checkIns[S.checkIns.length-1].sessionRating=window._endRating||null;}
+  saveProgress();
+  document.querySelectorAll('[style*="position:fixed"]').forEach(el=>{if(el.id!=='test-mode-banner')el.remove();});
+  go('welcome');
+}
+
 function setActiveSession(idx){
   const prevSubject=getSession().subject;
   ACTIVE_SESSION=idx;
