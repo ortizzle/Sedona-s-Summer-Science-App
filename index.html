@@ -1657,6 +1657,7 @@ function nextLv(){
 
 // ─── QUICK QUESTIONS (Survival) ───────────────────────────────────────────
 function startQQ(){
+  trackModeUsed('qq');
   const qq=S.qq;const activeNum=getSession().num||99;
   qq.qs=shuffle(QS.filter(q=>!q.session||q.session<=activeNum)).map(shuffleOpts);qq.idx=0;qq.hearts=3;qq.score=0;qq.correct=0;qq.streak=0;qq.sessionXP=0;qq.hintUsed=false;
   updQQHearts();document.getElementById('qq-score').textContent=0;renderQQ();
