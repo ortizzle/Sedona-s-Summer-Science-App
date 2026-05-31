@@ -1018,15 +1018,31 @@ const LEVELS_META=[
 ];
 
 const BADGES_DEF=[
-  {id:'first_correct',icon:'🎯',name:'First Hit',desc:'Answer your very first question correctly.',unlocked:false,new:false},
-  {id:'perfect_quiz',icon:'💯',name:'Perfect Sprint',desc:'Score 100% on a Sprint Quiz — all 10 questions correct.',unlocked:false,new:false},
-  {id:'streak_5',icon:'🔥',name:'On Fire',desc:'Answer 5 questions in a row correctly without a mistake.',unlocked:false,new:false},
-  {id:'streak_10',icon:'🌋',name:'Unstoppable',desc:'Answer 10 questions in a row correctly — an incredible streak!',unlocked:false,new:false},
-  {id:'fc_complete',icon:'🃏',name:'Card Shark',desc:'Complete a full round of Flashcards from start to finish.',unlocked:false,new:false},
-  {id:'levels_complete',icon:'🏔️',name:'Summit',desc:'Pass all three levels (Easy, Medium, and Hard) in Levels mode.',unlocked:false,new:false},
-  {id:'qq_10',icon:'💚',name:'Survivor',desc:'Answer 10 questions correctly in Quick Questions mode.',unlocked:false,new:false},
-  {id:'xp_250',icon:'⚡',name:'Energy Surge',desc:'Earn a total of 250 XP across all activities.',unlocked:false,new:false},
-  {id:'xp_500',icon:'🌟',name:'Star Pupil',desc:'Earn a total of 500 XP — you\'re mastering this material!',unlocked:false,new:false},
+  // ── Getting started ──
+  {id:'first_correct',icon:'🎯',name:'First Hit',brag:'The journey of a thousand right answers starts with one.',desc:'Answer your very first question correctly.',unlocked:false,new:false},
+  {id:'xp_100',icon:'🌱',name:'Seedling',brag:'Every scientist starts somewhere. You\'ve started.',desc:'Earn your first 100 XP.',unlocked:false,new:false},
+  {id:'xp_250',icon:'⚡',name:'Energy Surge',brag:'You\'re not just studying — you\'re building momentum.',desc:'Earn 250 XP across all activities.',unlocked:false,new:false},
+  {id:'xp_500',icon:'🌟',name:'Star Pupil',brag:'500 XP means hundreds of questions answered. That\'s real work.',desc:'Earn 500 XP — you\'re mastering this material!',unlocked:false,new:false},
+  {id:'xp_1000',icon:'💎',name:'Diamond Mind',brag:'1000 XP. Sedona, you are absolutely crushing it.',desc:'Earn 1000 XP total — elite territory.',unlocked:false,new:false},
+  // ── Streaks ──
+  {id:'streak_3',icon:'✨',name:'Warming Up',brag:'3 in a row — your brain is waking up!',desc:'Answer 3 questions correctly in a row.',unlocked:false,new:false},
+  {id:'streak_5',icon:'🔥',name:'On Fire',brag:'5 in a row. The material is sticking.',desc:'Answer 5 questions correctly in a row.',unlocked:false,new:false},
+  {id:'streak_10',icon:'🌋',name:'Unstoppable',brag:'10 in a row. Sedona, you are unstoppable.',desc:'Answer 10 questions correctly in a row.',unlocked:false,new:false},
+  {id:'streak_20',icon:'☄️',name:'Comet',brag:'20 in a row. That\'s not luck — that\'s mastery.',desc:'Answer 20 questions in a row without a single miss.',unlocked:false,new:false},
+  // ── Game modes ──
+  {id:'fc_complete',icon:'🃏',name:'Card Shark',brag:'You flipped every card. Now they live in your memory.',desc:'Complete a full round of Flashcards.',unlocked:false,new:false},
+  {id:'fc_mastered_10',icon:'📚',name:'Bookworm',brag:'10 flashcards mastered. Hani is impressed.',desc:'Mark 10 flashcards as Got It!',unlocked:false,new:false},
+  {id:'qq_10',icon:'💚',name:'Survivor',brag:'10 correct with hearts on the line. Nerves of steel.',desc:'Answer 10 questions correctly in Quick Questions.',unlocked:false,new:false},
+  {id:'qq_25',icon:'🛡️',name:'Endurance',brag:'25 correct in Quick Questions. Your hearts are basically armor.',desc:'Answer 25 questions correctly in Quick Questions.',unlocked:false,new:false},
+  {id:'perfect_quiz',icon:'💯',name:'Perfect Sprint',brag:'Perfect score on a timed quiz. Exam conditions. No pressure. Nailed it.',desc:'Score 100% on a Sprint Quiz.',unlocked:false,new:false},
+  // ── Levels ──
+  {id:'level_easy',icon:'⭐',name:'Easy Rider',brag:'Easy level, zero mistakes. A clean sweep.',desc:'Complete Easy level without any wrong answers.',unlocked:false,new:false},
+  {id:'level_medium',icon:'⭐⭐',name:'Rising Star',brag:'Medium level, perfect score. You\'re climbing.',desc:'Complete Medium level without any wrong answers.',unlocked:false,new:false},
+  {id:'levels_complete',icon:'🏔️',name:'Summit',brag:'All three levels, perfected. The whole mountain is yours.',desc:'Pass all three levels (Easy, Medium, Hard) in Levels mode.',unlocked:false,new:false},
+  // ── Growth & effort ──
+  {id:'growth_cleared',icon:'🌿',name:'Growth Mindset',brag:'You turned a miss into a master. That\'s the whole point.',desc:'Mark a Growth Zone item as understood.',unlocked:false,new:false},
+  {id:'all_modes',icon:'🔬',name:'Full Lab',brag:'Flashcards, Levels, Quick Questions, Sprint Quiz — you used the whole lab.',desc:'Play all four game modes in the same session.',unlocked:false,new:false},
+  {id:'multi_session',icon:'🎓',name:'Multi-Scientist',brag:'Chemistry and Physics. Two subjects, one scientist.',desc:'Study content from more than one subject.',unlocked:false,new:false},
 ];
 
 // ─── STATE ────────────────────────────────────────────────────────────────
