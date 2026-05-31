@@ -1320,8 +1320,10 @@ function getLvInfo(){
 }
 function addXP(n,badgeEl){
   S.totalXP+=n;
+  if(S.totalXP>=100)checkBadge('xp_100');
   if(S.totalXP>=250)checkBadge('xp_250');
   if(S.totalXP>=500)checkBadge('xp_500');
+  if(S.totalXP>=1000)checkBadge('xp_1000');
   updateXPBar();saveProgress();
   if(badgeEl){const el=document.getElementById(badgeEl);if(el)el.textContent='+'+S.totalXP+' XP';}
 }
