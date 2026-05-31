@@ -1662,7 +1662,7 @@ function updQQHearts(){
 }
 function renderQQ(){
   const qq=S.qq;
-  if(qq.idx>=qq.qs.length||qq.hearts<=0){if(qq.correct>=10)checkBadge('qq_10');showRes('qq',qq.correct,qq.idx,qq.sessionXP);return;}
+  if(qq.idx>=qq.qs.length||qq.hearts<=0){if(qq.correct>=10)checkBadge('qq_10');if(qq.correct>=25)checkBadge('qq_25');showRes('qq',qq.correct,qq.idx,qq.sessionXP);return;}
   qq.hintUsed=false;const item=qq.qs[qq.idx];
   document.getElementById('qq-q-label').textContent='SURVIVAL · Q'+(qq.idx+1);
   document.getElementById('qq-q-text').textContent=item.q;
