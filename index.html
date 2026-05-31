@@ -2010,6 +2010,7 @@ function renderCheckinStep(){
   document.getElementById('checkin-q-text').textContent=step.q;
   document.getElementById('checkin-q-sub').textContent=step.sub;
   document.getElementById('checkin-step-indicator').textContent=`${checkinStep+1} of ${CHECKIN_STEPS.length}`;
+  document.getElementById('checkin-next-btn').textContent=checkinStep===CHECKIN_STEPS.length-1?'Let\'s go! 🚀':'Continue →';
   document.getElementById('checkin-next-btn').classList.remove('ready');
   const scale=document.getElementById('emoji-scale');
   scale.innerHTML=step.emojis.map((e,i)=>`
