@@ -2673,12 +2673,13 @@ function changeSessionFromCheckin(){
   const sessionsWithNum=SESSIONS.filter(s=>!s.combined&&s.num);
   const opts=sessionsWithNum.map((s,i)=>`<button onclick="pickCheckinSession(${SESSIONS.indexOf(s)},this)" style="padding:10px 14px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;text-align:left;width:100%;border:2px solid var(--gray-200);background:white;color:var(--gray-700);margin-bottom:6px;">${s.num===getSession().num?'✅ ':''} Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:.6;">${s.date} · ${s.subject}</span></button>`).join('');
   const modal=document.createElement('div');
+  modal.id='change-session-modal';
   modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
   modal.innerHTML=`<div style="background:white;border-radius:20px;padding:20px;max-width:340px;width:100%;">
     <div style="font-size:15px;font-weight:800;color:var(--purple-dark);margin-bottom:4px;">Change Session</div>
     <div style="font-size:12px;color:var(--gray-500);margin-bottom:14px;">⚠️ Hani will see this change in her dashboard.</div>
     ${opts}
-    <button onclick="this.closest('[style]').remove()" style="width:100%;padding:10px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;margin-top:4px;">Cancel</button>
+    <button onclick="document.getElementById('change-session-modal').remove()" style="width:100%;padding:10px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;margin-top:4px;">Cancel</button>
   </div>`;
   document.body.appendChild(modal);
 }
@@ -2687,7 +2688,8 @@ function pickCheckinSession(idx, btn){
   const s=getSession();
   const el=document.getElementById('checkin-session-title');
   if(el)el.textContent=`Session ${s.num} — ${s.title}`;
-  document.querySelectorAll('[style*="position:fixed"]').forEach(el=>{if(el.id!=='test-mode-banner')el.remove();});
+  const modal=document.getElementById('change-session-modal');
+  if(modal)modal.remove();
 }
 function chooseHani(){
   enterTestMode(false); // Auto-enable preview mode — Hani browsing shouldn't record anything
