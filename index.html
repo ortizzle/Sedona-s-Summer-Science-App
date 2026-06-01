@@ -2628,6 +2628,22 @@ function haniQFilter(sessionFilter, btn){
     </div>`;
   }).join('');
 }
+// ─── QUESTION FILTER ──────────────────────────────────────────────────────
+// Returns a filter function for QS based on the active session.
+// - Individual session: questions from sessions up to and including this one
+// - Combined Chemistry/Physics: questions from that subject only, all sessions
+function getQSFilter(){
+  const s=getSession();
+  if(s.combined){
+    return q=>{
+      const sess=SESSIONS.find(sess=>sess.num===q.session);
+      return sess&&sess.subject===s.subject;
+    };
+  }
+  const maxNum=s.num||99;
+  return q=>!q.session||q.session<=maxNum;
+}
+
 // ─── KATEX ────────────────────────────────────────────────────────────────
 function renderPhysicsEq(){
   if(typeof katex==='undefined')return;
