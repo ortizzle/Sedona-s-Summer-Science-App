@@ -655,7 +655,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="lv-prog-row"><span id="lv-prog-txt">0/5 mastered</span><span id="lv-prog-pct">0%</span></div>
     <div class="lv-bar-track"><div class="lv-bar-fill" id="lv-bar-fill" style="width:0%"></div></div>
   </div>
-  <div class="hint-row"><button class="hint-btn" id="lv-hint-btn" onclick="useHint('lv')">💡 Hint <span style="font-size:10px;opacity:.7;">(−5 XP)</span></button></div>
+  <div class="hint-row" style="justify-content:space-between;">
+    <button class="hint-btn" id="lv-hint-btn" onclick="useHint('lv')">💡 Hint <span style="font-size:10px;opacity:.7;">(−5 XP)</span></button>
+    <button class="hint-btn" id="lv-ref-btn" onclick="showRefPopup()" style="border-color:var(--teal);color:var(--teal);display:none;"></button>
+  </div>
   <div class="hint-box" id="lv-hint-box"></div>
   <div class="q-card"><div class="q-label" id="lv-q-label">QUESTION 1</div><div class="q-text" id="lv-q-text"></div></div>
   <div class="opts" id="lv-opts"></div>
