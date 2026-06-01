@@ -1599,21 +1599,79 @@ function buildPeriodicTable(){
   const grid=document.getElementById('pt-grid');
   const placed={};
   ELEMENTS_DATA.forEach(el=>{placed[`${el[5]},${el[4]}`]=el;});
-  for(let p=1;p<=4;p++){
+
+  // Rows 1–7: main periods
+  for(let p=1;p<=7;p++){
     for(let g=1;g<=18;g++){
       const el=placed[`${p},${g}`];
       const div=document.createElement('div');
-      if(!el){div.className='el gap';}
+      // Lanthanide placeholder in period 6 group 3
+      if(p===6&&g===3){
+        div.className='el lanthanide-placeholder';
+        div.innerHTML='<span style="font-size:6px;line-height:1.1;">57–71<br>La–Lu</span>';
+        div.onclick=()=>{grid.querySelector('[data-row="9"]')?.scrollIntoView({behavior:'smooth'});};
+      }
+      // Actinide placeholder in period 7 group 3
+      else if(p===7&&g===3){
+        div.className='el actinide-placeholder';
+        div.innerHTML='<span style="font-size:6px;line-height:1.1;">89–103<br>Ac–Lr</span>';
+      }
+      else if(!el){div.className='el gap';}
       else{
         div.className='el '+el[6];
         div.innerHTML=`<span class="el-num">${el[0]}</span><span class="el-sym">${el[1]}</span>`;
         div.onclick=()=>showElementDetail(el);
         if(el[0]<=20)div.style.fontWeight='900';
-        else div.style.opacity='0.7';
+        else div.style.opacity='0.75';
       }
       div.style.gridColumn=g;div.style.gridRow=p;
       grid.appendChild(div);
     }
+  }
+
+  // Row 8: gap (handled by CSS 6px row)
+
+  // Row 9: Lanthanides (elements 57–71, columns 3–17)
+  const lanLabel=document.createElement('div');
+  lanLabel.className='el gap';
+  lanLabel.style.cssText='grid-column:1;grid-row:9;background:rgba(253,230,138,0.3);border-radius:3px;';
+  lanLabel.innerHTML='<span style="font-size:7px;font-weight:800;color:#92400e;">Lan.</span>';
+  grid.appendChild(lanLabel);
+  for(let g=3;g<=17;g++){
+    const el=placed[`9,${g}`];
+    const div=document.createElement('div');
+    if(!el){div.className='el gap';}
+    else{
+      div.className='el transition';
+      div.setAttribute('data-row','9');
+      div.style.cssText='background:#fde68a;color:#713f12;height:28px;';
+      div.innerHTML=`<span class="el-num">${el[0]}</span><span class="el-sym">${el[1]}</span>`;
+      div.onclick=()=>showElementDetail(el);
+      div.style.opacity='0.75';
+    }
+    div.style.gridColumn=g;div.style.gridRow=9;
+    grid.appendChild(div);
+  }
+
+  // Row 10: Actinides (elements 89–103, columns 3–17)
+  const actLabel=document.createElement('div');
+  actLabel.className='el gap';
+  actLabel.style.cssText='grid-column:1;grid-row:10;background:rgba(196,181,253,0.3);border-radius:3px;';
+  actLabel.innerHTML='<span style="font-size:7px;font-weight:800;color:#5b21b6;">Act.</span>';
+  grid.appendChild(actLabel);
+  for(let g=3;g<=17;g++){
+    const el=placed[`10,${g}`];
+    const div=document.createElement('div');
+    if(!el){div.className='el gap';}
+    else{
+      div.className='el transition';
+      div.style.cssText='background:#c4b5fd;color:#3b0764;height:28px;';
+      div.innerHTML=`<span class="el-num">${el[0]}</span><span class="el-sym">${el[1]}</span>`;
+      div.onclick=()=>showElementDetail(el);
+      div.style.opacity='0.75';
+    }
+    div.style.gridColumn=g;div.style.gridRow=10;
+    grid.appendChild(div);
   }
 }
 function showElementDetail(el){
