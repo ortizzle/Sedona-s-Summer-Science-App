@@ -2306,7 +2306,11 @@ function startQuiz(){
   trackModeUsed('qz');updateRefButtons();
   const q=S.qz;
   // 5 easy → 3 medium → 2 hard, in difficulty order
-  const pool=QS.filter(getQSFilter());
+  // Session-only mode filters to just the active session
+  const sessionFilter=QZ_SESSION_ONLY
+    ?q=>q.session===getSession().num
+    :getQSFilter();
+  const pool=QS.filter(sessionFilter);
   const easy=shuffle(pool.filter(q=>q.lv===1)).slice(0,5);
   const med=shuffle(pool.filter(q=>q.lv===2)).slice(0,3);
   const hard=shuffle(pool.filter(q=>q.lv===3)).slice(0,2);
