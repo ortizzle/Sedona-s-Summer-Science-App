@@ -1960,7 +1960,8 @@ function go(mode){
   if(mode==='pt'){document.getElementById('s-pt').classList.add('active');return;}
   if(mode==='fc'){document.getElementById('s-fc-screen').classList.add('active');startFC();return;}
   if(mode==='match'){document.getElementById('s-match').classList.add('active');startMatch();return;}
-  if(mode==='qz'){document.getElementById('s-qz-screen').classList.add('active');startQuiz();return;}
+  if(mode==='qz'){showQuizModeSelector();return;}
+  if(mode==='qz-run'){document.getElementById('s-qz-screen').classList.add('active');startQuiz();return;}
   if(mode==='lv'){document.getElementById('s-lv-screen').classList.add('active');startLevels();return;}
   if(mode==='qq'){document.getElementById('s-qq-screen').classList.add('active');startQQ();return;}
   if(mode==='res'){document.getElementById('s-res-screen').classList.add('active');renderResources();return;}
