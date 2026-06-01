@@ -2873,7 +2873,19 @@ function checkinNext(){
     });
     if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
     saveProgress();
-    go('home');
+    // Show fun explainer AFTER check-in, before home
+    const s=getSession();
+    if(s.story){
+      document.getElementById('checkin-questions').style.display='none';
+      document.getElementById('checkin-explainer').style.display='flex';
+      document.getElementById('explainer-emoji').textContent=s.story.emoji;
+      document.getElementById('explainer-hook').textContent=s.story.hook;
+      document.getElementById('explainer-body').textContent=s.story.body;
+      document.getElementById('explainer-ready-btn').textContent=s.story.readyLabel;
+      document.getElementById('explainer-session-label').textContent=`Session ${s.num} · ${s.subject}`;
+    } else {
+      go('home');
+    }
   }
 }
 
