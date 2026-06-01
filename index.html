@@ -2122,7 +2122,7 @@ function skipFC(){
 // ─── SPRINT QUIZ (30s, timer shows last 15s) ─────────────────────────────
 const QZ_COUNT=10; // questions per sprint
 function startQuiz(){
-  trackModeUsed('qz');
+  trackModeUsed('qz');updateRefButtons();
   const q=S.qz;
   // 5 easy → 3 medium → 2 hard, in difficulty order
   const pool=QS.filter(getQSFilter());
