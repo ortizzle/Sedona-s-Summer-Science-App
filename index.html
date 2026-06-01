@@ -2493,6 +2493,7 @@ function nextLv(){
 
 // ─── QUICK QUESTIONS (Survival) ───────────────────────────────────────────
 function startQQ(){
+  if(!QS.some(getQSFilter())){noQuestionsYet();return;}
   trackModeUsed('qq');updateRefButtons();
   const qq=S.qq;
   qq.qs=shuffle(QS.filter(getQSFilter())).map(shuffleOpts);qq.idx=0;qq.hearts=3;qq.score=0;qq.correct=0;qq.streak=0;qq.sessionXP=0;qq.hintUsed=false;
