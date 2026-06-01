@@ -3060,6 +3060,94 @@ function renderPhysicsEq(){
 }
 
 // ─── RESOURCES ────────────────────────────────────────────────────────────
+// ─── MATCHING GAME ────────────────────────────────────────────────────────
+let matchState={pairs:[],selected:null,matched:0,wrong:0,startTime:0};
+function startMatch(){
+  const sessionCards=CARDS.filter(c=>!c.session||c.session===getSession().num);
+  // Pick up to 6 pairs — prefer recall cards, then formula, then definition
+  const pool=[...sessionCards].sort((a,b)=>(a.type==='recall'?0:a.eq?1:2)-(b.type==='recall'?0:b.eq?1:2));
+  const picks=shuffle(pool).slice(0,6);
+  matchState={pairs:picks,selected:null,matched:0,wrong:0,startTime:Date.now()};
+  document.getElementById('match-complete').style.display='none';
+  document.getElementById('match-grid').style.display='grid';
+  document.getElementById('match-badge').textContent=`0/${picks.length}`;
+  renderMatchGrid();
+}
+function renderMatchGrid(){
+  const grid=document.getElementById('match-grid');
+  const pairs=matchState.pairs;
+  // Left: terms (in order), Right: definitions (shuffled)
+  const rightItems=shuffle(pairs.map((_,i)=>i));
+  grid.innerHTML='';
+  pairs.forEach((card,i)=>{
+    // Term tile (left)
+    const t=document.createElement('div');
+    t.id=`mt-${i}`;
+    t.dataset.idx=i;t.dataset.side='term';
+    t.style.cssText='background:rgba(255,255,255,0.9);border:2px solid var(--gray-200);border-radius:12px;padding:12px 10px;font-size:12px;font-weight:700;color:var(--purple-dark);cursor:pointer;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;transition:all .2s;';
+    t.textContent=card.term;
+    t.onclick=()=>selectMatch(t,i,'term');
+    grid.appendChild(t);
+    // Placeholder for right side — will be placed by rightItems order
+    const d=document.createElement('div');d.id=`md-placeholder-${i}`;grid.appendChild(d);
+  });
+  // Now fill right placeholders with shuffled definitions
+  rightItems.forEach((origIdx,pos)=>{
+    const card=pairs[origIdx];
+    const placeholder=document.getElementById(`md-placeholder-${pos}`);
+    placeholder.id=`md-${origIdx}`;
+    placeholder.dataset.idx=origIdx;placeholder.dataset.side='def';
+    placeholder.style.cssText='background:rgba(13,148,136,0.08);border:2px solid rgba(13,148,136,0.2);border-radius:12px;padding:12px 10px;font-size:11px;color:#0f766e;cursor:pointer;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;transition:all .2s;';
+    placeholder.textContent=card.eq||card.def.slice(0,60)+(card.def.length>60?'…':'');
+    placeholder.onclick=()=>selectMatch(placeholder,origIdx,'def');
+  });
+}
+function selectMatch(el,idx,side){
+  if(el.dataset.matched)return;
+  const sel=matchState.selected;
+  if(!sel){
+    // First selection
+    matchState.selected={el,idx,side};
+    el.style.borderColor='var(--purple)';el.style.background=side==='term'?'#ede9fe':'rgba(124,58,237,0.08)';
+    return;
+  }
+  if(sel.el===el){matchState.selected=null;el.style.borderColor=side==='term'?'var(--gray-200)':'rgba(13,148,136,0.2)';el.style.background=side==='term'?'rgba(255,255,255,0.9)':'rgba(13,148,136,0.08)';return;}
+  if(sel.side===side){
+    // Same side — switch selection
+    sel.el.style.borderColor=sel.side==='term'?'var(--gray-200)':'rgba(13,148,136,0.2)';
+    sel.el.style.background=sel.side==='term'?'rgba(255,255,255,0.9)':'rgba(13,148,136,0.08)';
+    matchState.selected={el,idx,side};
+    el.style.borderColor='var(--purple)';el.style.background=side==='term'?'#ede9fe':'rgba(124,58,237,0.08)';
+    return;
+  }
+  // Check match
+  if(sel.idx===idx){
+    // Correct!
+    [sel.el,el].forEach(e=>{e.style.borderColor='var(--teal)';e.style.background='rgba(13,148,136,0.12)';e.style.opacity='0.6';e.style.cursor='default';e.dataset.matched='1';e.onclick=null;});
+    matchState.matched++;matchState.selected=null;
+    document.getElementById('match-badge').textContent=`${matchState.matched}/${matchState.pairs.length}`;
+    if(matchState.matched===matchState.pairs.length){
+      setTimeout(()=>{
+        const secs=Math.round((Date.now()-matchState.startTime)/1000);
+        document.getElementById('match-score').textContent=`${matchState.pairs.length} pairs matched in ${secs}s${matchState.wrong===0?' — perfect! 🌟':` with ${matchState.wrong} wrong tap${matchState.wrong>1?'s':''}`}`;
+        document.getElementById('match-grid').style.display='none';
+        document.getElementById('match-complete').style.display='flex';
+      },400);
+    }
+  } else {
+    // Wrong
+    matchState.wrong++;
+    [sel.el,el].forEach(e=>{e.style.borderColor='#dc2626';e.style.background='#fee2e2';});
+    setTimeout(()=>{
+      sel.el.style.borderColor=sel.side==='term'?'var(--gray-200)':'rgba(13,148,136,0.2)';
+      sel.el.style.background=sel.side==='term'?'rgba(255,255,255,0.9)':'rgba(13,148,136,0.08)';
+      el.style.borderColor=side==='term'?'var(--gray-200)':'rgba(13,148,136,0.2)';
+      el.style.background=side==='term'?'rgba(255,255,255,0.9)':'rgba(13,148,136,0.08)';
+      matchState.selected=null;
+    },600);
+  }
+}
+
 function renderResources(){
   const s=getSession();
   const badge=document.getElementById('res-badge');
