@@ -2405,7 +2405,15 @@ function skipQuiz(){
 }
 
 // ─── LEVELS ───────────────────────────────────────────────────────────────
+function noQuestionsYet(){
+  const s=getSession();
+  const name=s.combined?s.title:`Session ${s.num}: ${s.title}`;
+  showBadgeToast({icon:'📋',name:`No questions yet for ${name} — content added after each session`},true);
+  go('home');
+  return true;
+}
 function startLevels(){
+  if(!QS.some(getQSFilter())){noQuestionsYet();return;}
   trackModeUsed('lv');updateRefButtons();
   const l=S.lv;l.curLv=1;l.unlocked=[1];l.passed=[];l.sessionXP=0;l.streak=0;loadLv(1);updateLvTabs();
 }
