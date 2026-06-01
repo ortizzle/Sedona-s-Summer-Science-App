@@ -2840,14 +2840,8 @@ function selectCheckin(idx){
   document.getElementById('checkin-next-btn').classList.add('ready');
 }
 function checkinBack(){
-  if(checkinStep===0){
-    // Go back to explainer if there is one, else welcome
-    const s=getSession();
-    if(s.story){
-      document.getElementById('checkin-explainer').style.display='flex';
-      document.getElementById('checkin-questions').style.display='none';
-    } else {go('welcome');}
-  } else {checkinStep--;renderCheckinStep();}
+  if(checkinStep===0){go('welcome');}
+  else{checkinStep--;renderCheckinStep();}
 }
 function checkinNext(){
   if(!checkinAnswers[CHECKIN_STEPS[checkinStep].key])return;
