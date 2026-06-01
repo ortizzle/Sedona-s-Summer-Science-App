@@ -2313,8 +2313,6 @@ function launchQuiz(sessionOnly){
 function startQuiz(){
   trackModeUsed('qz');updateRefButtons();
   const q=S.qz;
-  // 5 easy → 3 medium → 2 hard, in difficulty order
-  // Session-only mode filters to just the active session
   const sessionFilter=QZ_SESSION_ONLY
     ?q=>q.session===getSession().num
     :getQSFilter();
