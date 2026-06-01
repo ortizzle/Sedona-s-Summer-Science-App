@@ -3237,11 +3237,15 @@ function setActiveSession(idx){
   const prevSubject=getSession().subject;
   ACTIVE_SESSION=idx;
   applySession();
+  // Preserve scroll position through re-render
+  const haniEl=document.getElementById('s-hani');
+  const scrollY=haniEl?haniEl.scrollTop:window.scrollY;
   renderHaniDash();
-  showBadgeToast({icon:'📅',name:`Session ${SESSIONS[idx].num} active — ${SESSIONS[idx].title}`},true);
-  // Multi-session badge: triggered when switching to a different subject
+  if(haniEl)haniEl.scrollTop=scrollY;else window.scrollTo(0,scrollY);
+  const s=SESSIONS[idx];
+  const label=s.combined?`${s.icon} ${s.title} active`:`Session ${s.num} active — ${s.title}`;
+  showBadgeToast({icon:'📅',name:label},true);
   if(!getSession().combined&&getSession().subject!==prevSubject){
-    const subjects=new Set(SESSIONS.filter(s=>!s.combined&&s.num).map(s=>s.subject));
     const studiedSubjects=new Set([prevSubject,getSession().subject]);
     if(studiedSubjects.size>1)checkBadge('multi_session');
   }
