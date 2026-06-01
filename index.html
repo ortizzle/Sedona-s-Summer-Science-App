@@ -2115,7 +2115,12 @@ const QZ_COUNT=10; // questions per sprint
 function startQuiz(){
   trackModeUsed('qz');
   const q=S.qz;
-  q.qs=shuffle(QS.filter(getQSFilter())).slice(0,QZ_COUNT).map(shuffleOpts);
+  // 5 easy → 3 medium → 2 hard, in difficulty order
+  const pool=QS.filter(getQSFilter());
+  const easy=shuffle(pool.filter(q=>q.lv===1)).slice(0,5);
+  const med=shuffle(pool.filter(q=>q.lv===2)).slice(0,3);
+  const hard=shuffle(pool.filter(q=>q.lv===3)).slice(0,2);
+  q.qs=[...easy,...med,...hard].map(shuffleOpts);
   q.idx=0;q.score=0;q.streak=0;q.correct=0;q.total=0;
   q.answered=false;q.sessionXP=0;q.hintUsed=false;
   stopQuiz();renderQ();
