@@ -2182,11 +2182,14 @@ function trackMistake(qId,mode,ms,correct){
 function startFC(){
   trackModeUsed('fc');
   const f=S.fc;
-  // Flashcards: active session only, combined sessions filter by subject
   const s=getSession();
   const sessionCards=s.combined
     ? CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
     : CARDS.filter(c=>!c.session||c.session===s.num);
+  if(!sessionCards.length){
+    showBadgeToast({icon:'📋',name:`No flashcards yet for ${s.combined?s.title:`Session ${s.num}`} — added after each lesson`},true);
+    go('home');return;
+  }
   f.deck=shuffle(sessionCards);f.wrong=[];f.idx=0;f.mastered=0;f.phase='main';f.flipped=false;f.sessionXP=0;
   renderFC();
 }
