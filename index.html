@@ -2777,24 +2777,18 @@ function chooseSedona(){
   // Update session title on banner
   const el=document.getElementById('checkin-session-title');
   if(el)el.textContent=s.combined?s.title:`Session ${s.num} — ${s.title}`;
-  // Show explainer first if session has a story
-  if(s.story){
-    document.getElementById('checkin-explainer').style.display='flex';
-    document.getElementById('checkin-questions').style.display='none';
-    document.getElementById('explainer-emoji').textContent=s.story.emoji;
-    document.getElementById('explainer-hook').textContent=s.story.hook;
-    document.getElementById('explainer-body').textContent=s.story.body;
-    document.getElementById('explainer-ready-btn').textContent=s.story.readyLabel;
-    document.getElementById('explainer-session-label').textContent=`Session ${s.num} · ${s.subject}`;
-  } else {
-    startCheckinQuestions();
-  }
+  // Go straight to check-in questions — story shows AFTER
+  startCheckinQuestions();
   go('checkin');
 }
 function startCheckinQuestions(){
   document.getElementById('checkin-explainer').style.display='none';
   document.getElementById('checkin-questions').style.display='flex';
   renderCheckinStep();
+}
+function finishExplainerGoHome(){
+  showWelcomeBack();
+  go('home');
 }
 function changeSessionFromCheckin(){
   // Let Sedona change session — Hani will see it in her check-in data
