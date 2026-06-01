@@ -2008,32 +2008,43 @@ function renderFC(){
   document.getElementById('fc-bar-fill').style.width=Math.round(f.idx/deck.length*100)+'%';
   document.getElementById('fc-bar-txt').textContent=f.idx+'/'+deck.length;
   document.getElementById('fc-status').textContent=f.phase==='retry'?'🔁 Reviewing missed cards':'';
-  const isFormula=!!card.eq;
+  const isRecall=card.type==='recall';
+  const isFormula=!!card.eq&&!isRecall;
   // Type badge
   const badge=document.getElementById('fc-type-badge');
   if(badge){
-    badge.textContent=isFormula?'📐 Formula':'📖 Definition';
-    badge.style.background=isFormula?'rgba(124,58,237,0.12)':'rgba(13,148,136,0.1)';
-    badge.style.color=isFormula?'var(--purple-dark)':'var(--teal)';
+    if(isRecall){badge.textContent='🧠 Recall';badge.style.background='rgba(234,88,12,0.1)';badge.style.color='#c2410c';}
+    else if(isFormula){badge.textContent='📐 Formula';badge.style.background='rgba(124,58,237,0.12)';badge.style.color='var(--purple-dark)';}
+    else{badge.textContent='📖 Definition';badge.style.background='rgba(13,148,136,0.1)';badge.style.color='var(--teal)';}
   }
-  // Front: formula cards show equation as star, def cards show term
   const formulaFront=document.getElementById('fc-formula-front');
   const defFront=document.getElementById('fc-def-front');
+  const eqBack=document.getElementById('fc-eq-back');
+
   if(isFormula){
+    // Formula card: equation prominent on front, explanation on back
     formulaFront.style.display='block';defFront.style.display='none';
     document.getElementById('fc-eq-star').textContent=card.eq;
     document.getElementById('fc-term-sub').textContent=card.term;
     document.getElementById('fc-front-hint').textContent='What does each part mean? Tap to reveal';
+    document.getElementById('fc-def').textContent=card.def;
+    eqBack.textContent=card.eq;eqBack.style.display='block';
+  } else if(isRecall){
+    // Recall card: NAME on front ("What is the formula?"), FORMULA on back
+    formulaFront.style.display='none';defFront.style.display='block';
+    document.getElementById('fc-term').textContent=card.term;
+    document.getElementById('fc-front-hint').textContent='Can you write the formula? Tap to reveal';
+    // Back: formula is the star, definition below
+    document.getElementById('fc-def').textContent=card.def;
+    eqBack.textContent=card.eq;eqBack.style.display='block';
   } else {
+    // Definition card: term on front, definition on back
     formulaFront.style.display='none';defFront.style.display='block';
     document.getElementById('fc-term').textContent=card.term;
     document.getElementById('fc-front-hint').textContent='Tap to reveal · tap again to flip back';
+    document.getElementById('fc-def').textContent=card.def;
+    eqBack.style.display='none';
   }
-  // Back: definition always shown; equation goes in eq-back for formula cards
-  document.getElementById('fc-def').textContent=card.def;
-  const eqBack=document.getElementById('fc-eq-back');
-  if(isFormula){eqBack.textContent=card.eq;eqBack.style.display='block';}
-  else{eqBack.style.display='none';}
   document.getElementById('fc-eq').style.display='none';
   document.getElementById('flip-card').classList.remove('flipped');
   f.flipped=false;
