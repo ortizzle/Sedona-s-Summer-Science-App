@@ -2867,6 +2867,89 @@ function haniQFilter(sessionFilter, btn){
 // Returns a filter function for QS based on the active session.
 // - Individual session: questions from sessions up to and including this one
 // - Combined Chemistry/Physics: questions from that subject only, all sessions
+// ─── REFERENCE POPUP ──────────────────────────────────────────────────────
+function updateRefButtons(){
+  const s=getSession();
+  const isPhysics=s.subject==='Physics'||s.combined&&s.subject==='Physics';
+  const isChem=s.subject==='Chemistry'||s.combined&&s.subject==='Chemistry';
+  const label=isPhysics?'📐 Formulas':isChem?'🧪 Periodic Table':null;
+  ['qz','lv','qq'].forEach(mode=>{
+    const btn=document.getElementById(mode+'-ref-btn');
+    if(!btn)return;
+    if(label){btn.textContent=label;btn.style.display='flex';}
+    else btn.style.display='none';
+  });
+}
+function showRefPopup(){
+  const s=getSession();
+  const isPhysics=s.subject==='Physics';
+  const overlay=document.createElement('div');
+  overlay.id='ref-popup-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:8888;display:flex;align-items:flex-end;justify-content:center;';
+  overlay.onclick=e=>{if(e.target===overlay)closeRefPopup();};
+  if(isPhysics){
+    overlay.innerHTML=`
+      <div style="background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;padding:16px 20px 32px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-size:15px;font-weight:800;color:var(--purple-dark);">📐 Physics Formulas</div>
+          <button onclick="closeRefPopup()" style="background:var(--gray-200);border:none;border-radius:99px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;">Done</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+          ${[
+            ['v = Δx/Δt','Average Velocity'],
+            ['a = (vf−vi)/t','Acceleration'],
+            ['Fnet = ma','Newton\'s 2nd Law'],
+            ['F₁₂ = −F₂₁','Newton\'s 3rd Law'],
+            ['p = mv','Momentum'],
+            ['J = FΔt = Δp','Impulse'],
+            ['Fg = GMm/R²','Universal Gravitation'],
+            ['G = 6.67×10⁻¹¹','Gravitational Constant'],
+            ['Fg = mg','Weight'],
+            ['g ≈ 9.8 m/s²','Surface gravity (Earth)'],
+            ['KE = ½mv²','Kinetic Energy'],
+            ['PE = mgh','Gravitational PE'],
+            ['W = Fd','Work'],
+          ].map(([eq,name])=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--gray-100);border-radius:8px;">
+              <span style="font-family:'Special Elite',cursive;font-size:15px;color:#1e3a5f;">${eq}</span>
+              <span style="font-size:11px;color:var(--gray-500);font-weight:600;">${name}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    // Chemistry: show a mini periodic table link + key info
+    overlay.innerHTML=`
+      <div style="background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;padding:16px 20px 32px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-size:15px;font-weight:800;color:var(--purple-dark);">🧪 Quick Reference</div>
+          <button onclick="closeRefPopup()" style="background:var(--gray-200);border:none;border-radius:99px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;">Done</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+          ${[
+            ['A = p⁺ + n⁰','Mass Number'],
+            ['M − A = N','MAN Formula (neutrons)'],
+            ['Charge = P − E','Ion Charge'],
+            ['p⁺ = e⁻','Neutral Atom'],
+            ['Group A# = ve⁻','Valence Electrons'],
+            ['Core = Total − Valence','Core Electrons'],
+          ].map(([eq,name])=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--gray-100);border-radius:8px;">
+              <span style="font-family:'Special Elite',cursive;font-size:15px;color:#1e3a5f;">${eq}</span>
+              <span style="font-size:11px;color:var(--gray-500);font-weight:600;">${name}</span>
+            </div>`).join('')}
+        </div>
+        <div style="margin-top:14px;">
+          <button onclick="closeRefPopup();go('pt')" style="width:100%;padding:12px;background:var(--teal);color:white;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;">Open Full Periodic Table →</button>
+        </div>
+      </div>`;
+  }
+  document.body.appendChild(overlay);
+}
+function closeRefPopup(){
+  const el=document.getElementById('ref-popup-overlay');
+  if(el)el.remove();
+}
+
 function getQSFilter(){
   const s=getSession();
   if(s.combined){
