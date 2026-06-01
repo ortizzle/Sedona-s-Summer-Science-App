@@ -623,6 +623,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
 </div>
 
+<!-- FLASHCARD MATCHING GAME -->
+<div id="s-match" class="screen">
+  <div class="nav">
+    <button class="back-btn" onclick="go('fc')">←</button>
+    <span class="nav-title">🔗 Card Match</span>
+    <span class="nav-badge" id="match-badge" style="background:var(--teal);">0/0</span>
+  </div>
+  <div style="padding:8px 20px 4px;font-size:13px;color:var(--gray-500);">Tap a term, then tap its match. Find all pairs!</div>
+  <div id="match-grid" style="padding:8px 20px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+  <div id="match-complete" style="display:none;flex-direction:column;align-items:center;padding:32px 24px;text-align:center;">
+    <div style="font-size:64px;margin-bottom:12px;">🎉</div>
+    <div style="font-size:22px;font-weight:800;color:var(--purple-dark);margin-bottom:8px;">All matched!</div>
+    <div style="font-size:14px;color:var(--gray-500);margin-bottom:24px;" id="match-score"></div>
+    <button onclick="startMatch()" style="width:100%;padding:14px;background:var(--purple);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;">Play Again 🔄</button>
+    <button onclick="go('fc')" style="width:100%;padding:14px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;">← Back to Flashcards</button>
+  </div>
+</div>
+
 <!-- SPRINT QUIZ (was Timed Quiz) -->
 <div id="s-qz-screen" class="screen">
   <div class="nav">
