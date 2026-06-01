@@ -1904,8 +1904,7 @@ const QZ_COUNT=10; // questions per sprint
 function startQuiz(){
   trackModeUsed('qz');
   const q=S.qz;
-  const activeNum=getSession().num||99;
-  q.qs=shuffle(QS.filter(q=>!q.session||q.session<=activeNum)).slice(0,QZ_COUNT).map(shuffleOpts);
+  q.qs=shuffle(QS.filter(getQSFilter())).slice(0,QZ_COUNT).map(shuffleOpts);
   q.idx=0;q.score=0;q.streak=0;q.correct=0;q.total=0;
   q.answered=false;q.sessionXP=0;q.hintUsed=false;
   stopQuiz();renderQ();
