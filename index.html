@@ -2274,6 +2274,34 @@ function skipFC(){
 
 // ─── SPRINT QUIZ (30s, timer shows last 15s) ─────────────────────────────
 const QZ_COUNT=10; // questions per sprint
+let QZ_SESSION_ONLY=false;
+function showQuizModeSelector(){
+  const s=getSession();
+  const modal=document.createElement('div');
+  modal.id='quiz-mode-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:flex-end;justify-content:center;';
+  modal.innerHTML=`
+    <div style="background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 20px 36px;">
+      <div style="font-size:16px;font-weight:800;color:var(--purple-dark);margin-bottom:6px;">⏱️ Sprint Quiz</div>
+      <div style="font-size:13px;color:var(--gray-500);margin-bottom:18px;">Choose your practice scope:</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button onclick="launchQuiz(false)" style="padding:16px;border-radius:14px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;font-size:14px;font-weight:800;cursor:pointer;text-align:left;">
+          🌟 All Sessions — Cumulative<br><span style="font-size:12px;opacity:.8;font-weight:600;">Questions from every session studied so far</span>
+        </button>
+        <button onclick="launchQuiz(true)" style="padding:16px;border-radius:14px;background:linear-gradient(135deg,#0f766e,#0d9488);color:white;border:none;font-size:14px;font-weight:800;cursor:pointer;text-align:left;">
+          📚 This Session Only — ${s.combined?s.title:`Session ${s.num}: ${s.title}`}<br><span style="font-size:12px;opacity:.8;font-weight:600;">Focus on just today's material</span>
+        </button>
+      </div>
+      <button onclick="document.getElementById('quiz-mode-modal').remove()" style="margin-top:12px;width:100%;padding:12px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;">Cancel</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+function launchQuiz(sessionOnly){
+  QZ_SESSION_ONLY=sessionOnly;
+  const modal=document.getElementById('quiz-mode-modal');
+  if(modal)modal.remove();
+  go('qz-run');
+}
 function startQuiz(){
   trackModeUsed('qz');updateRefButtons();
   const q=S.qz;
