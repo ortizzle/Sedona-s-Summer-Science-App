@@ -625,7 +625,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="qs-box"><div class="qs-val" id="qz-correct">0/0</div><div class="qs-lbl">Correct</div></div>
   </div>
   <div class="timer-bar timer-hidden" id="qz-timer-bar"><div class="timer-fill" id="qz-timer" style="width:100%"></div></div>
-  <div class="hint-row"><button class="hint-btn" id="qz-hint-btn" onclick="useHint('qz')">💡 Hint <span style="font-size:10px;opacity:.7;">(−5 XP)</span></button></div>
+  <div class="hint-row" style="justify-content:space-between;">
+    <button class="hint-btn" id="qz-hint-btn" onclick="useHint('qz')">💡 Hint <span style="font-size:10px;opacity:.7;">(−5 XP)</span></button>
+    <button class="hint-btn" id="qz-ref-btn" onclick="showRefPopup()" style="border-color:var(--teal);color:var(--teal);display:none;"></button>
+  </div>
   <div class="hint-box" id="qz-hint-box"></div>
   <div class="q-card"><div class="q-label" id="qz-q-label">QUESTION 1</div><div class="q-text" id="qz-q-text"></div></div>
   <div class="opts" id="qz-opts"></div>
