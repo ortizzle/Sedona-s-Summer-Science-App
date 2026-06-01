@@ -2306,8 +2306,8 @@ function showQuizModeSelector(){
 }
 function launchQuiz(sessionOnly){
   QZ_SESSION_ONLY=sessionOnly;
-  const modal=document.getElementById('quiz-mode-modal');
-  if(modal)modal.remove();
+  const filter=sessionOnly?(q=>q.session===getSession().num):getQSFilter();
+  if(!QS.some(filter)){noQuestionsYet();return;}
   go('qz-run');
 }
 function startQuiz(){
