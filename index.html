@@ -3181,6 +3181,73 @@ function closeRefPopup(){
   const el=document.getElementById('ref-popup-overlay');
   if(el)el.remove();
 }
+function showPeriodicTableOverlay(){
+  closeRefPopup();
+  const overlay=document.createElement('div');
+  overlay.id='pt-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9990;display:flex;flex-direction:column;';
+  // Build a scrollable periodic table overlay
+  const legend={alkali:'Alkali',alkaline:'Alk.Earth',transition:'Transition',metalloid:'Metalloid',nonmetal:'Nonmetal',halogen:'Halogen',noble:'Noble Gas',metal:'Metal',unknown:'Unknown'};
+  const colors={alkali:'#fca5a5',alkaline:'#fdba74',transition:'#fde68a',metalloid:'#6ee7b7',nonmetal:'#93c5fd',halogen:'#a5f3fc',noble:'#c4b5fd',metal:'#d1d5db',unknown:'#e5e7eb'};
+  overlay.innerHTML=`
+    <div style="background:#0d1f30;color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="font-size:15px;font-weight:800;">🧪 Periodic Table</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:11px;opacity:.7;">Tap element for details</span>
+        <button onclick="document.getElementById('pt-overlay').remove()" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:99px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;">Done ✕</button>
+      </div>
+    </div>
+    <div style="overflow:auto;flex:1;padding:12px 8px;">
+      <div id="pt-overlay-grid" style="display:grid;grid-template-columns:repeat(18,32px);grid-template-rows:repeat(7,32px) 8px repeat(2,28px);gap:2px;width:max-content;margin:0 auto;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;padding:12px 8px;justify-content:center;">
+        ${Object.entries(colors).map(([k,c])=>`<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:white;"><div style="width:12px;height:12px;border-radius:3px;background:${c}"></div>${legend[k]||k}</div>`).join('')}
+      </div>
+      <div id="pt-overlay-detail" style="margin:4px 8px 12px;background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;color:white;font-size:13px;min-height:60px;display:none;"></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  // Render the grid
+  const grid=document.getElementById('pt-overlay-grid');
+  const placed={};
+  ELEMENTS_DATA.forEach(el=>{placed[`${el[5]},${el[4]}`]=el;});
+  for(let p=1;p<=7;p++){
+    for(let g=1;g<=18;g++){
+      const el=placed[`${p},${g}`];
+      const div=document.createElement('div');
+      if(p===6&&g===3){div.style.cssText=`grid-column:3;grid-row:6;background:#fde68a;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:#713f12;cursor:pointer;`;div.textContent='57–71';}
+      else if(p===7&&g===3){div.style.cssText=`grid-column:3;grid-row:7;background:#c4b5fd;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:#3b0764;cursor:pointer;`;div.textContent='89–103';}
+      else if(!el){div.style.cssText='background:transparent;';}
+      else{
+        div.style.cssText=`background:${colors[el[6]]||'#e5e7eb'};border-radius:3px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;${el[0]<=20?'font-weight:900;':'opacity:0.8;'}`;
+        div.innerHTML=`<span style="font-size:7px;line-height:1;">${el[0]}</span><span style="font-size:11px;font-weight:900;line-height:1.1;">${el[1]}</span>`;
+        div.onclick=()=>{
+          const det=document.getElementById('pt-overlay-detail');
+          det.style.display='block';
+          det.innerHTML=`<strong style="font-size:18px;">${el[1]}</strong> · ${el[2]} · #${el[0]}<br><span style="opacity:.7;font-size:12px;">${el[3]} amu · Period ${el[5]} · Group ${el[4]||'—'} · ${el[7]!=null?el[7]+' valence e⁻':''} · Common ion: ${el[8]||'—'}</span>${el[9]?`<br><span style="opacity:.6;font-size:11px;">${el[9]}</span>`:''}`;
+        };
+      }
+      div.style.gridColumn=g;div.style.gridRow=p;
+      grid.appendChild(div);
+    }
+  }
+  // Lanthanides row 9, Actinides row 10
+  [[9,57],[10,89]].forEach(([row,startZ])=>{
+    for(let g=3;g<=17;g++){
+      const el=ELEMENTS_DATA.find(e=>e[0]===startZ+(g-3));
+      const div=document.createElement('div');
+      if(el){
+        div.style.cssText=`background:${row===9?'#fde68a':'#c4b5fd'};border-radius:3px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0.8;height:28px;`;
+        div.innerHTML=`<span style="font-size:7px;line-height:1;">${el[0]}</span><span style="font-size:10px;font-weight:900;line-height:1.1;">${el[1]}</span>`;
+        div.onclick=()=>{
+          const det=document.getElementById('pt-overlay-detail');
+          det.style.display='block';
+          det.innerHTML=`<strong style="font-size:18px;">${el[1]}</strong> · ${el[2]} · #${el[0]}<br><span style="opacity:.7;font-size:12px;">${el[3]} amu</span>`;
+        };
+      } else {div.style.cssText='background:transparent;height:28px;';}
+      div.style.gridColumn=g;div.style.gridRow=row;
+      grid.appendChild(div);
+    }
+  });
+}
 
 function getQSFilter(){
   const s=getSession();
