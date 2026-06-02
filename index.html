@@ -375,6 +375,120 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .res-title{font-size:15px;font-weight:800;color:var(--purple-dark);margin-bottom:4px;}
 .res-desc{font-size:12px;color:var(--gray-500);line-height:1.5;}
 .res-url{font-size:11px;color:var(--teal);margin-top:6px;word-break:break-all;}
+
+/* ── RESPONSIVE: Tablet & Desktop (≥ 640px) ──────────────────────────── */
+@media(min-width:640px){
+  body{
+    background-size:36px 36px;
+    align-items:stretch;
+  }
+  .screen{
+    max-width:100%;
+    min-height:100vh;
+  }
+
+  /* Centered content wrapper for all screens */
+  .screen>*:not(.nav):not(.home-hero):not(.session-banner){
+    max-width:860px;
+    margin-left:auto;
+    margin-right:auto;
+    width:100%;
+  }
+  .nav,.home-hero,.session-banner-wrap{
+    max-width:860px;
+    margin-left:auto;margin-right:auto;
+    width:100%;
+  }
+
+  /* Home: 3-column mode grid */
+  .mode-grid{
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    padding:0 24px 20px;
+  }
+  /* Keep wide cards spanning properly */
+  .mode-card[style*="grid-column:span 2"]{
+    grid-column:span 3;
+  }
+  .mode-card{padding:20px 16px;}
+  .mc-icon{font-size:36px;}
+  .mc-title{font-size:15px;}
+  .mc-desc{font-size:12px;}
+
+  /* Stats: 4 columns */
+  .stats-row{
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    padding:0 24px 16px;
+  }
+  .stat{padding:12px 8px;}
+  .stat-val{font-size:20px;}
+
+  /* Nav */
+  .nav{padding:18px 24px 12px;}
+  .nav-title{font-size:16px;}
+
+  /* Home hero */
+  .home-hero{padding:16px 24px 12px;}
+  .home-title{font-size:20px;}
+
+  /* Section dividers */
+  .sec-div{padding:22px 24px 12px;}
+  .section-header{padding:0 24px 12px;font-size:15px;}
+
+  /* Game cards */
+  .badge-grid{grid-template-columns:repeat(4,1fr);padding:0 24px 24px;}
+  .gz-list,.res-list{padding:0 24px 16px;}
+
+  /* Flashcard area */
+  .card-area{max-height:480px;}
+  .flip-card{max-width:500px;height:320px;}
+  .card-term{font-size:30px;}
+  .card-def{font-size:18px;}
+
+  /* Buttons */
+  .pt-btn{margin:0 24px 16px;width:calc(100% - 48px);}
+  .hani-btn,.res-btn{margin:0 24px;width:calc(100% - 48px);}
+  button[onclick*="endSedonaSession"]{margin:10px 24px 0;width:calc(100% - 48px);}
+
+  /* XP section */
+  .xp-section{padding:0 24px 14px;}
+
+  /* Clipboard */
+  #s-home [style*="margin:8px 20px"]{margin:8px 24px 20px!important;}
+
+  /* Game screens: center question cards */
+  .q-card{margin:0 24px 12px;}
+  .opts{padding:0 24px;}
+  .exp-box{margin:10px 24px 0;}
+  .next-btn{margin:12px 24px 0;width:calc(100% - 48px);}
+  .hint-row{padding:0 24px 6px;}
+  .hint-box{margin:0 24px 6px;}
+  .timer-bar{margin:0 24px 12px;}
+  .quiz-stats{padding:8px 24px 12px;}
+  .lv-tabs{padding:10px 24px;}
+  .lv-prog{padding:4px 24px 8px;}
+  .sv-header{padding:10px 24px 12px;}
+
+  /* Results */
+  .results{padding:48px 32px;}
+  .r-trophy{font-size:100px;}
+  .r-title{font-size:32px;}
+
+  /* Physics equation sheet */
+  #s-physics-eq>div{padding:16px 32px 32px;}
+
+  /* Hani dashboard */
+  .hani-section{margin:16px 24px 0;}
+  .hani-card{padding:16px 18px;}
+}
+
+@media(min-width:960px){
+  /* Wide desktop: 2-column home layout */
+  .mode-grid{grid-template-columns:repeat(3,1fr);}
+  .badge-grid{grid-template-columns:repeat(5,1fr);}
+  .flip-card{max-width:560px;height:340px;}
+}
 </style>
 </head>
 <body>
