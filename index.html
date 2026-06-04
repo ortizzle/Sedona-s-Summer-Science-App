@@ -3744,11 +3744,18 @@ function selectMatch(el,idx,side){
     // Correct!
     [sel.el,el].forEach(e=>{styleMatchCard(e,'matched');e.style.cursor='default';e.dataset.matched='1';e.onclick=null;});
     matchState.matched++;matchState.selected=null;
-    document.getElementById('match-badge').textContent=`${matchState.matched}/${matchState.pairs.length}`;
+    const badge=document.getElementById('match-badge');
+    if(badge)badge.textContent=matchState.totalRounds>1?`Round ${matchState.roundIdx+1}/${matchState.totalRounds} · ${matchState.matched}/${matchState.pairs.length}`:`${matchState.matched}/${matchState.pairs.length}`;
     if(matchState.matched===matchState.pairs.length){
       setTimeout(()=>{
         const secs=Math.round((Date.now()-matchState.startTime)/1000);
-        document.getElementById('match-score').textContent=`${matchState.pairs.length} pairs matched in ${secs}s${matchState.wrong===0?' — perfect! 🌟':` with ${matchState.wrong} wrong tap${matchState.wrong>1?'s':''}`}`;
+        const hasNext=matchState.roundIdx+1<matchState.totalRounds;
+        const isLast=matchState.roundIdx+1===matchState.totalRounds;
+        document.getElementById('match-trophy').textContent=isLast?'🏆':'🎉';
+        document.getElementById('match-title').textContent=isLast?'All rounds complete!':'Round complete!';
+        document.getElementById('match-score').textContent=`${matchState.pairs.length} pairs in ${secs}s${matchState.wrong===0?' — perfect! 🌟':` · ${matchState.wrong} wrong`}${matchState.totalRounds>1?` (Round ${matchState.roundIdx+1}/${matchState.totalRounds})`:''}`;
+        const nextBtn=document.getElementById('match-next-btn');
+        if(nextBtn)nextBtn.style.display=hasNext?'block':'none';
         document.getElementById('match-grid').style.display='none';
         document.getElementById('match-complete').style.display='flex';
       },400);
