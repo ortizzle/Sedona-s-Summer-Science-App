@@ -3348,6 +3348,10 @@ function ciSubmit(){
 }
 function startCheckinQuestions(){buildCheckinUI();}
 function finishExplainerGoHome(){
+  // Reset for next time
+  const rows=document.getElementById('ci-rows');
+  if(rows)rows.style.display='flex';
+  document.getElementById('checkin-explainer').style.display='none';
   showWelcomeBack();
   go('home');
 }
