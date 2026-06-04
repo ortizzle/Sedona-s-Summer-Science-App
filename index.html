@@ -3708,6 +3708,9 @@ function renderMatchGrid(){
   });
 }
 // Helper: style a match card by state
+function matchNextRound(){
+  startMatch(matchState.roundIdx+1);
+}
 function styleMatchCard(el,state){
   const styles={
     term_idle:    {border:'2px solid var(--gray-200)',bg:'rgba(255,255,255,0.9)',color:'var(--purple-dark)',opacity:'1'},
