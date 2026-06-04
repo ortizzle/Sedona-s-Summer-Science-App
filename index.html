@@ -3858,6 +3858,105 @@ function confirmEndSession(){
   go('welcome');
 }
 
+// ─── FLASHCARD EDITING ────────────────────────────────────────────────────
+// Custom cards are stored in localStorage and merged with base CARDS at load
+function loadCustomCards(){
+  try{return JSON.parse(localStorage.getItem('sedona_custom_cards')||'[]');}catch(e){return[];}
+}
+function saveCustomCards(cards){
+  localStorage.setItem('sedona_custom_cards',JSON.stringify(cards));
+}
+// Render the edit list in Hani's dashboard
+function renderHaniCardList(){
+  const list=document.getElementById('hani-card-list');
+  if(!list)return;
+  const s=getSession();
+  const sessNum=s.num||null;
+  // Show base cards + custom cards for this session
+  const base=CARDS.filter(c=>c.session===sessNum);
+  const custom=loadCustomCards().filter(c=>c.session===sessNum);
+  const allCards=[...base.map(c=>({...c,_custom:false})),...custom.map(c=>({...c,_custom:true}))];
+  if(!allCards.length){list.innerHTML='<div style="color:var(--gray-500);font-size:12px;padding:8px 0;">No cards yet for this session.</div>';return;}
+  list.innerHTML=allCards.map((c,i)=>`
+    <div style="background:${c._custom?'rgba(124,58,237,0.06)':'var(--gray-100)'};border:1px solid ${c._custom?'rgba(124,58,237,0.2)':'var(--gray-200)'};border-radius:8px;padding:8px 10px;font-size:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-weight:700;color:var(--gray-900);">${c.term}${c._custom?'<span style="font-size:10px;color:var(--purple);margin-left:4px;">edited</span>':''}</div>
+          <div style="color:var(--gray-500);margin-top:2px;line-height:1.4;">${(c.def||'').slice(0,80)}${(c.def||'').length>80?'…':''}</div>
+        </div>
+        <button onclick="haniEditCard(${c._custom?'null':c.id},${i})" style="background:var(--gray-200);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;">Edit</button>
+      </div>
+    </div>`).join('');
+}
+function haniEditCard(baseId,listIdx){
+  const s=getSession();
+  const base=CARDS.filter(c=>c.session===s.num);
+  const custom=loadCustomCards().filter(c=>c.session===s.num);
+  const allCards=[...base,...custom];
+  const card=allCards[listIdx]||{term:'',def:'',hint:'',eq:null,session:s.num,id:Date.now()};
+  const modal=document.createElement('div');
+  modal.id='card-edit-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML=`<div style="background:white;border-radius:18px;padding:20px;width:100%;max-width:400px;">
+    <div style="font-size:15px;font-weight:800;color:var(--purple-dark);margin-bottom:14px;">✏️ Edit Card</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div><label style="font-size:11px;font-weight:700;color:var(--gray-500);">TERM</label><input id="ce-term" value="${(card.term||'').replace(/"/g,'&quot;')}" style="width:100%;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;margin-top:3px;box-sizing:border-box;"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--gray-500);">FORMULA (optional)</label><input id="ce-eq" value="${(card.eq||'').replace(/"/g,'&quot;')}" style="width:100%;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;margin-top:3px;box-sizing:border-box;" placeholder="e.g. A = p⁺ + n⁰"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--gray-500);">DEFINITION</label><textarea id="ce-def" style="width:100%;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;margin-top:3px;box-sizing:border-box;height:80px;resize:vertical;">${card.def||''}</textarea></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--gray-500);">HINT</label><input id="ce-hint" value="${(card.hint||'').replace(/"/g,'&quot;')}" style="width:100%;padding:8px 10px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;margin-top:3px;box-sizing:border-box;"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button onclick="haniSaveCard(${listIdx},${card.id})" style="flex:1;padding:11px;background:var(--purple);color:white;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">Save</button>
+      <button onclick="document.getElementById('card-edit-modal').remove()" style="flex:1;padding:11px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+function haniSaveCard(listIdx,cardId){
+  const s=getSession();
+  const term=document.getElementById('ce-term').value.trim();
+  const def=document.getElementById('ce-def').value.trim();
+  const eq=document.getElementById('ce-eq').value.trim()||null;
+  const hint=document.getElementById('ce-hint').value.trim();
+  if(!term||!def){return;}
+  const custom=loadCustomCards();
+  // Find if this card already exists in custom
+  const existIdx=custom.findIndex(c=>c.id===cardId&&c.session===s.num);
+  const newCard={id:cardId||Date.now(),session:s.num,term,def,eq,hint,_edited:true};
+  if(existIdx>=0)custom[existIdx]=newCard;
+  else custom.push(newCard);
+  saveCustomCards(custom);
+  document.getElementById('card-edit-modal').remove();
+  renderHaniCardList();
+}
+function haniAddCard(){
+  const s=getSession();
+  haniEditCard(null,CARDS.filter(c=>c.session===s.num).length+loadCustomCards().filter(c=>c.session===s.num).length);
+}
+function haniExportCards(){
+  const s=getSession();
+  const sessNum=s.num;
+  const base=CARDS.filter(c=>c.session===sessNum);
+  const custom=loadCustomCards().filter(c=>c.session===sessNum);
+  const all=[...base,...custom].map(({_custom,_edited,...c})=>c);
+  const json=JSON.stringify(all,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`session-${sessNum}-cards.json`;
+  a.click();URL.revokeObjectURL(a.href);
+  showBadgeToast({icon:'⬇',name:`Exported ${all.length} cards for Session ${sessNum}`},true);
+}
+// Merge custom cards into CARDS at runtime
+(function mergeCustomCards(){
+  const custom=loadCustomCards();
+  custom.forEach(c=>{
+    const idx=CARDS.findIndex(x=>x.id===c.id&&x.session===c.session);
+    if(idx>=0)CARDS[idx]={...CARDS[idx],...c};
+    else CARDS.push(c);
+  });
+})();
+
 function setActiveSession(idx){
   const prevSubject=getSession().subject;
   ACTIVE_SESSION=idx;
