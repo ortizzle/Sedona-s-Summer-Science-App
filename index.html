@@ -485,32 +485,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 
 <!-- CHECK-IN -->
-<div id="s-checkin" class="screen">
-  <div class="nav" style="background:transparent;">
-    <button class="back-btn" onclick="checkinBack()">←</button>
-    <span class="nav-title" style="color:var(--purple-dark);">Quick Check-in</span>
-    <span id="checkin-step-indicator" style="font-size:12px;color:var(--gray-500);font-weight:600;">1 of 5</span>
+<div id="s-checkin" class="screen" style="overflow-y:auto;">
+  <!-- Sticky header: session picker -->
+  <div style="background:var(--purple-dark);color:white;padding:14px 20px 14px;position:sticky;top:0;z-index:10;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;opacity:.7;margin-bottom:6px;">TODAY'S SESSION — tap to change</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;" id="ci-sess-pills"></div>
+    <div id="ci-sess-name" style="font-size:15px;font-weight:800;"></div>
+    <div id="ci-sess-sub" style="font-size:11px;opacity:.65;"></div>
   </div>
-  <!-- Explainer step (shown before questions) -->
-  <div id="checkin-explainer" style="display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px 24px 32px;width:100%;">
+  <div style="padding:10px 20px 4px;font-size:12px;color:var(--gray-500);">Tap one per row — about 20 seconds.</div>
+  <!-- All 5 questions at once -->
+  <div style="display:flex;flex-direction:column;gap:10px;padding:0 20px 28px;" id="ci-rows"></div>
+  <!-- Explainer (shown after submit) -->
+  <div id="checkin-explainer" style="display:none;flex-direction:column;align-items:center;padding:16px 24px 32px;">
     <div style="font-size:72px;margin-bottom:12px;" id="explainer-emoji">⚗️</div>
-    <div style="font-size:13px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;" id="explainer-session-label">Session 1 · Chemistry</div>
+    <div style="font-size:13px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;" id="explainer-session-label"></div>
     <div style="font-size:20px;font-weight:800;color:var(--purple-dark);text-align:center;line-height:1.35;margin-bottom:16px;" id="explainer-hook"></div>
     <div style="font-size:14px;color:var(--gray-700);line-height:1.7;text-align:left;background:rgba(255,255,255,0.85);border-radius:16px;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,0.08);margin-bottom:24px;white-space:pre-line;" id="explainer-body"></div>
     <button id="explainer-ready-btn" onclick="finishExplainerGoHome()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;"></button>
-  </div>
-  <div class="checkin-screen" style="justify-content:flex-start;padding-top:16px;" id="checkin-questions">
-    <!-- Today's session banner -->
-    <div id="checkin-session-banner" style="background:linear-gradient(135deg,var(--purple-dark),var(--purple));border-radius:12px;padding:10px 16px;margin-bottom:20px;width:100%;max-width:320px;text-align:center;">
-      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Today's Session</div>
-      <div style="font-size:14px;font-weight:800;color:white;" id="checkin-session-title">Session 1</div>
-      <button onclick="changeSessionFromCheckin()" style="margin-top:6px;background:rgba(255,255,255,0.2);border:none;color:white;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;">Not right? Change ›</button>
-    </div>
-    <div style="font-size:56px;margin-bottom:12px;" id="checkin-step-icon">😊</div>
-    <div class="checkin-q" id="checkin-q-text">How are you feeling today?</div>
-    <div class="checkin-sub" id="checkin-q-sub">Be honest — there are no wrong answers here.</div>
-    <div class="emoji-scale" id="emoji-scale"></div>
-    <button class="checkin-next" id="checkin-next-btn" onclick="checkinNext()">Continue →</button>
   </div>
 </div>
 
