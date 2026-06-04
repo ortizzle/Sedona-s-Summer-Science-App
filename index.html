@@ -715,11 +715,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div style="padding:8px 20px 4px;font-size:13px;color:var(--gray-500);">Tap a term, then tap its match. Find all pairs!</div>
   <div id="match-grid" style="padding:8px 20px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
   <div id="match-complete" style="display:none;flex-direction:column;align-items:center;padding:32px 24px;text-align:center;">
-    <div style="font-size:64px;margin-bottom:12px;">🎉</div>
-    <div style="font-size:22px;font-weight:800;color:var(--purple-dark);margin-bottom:8px;">All matched!</div>
+    <div style="font-size:64px;margin-bottom:12px;" id="match-trophy">🎉</div>
+    <div style="font-size:22px;font-weight:800;color:var(--purple-dark);margin-bottom:8px;" id="match-title">All matched!</div>
     <div style="font-size:14px;color:var(--gray-500);margin-bottom:24px;" id="match-score"></div>
-    <button onclick="startMatch()" style="width:100%;padding:14px;background:var(--purple);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;">Play Again 🔄</button>
-    <button onclick="go('fc')" style="width:100%;padding:14px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;">← Back to Flashcards</button>
+    <button id="match-next-btn" onclick="matchNextRound()" style="width:100%;padding:14px;background:linear-gradient(135deg,#2dd4bf,#0891b2);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;display:none;">Next Round →</button>
+    <button onclick="startMatch(0)" style="width:100%;padding:14px;background:var(--purple);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;">Play Again 🔄</button>
+    <button onclick="go('home')" style="width:100%;padding:14px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:700;cursor:pointer;">← Home</button>
   </div>
 </div>
 
