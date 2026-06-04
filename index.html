@@ -3182,6 +3182,17 @@ function renderHaniDash(){
       </div>
     </div>
     <div class="hani-section">
+      <div class="hani-section-title">✏️ Edit Flashcards</div>
+      <div class="hani-card">
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:10px;line-height:1.5;">Edit or add cards for the active session. Changes are saved locally and can be exported as JSON to paste back into the app.</div>
+        <div id="hani-card-list" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto;margin-bottom:10px;"></div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="haniAddCard()" style="flex:1;padding:10px;background:#ede9fe;color:var(--purple-dark);border:1.5px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">+ Add Card</button>
+          <button onclick="haniExportCards()" style="flex:1;padding:10px;background:#f0fdf4;color:#166534;border:1.5px solid #86efac;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">⬇ Export JSON</button>
+        </div>
+      </div>
+    </div>
+    <div class="hani-section">
       <div class="hani-section-title">🧪 Test Mode</div>
       <div class="hani-card">
         <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Two ways to test — pick based on what you want to verify.</div>
