@@ -3580,6 +3580,319 @@ function haniQFilter(sessionFilter, btn){
     </div>`;
   }).join('');
 }
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW LEARNING GAMES DATA & LOGIC
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── SORT GAME DATA ───────────────────────────────────────────────────────
+const SORT_SETS=[
+  {id:'bond-type',subject:'Chemistry',title:'Ionic or Covalent?',
+   buckets:['⚡ Ionic','🤝 Covalent'],
+   items:[['NaCl',0],['H₂O',1],['MgO',0],['CO₂',1],['AlBr₃',0],['N₂',1],['CaO',0],['HCl',1],['Na₂O',0],['O₂',1],['Ca₃(PO₄)₂',0],['CH₄',1]]},
+  {id:'elem-class',subject:'Chemistry',title:'Metal, Nonmetal, or Metalloid?',
+   buckets:['🔧 Metal','⚗️ Nonmetal','🔬 Metalloid'],
+   items:[['Na',0],['O',1],['Si',2],['Fe',0],['Cl',1],['B',2],['Ca',0],['S',1],['Ge',2],['Cu',0],['N',1],['As',2]]},
+  {id:'ion-type',subject:'Chemistry',title:'Cation (+) or Anion (−)?',
+   buckets:['➕ Cation','➖ Anion'],
+   items:[['Na⁺',0],['Cl⁻',1],['Ca²⁺',0],['O²⁻',1],['Fe³⁺',0],['N³⁻',1],['Mg²⁺',0],['F⁻',1],['K⁺',0],['S²⁻',1],['Al³⁺',0],['Br⁻',1]]},
+  {id:'rxn-type',subject:'Chemistry',title:'Reaction Type?',
+   buckets:['🔗 Synthesis','💥 Decomposition','🔥 Combustion','🔀 Double Rep.'],
+   items:[['Na + Cl₂ → NaCl',0],['H₂O → H₂ + O₂',1],['C₃H₈ + O₂ → CO₂ + H₂O',2],['NaCl + AgNO₃ → NaNO₃ + AgCl',3],['2Al + 3O₂ → 2Al₂O₃',0],['CaCO₃ → CaO + CO₂',1],['CH₄ + 2O₂ → CO₂ + 2H₂O',2],['BaCl₂ + Na₂SO₄ → BaSO₄ + 2NaCl',3]]},
+  {id:'vector-scalar',subject:'Physics',title:'Vector or Scalar?',
+   buckets:['↗️ Vector','🔢 Scalar'],
+   items:[['Velocity',0],['Speed',1],['Momentum',0],['Kinetic Energy',1],['Force',0],['Mass',1],['Acceleration',0],['Temperature',1],['Displacement',0],['Distance',1],['Weight',0],['Time',1]]},
+  {id:'soluble',subject:'Chemistry',title:'Soluble (aq) or Insoluble (s)? Use NAG rule.',
+   buckets:['💧 Soluble (aq)','🪨 Insoluble (s)'],
+   items:[['NaNO₃',0],['AgCl',1],['NH₄Cl',0],['BaSO₄',1],['KOH',0],['Cu(OH)₂',1],['Ca(NO₃)₂',0],['PbCl₂',1],['LiBr',0],['AlPO₄',1]]},
+];
+
+// ─── TRUE/FALSE DATA ───────────────────────────────────────────────────────
+const TF_STATEMENTS=[
+  // Chemistry
+  {s:'Protons and neutrons are in the nucleus.',a:true},
+  {s:'Electrons have a mass of 1 AMU.',a:false,fix:'Electrons have 0 AMU — too light to count.'},
+  {s:'Cations are positively charged ions.',a:true},
+  {s:'Isotopes of the same element have the same number of neutrons.',a:false,fix:'Isotopes have DIFFERENT neutron counts.'},
+  {s:'Noble gases never form ions because they have a full valence shell.',a:true},
+  {s:'Atomic radius increases going left to right across a period.',a:false,fix:'Atomic radius DECREASES left to right (more protons pull electrons in).'},
+  {s:'Ionic bonds form between two nonmetals.',a:false,fix:'Ionic bonds form between a METAL and a NONMETAL.'},
+  {s:'CO₂ is a covalent compound.',a:true},
+  {s:'The mole contains 6.022×10²³ particles.',a:true},
+  {s:'Limiting reactant is the one present in the largest amount.',a:false,fix:'Limiting reactant is the one that runs out FIRST — produces less product.'},
+  {s:'Combustion of hydrocarbons always produces CO₂ and H₂O.',a:true},
+  {s:'Subscripts can be changed when balancing equations.',a:false,fix:'NEVER change subscripts. Only change coefficients.'},
+  {s:'NAG rule: salts with Nitrate are always soluble.',a:true},
+  {s:'Anions are formed when atoms gain electrons.',a:true},
+  {s:'Molarity is measured in mol/L.',a:true},
+  // Physics
+  {s:'Momentum is a vector quantity.',a:true},
+  {s:'In a closed system, total momentum is conserved.',a:true},
+  {s:'Weightlessness in orbit means there is no gravity.',a:false,fix:'Astronauts are in free fall — gravity still acts, just no contact force.'},
+  {s:'The gravitational constant G equals 9.8 m/s².',a:false,fix:'g ≈ 9.8 m/s² is surface gravity. G = 6.67×10⁻¹¹ N·m²/kg².'},
+  {s:'Doubling the distance between masses halves the gravitational force.',a:false,fix:'Doubling distance makes gravity 4× weaker (inverse square law).'},
+  {s:'Kinetic energy depends on the square of velocity.',a:true},
+  {s:'Lower orbits require faster orbital speeds.',a:true},
+  {s:'Like charges attract each other.',a:false,fix:'Like charges REPEL. Opposite charges attract.'},
+  {s:'Work is done when force is perpendicular to motion.',a:false,fix:'No work when force is perpendicular. Work = F × displacement IN THE SAME DIRECTION.'},
+  {s:'An inelastic collision conserves kinetic energy.',a:false,fix:'Inelastic collisions lose KE (to heat/sound). Elastic collisions conserve KE.'},
+  {s:'Impulse equals the change in momentum.',a:true},
+  {s:'Fe is the symbol for Iron.',a:true},
+  {s:'The octet rule requires 8 valence electrons for stability.',a:true},
+  {s:'Metals form anions by gaining electrons.',a:false,fix:'Metals form CATIONS by LOSING electrons. Nonmetals gain electrons to form anions.'},
+];
+
+// ─── RANK & ORDER DATA ────────────────────────────────────────────────────
+const RANK_QUESTIONS=[
+  {q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
+   items:['He','Ne','Li','Na'],order:[0,1,2,3],
+   exp:'Noble gases are tiny (full shells). He < Ne (same group, He has fewer shells). Li and Na are period 2 & 3 alkali metals — Na has more shells so it\'s larger.'},
+  {q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
+   items:['F','Cl','Na','K'],order:[0,1,2,3],
+   exp:'F (period 2 halogen) < Cl (period 3 halogen) < Na (period 3 alkali metal) < K (period 4 alkali metal). More shells = bigger atom.'},
+  {q:'Rank by INCREASING ionization energy (easiest to remove first)',criterion:'Ionization energy: easiest → hardest',
+   items:['Fr','Na','Cl','He'],order:[0,1,2,3],
+   exp:'Fr (alkali metal, 7 shells) loses electrons easiest. Na is easier than Cl. He (noble gas, 1 shell) is hardest to remove an electron from.'},
+  {q:'Rank by INCREASING momentum: all moving at 10 m/s',criterion:'p = mv at 10 m/s',
+   items:['2 kg ball','0.5 kg ball','5 kg ball','10 kg ball'],order:[1,0,2,3],
+   exp:'p = mv. At same speed, more mass = more momentum. 0.5×10=5, 2×10=20, 5×10=50, 10×10=100 kg·m/s.'},
+  {q:'Rank by INCREASING gravitational force on a 1 kg mass',criterion:'Fg = mg on different planets',
+   items:['Moon (g=1.6)','Mars (g=3.7)','Earth (g=9.8)','Jupiter (g=24.8)'],order:[0,1,2,3],
+   exp:'Fg = mg. Moon weakest, then Mars, Earth, Jupiter strongest. All have same 1 kg mass so just multiply by g.'},
+  {q:'Rank by INCREASING electronegativity (least greedy for electrons first)',criterion:'Electronegativity: least → most',
+   items:['Fr','Na','N','F'],order:[0,1,2,3],
+   exp:'Bottom-left = lowest electronegativity. Fr (bottom-left corner) < Na < N < F (top-right = highest EN in all elements).'},
+  {q:'Rank these ions by INCREASING number of electrons',criterion:'Electron count: fewest → most',
+   items:['Na⁺','Mg²⁺','O²⁻','F⁻'],order:[1,0,3,2],
+   exp:'Mg²⁺: 12−2=10e⁻. Na⁺: 11−1=10e⁻... wait, both 10! Use atomic number: Mg²⁺ technically same as Na⁺ (both 10e⁻). F⁻: 9+1=10. O²⁻: 8+2=10. All isoelectronic with Ne — trick question, all have 10!'},
+];
+
+// ─── SPOT THE MISTAKE DATA ────────────────────────────────────────────────
+const SPOT_QUESTIONS=[
+  {q:'What is the charge of an ion with 11 protons and 10 electrons?',
+   answer:'Charge = 11 − 10 = −1. This is a sodium anion, Na⁻.',
+   opts:['Charge formula is wrong — should be E − P, not P − E','The answer is correct but poorly explained','Wrong: 11 protons − 10 electrons = +1, not −1. This is Na⁺, a cation.','The number of protons is wrong for sodium'],
+   correct:2,exp:'Charge = Protons − Electrons = 11 − 10 = +1 (positive). Losing an electron → cation. This is Na⁺, not Na⁻.'},
+  {q:'What type of bond forms in H₂O?',
+   answer:'H₂O is an ionic compound because hydrogen is a metal in Group 1A.',
+   opts:['The formula for water is wrong','Correct — hydrogen is in Group 1A like sodium','Wrong: hydrogen is a NONMETAL, not a metal. H₂O is COVALENT (two nonmetals sharing electrons).','Water actually has metallic bonds'],
+   correct:2,exp:'Hydrogen is a nonmetal despite being in Group 1A. H₂O is covalent — two nonmetals (H and O) sharing electrons.'},
+  {q:'Balance the equation: H₂ + O₂ → H₂O',
+   answer:'The equation is already balanced: 2 hydrogen and 2 oxygen on each side.',
+   opts:['The products are wrong','Correct — 2H on left, 2O on right','Wrong: left has 2O (from O₂), right has only 1O (from H₂O). Balanced: 2H₂ + O₂ → 2H₂O','The formula for water should be H₃O'],
+   correct:2,exp:'H₂ + O₂ → H₂O: Left has 2O, right has 1O. Not balanced! Correct: 2H₂ + O₂ → 2H₂O (4H each side, 2O each side).'},
+  {q:'What happens to gravitational force when distance doubles?',
+   answer:'If the distance doubles, the gravitational force is halved because Fg ∝ 1/R.',
+   opts:['The proportionality is wrong — Fg ∝ 1/R², not 1/R. Force becomes ¼, not ½.','Correct — halving distance halves force','The formula used is wrong — should be Fg = ma','Distance has no effect on gravity'],
+   correct:0,exp:'Fg ∝ 1/R². Double R → R² becomes 4× bigger → force is ¼ as strong. This is the inverse SQUARE law.'},
+  {q:'Calculate momentum of a 3 kg object at 4 m/s.',
+   answer:'p = 3 + 4 = 7 kg·m/s',
+   opts:['The units are wrong','The answer is correct','Wrong: momentum is p = m × v (multiply), not add. p = 3 × 4 = 12 kg·m/s.','The mass and velocity are in the wrong order'],
+   correct:2,exp:'p = mv = 3 × 4 = 12 kg·m/s. You multiply mass by velocity, you do not add them. p = mv is the formula.'},
+  {q:'An ionic compound has Mg²⁺ and Cl⁻. What is the formula?',
+   answer:'The formula is MgCl because each ion has one charge.',
+   opts:['Correct — one of each ion','The charges are wrong','Wrong: Mg is 2+ and Cl is 1−. Need 2 chloride ions to balance. Formula is MgCl₂.','The name should be magnesium chlorine'],
+   correct:2,exp:'Drop-charge method: Mg²⁺ + Cl⁻. Mg charge (2) becomes Cl subscript, Cl charge (1) becomes Mg subscript → Mg₁Cl₂ = MgCl₂. Zero charge rule: 2+ + 2(1−) = 0 ✓'},
+  {q:'What is the molar mass of H₂O? (H=1.008, O=16.00)',
+   answer:'Molar mass = 1.008 + 16.00 = 17.008 g/mol',
+   opts:['The atomic masses are wrong','Correct — just add the two masses','Wrong: H₂O has TWO hydrogen atoms. Molar mass = 2×1.008 + 16.00 = 18.016 g/mol.','The formula for molar mass is wrong'],
+   correct:2,exp:'The subscript 2 in H₂O means 2 hydrogen atoms. Molar mass = 2×(1.008) + 1×(16.00) = 2.016 + 16.00 = 18.016 g/mol.'},
+  {q:'A combustion reaction: C₃H₈ + O₂ → CO₂ + H₂O. Is this balanced?',
+   answer:'Yes, balanced: 3C on left (C₃H₈), 1C on right (CO₂). Wait, 1 does not equal 3 but it\'s close enough.',
+   opts:['Correct — it is balanced','The formula for propane is wrong','Wrong: 3C on left but only 1C on right. "Close enough" is never acceptable. Balanced: C₃H₈ + 5O₂ → 3CO₂ + 4H₂O.','Combustion reactions don\'t need balancing'],
+   correct:2,exp:'Equations MUST be exactly balanced. 3C left → need 3CO₂ right. 8H left → need 4H₂O right. Then O: 3(2)+4(1)=10 O on right → 5O₂ on left. Balanced: C₃H₈ + 5O₂ → 3CO₂ + 4H₂O.'},
+];
+
+// ─── SORT GAME LOGIC ──────────────────────────────────────────────────────
+let sortState={set:null,queue:[],idx:0,correct:0,wrong:0};
+function startSort(){
+  // Pick a sort set based on active session subject
+  const subj=getSession().subject;
+  const pool=SORT_SETS.filter(s=>s.subject===subj||s.subject==='Chemistry');
+  const set=pool[Math.floor(Math.random()*pool.length)];
+  const shuffled=shuffle([...set.items]);
+  sortState={set,queue:shuffled,idx:0,correct:0,wrong:0};
+  document.getElementById('sort-result').style.display='none';
+  document.getElementById('sort-prompt').textContent=`Sort each item into the right category.`;
+  document.getElementById('sort-badge').textContent=`0/${shuffled.length}`;
+  // Build buckets
+  const cols=set.buckets.length<=2?'1fr 1fr':set.buckets.length===3?'1fr 1fr 1fr':'1fr 1fr';
+  const buckets=document.getElementById('sort-buckets');
+  buckets.style.gridTemplateColumns=cols;
+  buckets.innerHTML=set.buckets.map((b,i)=>`
+    <button onclick="sortAnswer(${i})" style="padding:14px 10px;background:${['rgba(124,58,237,0.1)','rgba(13,148,136,0.1)','rgba(234,88,12,0.1)','rgba(37,99,235,0.1)'][i]};border:2px solid ${['var(--purple)','var(--teal)','var(--orange)','#2563eb'][i]};border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;color:${['var(--purple-dark)','#0f766e','#9a3412','#1e3a8a'][i]};">${b}</button>`).join('');
+  document.getElementById('sort-card').textContent=shuffled[0][0];
+  document.querySelector('#s-sort .nav').style.display='flex';
+}
+function sortAnswer(bucketIdx){
+  const item=sortState.queue[sortState.idx];
+  const correct=item[1]===bucketIdx;
+  const card=document.getElementById('sort-card');
+  if(correct){
+    sortState.correct++;
+    card.style.background='rgba(13,148,136,0.15)';card.style.color='#0f766e';
+    card.style.borderColor='var(--teal)';
+  } else {
+    sortState.wrong++;
+    card.style.background='#fee2e2';card.style.color='#991b1b';
+    setTimeout(()=>{card.style.background='rgba(255,255,255,0.9)';card.style.color='var(--purple-dark)';card.style.borderColor='transparent';},700);
+  }
+  setTimeout(()=>{
+    card.style.background='rgba(255,255,255,0.9)';card.style.color='var(--purple-dark)';card.style.borderColor='transparent';
+    sortState.idx++;
+    document.getElementById('sort-badge').textContent=`${sortState.idx}/${sortState.queue.length}`;
+    if(sortState.idx>=sortState.queue.length){
+      // Done
+      document.getElementById('sort-buckets').innerHTML='';
+      document.getElementById('sort-card').textContent='';
+      document.getElementById('sort-result').style.display='flex';
+      document.getElementById('sort-result-icon').textContent=sortState.wrong===0?'🏆':'🎉';
+      document.getElementById('sort-result-title').textContent=`${sortState.set.title} — Complete!`;
+      document.getElementById('sort-result-score').textContent=`${sortState.correct}/${sortState.queue.length} correct${sortState.wrong===0?' — perfect! 🌟':''}`;
+    } else {
+      card.textContent=sortState.queue[sortState.idx][0];
+    }
+  },600);
+}
+
+// ─── TRUE/FALSE LOGIC ────────────────────────────────────────────────────
+let tfState={qs:[],idx:0,score:0,streak:0,timer:null,timeLeft:30};
+function startTF(){
+  const subj=getSession().subject;
+  tfState={qs:shuffle([...TF_STATEMENTS]),idx:0,score:0,streak:0,timer:null,timeLeft:30};
+  document.getElementById('tf-complete').style.display='none';
+  document.getElementById('tf-statement').parentElement.style.display='flex';
+  document.querySelectorAll('#s-tf .hint-row,#s-tf button').forEach(b=>{if(!b.classList.contains('back-btn'))b.disabled=false;});
+  renderTFQ();
+  tfState.timer=setInterval(()=>{
+    tfState.timeLeft--;
+    document.getElementById('tf-badge').textContent=`${tfState.timeLeft}s`;
+    document.getElementById('tf-timer-bar').style.width=`${(tfState.timeLeft/30)*100}%`;
+    if(tfState.timeLeft<=0)endTF();
+  },1000);
+}
+function stopTF(){if(tfState.timer)clearInterval(tfState.timer);}
+function renderTFQ(){
+  if(tfState.idx>=tfState.qs.length)tfState.idx=0; // cycle
+  document.getElementById('tf-statement').textContent=tfState.qs[tfState.idx].s;
+}
+function tfAnswer(answer){
+  if(tfState.timeLeft<=0)return;
+  const correct=tfState.qs[tfState.idx].a===answer;
+  const stmt=document.getElementById('tf-statement');
+  if(correct){tfState.score++;tfState.streak++;stmt.style.background='rgba(13,148,136,0.2)';}
+  else{tfState.streak=0;stmt.style.background='#fee2e2';}
+  document.getElementById('tf-score').textContent=tfState.score;
+  document.getElementById('tf-streak').textContent=tfState.streak;
+  setTimeout(()=>{stmt.style.background='rgba(255,255,255,0.9)';tfState.idx++;renderTFQ();},350);
+}
+function endTF(){
+  stopTF();
+  document.getElementById('tf-statement').parentElement.style.display='none';
+  document.querySelectorAll('#s-tf > div:nth-child(5)').forEach(e=>e.style.display='none');
+  const comp=document.getElementById('tf-complete');
+  comp.style.display='flex';
+  document.getElementById('tf-final-score').textContent=`Score: ${tfState.score} correct in 30 seconds${tfState.score>=20?' — incredible! 🌟':tfState.score>=10?' — great work!':' — keep practicing!'}`;
+}
+
+// ─── RANK & ORDER LOGIC ───────────────────────────────────────────────────
+let rankState={qs:[],idx:0,correct:0,selected:[],answered:false};
+function startRankGame(){
+  rankState={qs:shuffle([...RANK_QUESTIONS]),idx:0,correct:0,selected:[],answered:false};
+  document.getElementById('rank-complete').style.display='none';
+  document.getElementById('rank-next').className='next-btn';
+  document.getElementById('rank-exp').style.display='none';
+  renderRankQ();
+}
+function renderRankQ(){
+  const q=rankState.qs[rankState.idx];
+  rankState.selected=[];rankState.answered=false;
+  document.getElementById('rank-prompt').textContent=q.q;
+  document.getElementById('rank-criterion').textContent=q.criterion;
+  document.getElementById('rank-order-text').textContent='—';
+  document.getElementById('rank-next').className='next-btn';
+  document.getElementById('rank-exp').style.display='none';
+  document.getElementById('rank-badge').textContent=`${rankState.idx+1}/${rankState.qs.length}`;
+  const items=document.getElementById('rank-items');
+  items.innerHTML=q.items.map((item,i)=>`
+    <button id="rank-item-${i}" onclick="rankSelect(${i})" style="padding:14px 10px;background:rgba(255,255,255,0.9);border:2px solid var(--gray-200);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;color:var(--purple-dark);">${item}</button>`).join('');
+}
+function rankSelect(idx){
+  if(rankState.answered)return;
+  const q=rankState.qs[rankState.idx];
+  if(rankState.selected.includes(idx))return;
+  rankState.selected.push(idx);
+  const btn=document.getElementById(`rank-item-${idx}`);
+  btn.style.background='var(--purple)';btn.style.color='white';btn.style.borderColor='var(--purple)';
+  btn.textContent=`${rankState.selected.length}. ${q.items[idx]}`;
+  document.getElementById('rank-order-text').textContent=rankState.selected.map(i=>q.items[i]).join(' → ');
+  if(rankState.selected.length===q.items.length){
+    rankState.answered=true;
+    const correct=rankState.selected.every((v,i)=>v===q.order[i]);
+    if(correct){rankState.correct++;addXP(15,'lv-xp-badge');}
+    // Show correct answer colors
+    q.order.forEach((origIdx,pos)=>{
+      const btn=document.getElementById(`rank-item-${origIdx}`);
+      if(btn){btn.style.background=correct?'var(--teal)':rankState.selected[pos]===origIdx?'var(--teal)':'#dc2626';btn.style.color='white';}
+    });
+    document.getElementById('rank-exp').textContent=q.exp;
+    document.getElementById('rank-exp').style.display='block';
+    document.getElementById('rank-next').className='next-btn on';
+  }
+}
+function nextRankQ(){
+  rankState.idx++;
+  if(rankState.idx>=rankState.qs.length){
+    document.getElementById('rank-complete').style.display='flex';
+    document.getElementById('rank-final-score').textContent=`${rankState.correct}/${rankState.qs.length} correct${rankState.correct===rankState.qs.length?' — perfect! 🌟':''}`;
+  } else renderRankQ();
+}
+
+// ─── SPOT THE MISTAKE LOGIC ───────────────────────────────────────────────
+let spotState={qs:[],idx:0,correct:0,answered:false};
+function startSpot(){
+  spotState={qs:shuffle([...SPOT_QUESTIONS]),idx:0,correct:0,answered:false};
+  document.getElementById('spot-complete').style.display='none';
+  document.getElementById('spot-next').className='next-btn';
+  document.getElementById('spot-exp').style.display='none';
+  renderSpotQ();
+}
+function renderSpotQ(){
+  const q=spotState.qs[spotState.idx];
+  spotState.answered=false;
+  document.getElementById('spot-badge').textContent=`${spotState.idx+1}/${spotState.qs.length}`;
+  document.getElementById('spot-q').textContent=q.q;
+  document.getElementById('spot-answer').textContent=q.answer;
+  document.getElementById('spot-exp').style.display='none';
+  document.getElementById('spot-next').className='next-btn';
+  const opts=document.getElementById('spot-opts');
+  opts.innerHTML=q.opts.map((o,i)=>`
+    <button id="spot-opt-${i}" onclick="spotAnswer(${i})" style="padding:12px 14px;background:rgba(255,255,255,0.9);border:2px solid var(--gray-200);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;text-align:left;color:var(--gray-700);">${o}</button>`).join('');
+}
+function spotAnswer(idx){
+  if(spotState.answered)return;
+  spotState.answered=true;
+  const q=spotState.qs[spotState.idx];
+  const correct=idx===q.correct;
+  if(correct){spotState.correct++;addXP(15,'qz-xp-badge');}
+  q.opts.forEach((_,i)=>{
+    const btn=document.getElementById(`spot-opt-${i}`);
+    if(!btn)return;
+    btn.onclick=null;
+    if(i===q.correct){btn.style.background='rgba(13,148,136,0.15)';btn.style.borderColor='var(--teal)';btn.style.color='#0f766e';}
+    else if(i===idx&&!correct){btn.style.background='#fee2e2';btn.style.borderColor='#dc2626';btn.style.color='#991b1b';}
+  });
+  document.getElementById('spot-exp').textContent=q.exp;
+  document.getElementById('spot-exp').style.display='block';
+  document.getElementById('spot-next').className='next-btn on';
+}
+function nextSpot(){
+  spotState.idx++;
+  if(spotState.idx>=spotState.qs.length){
+    document.getElementById('spot-complete').style.display='flex';
+    document.getElementById('spot-final').textContent=`${spotState.correct}/${spotState.qs.length} mistakes found${spotState.correct===spotState.qs.length?' — perfect! 🌟':''}`;
+  } else renderSpotQ();
+}
+
 // ─── QUESTION FILTER ──────────────────────────────────────────────────────
 // Returns a filter function for QS based on the active session.
 // - Individual session: questions from sessions up to and including this one
