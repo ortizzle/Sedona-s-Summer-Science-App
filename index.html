@@ -3768,8 +3768,8 @@ function startTF(){
   const subj=getSession().subject;
   tfState={qs:shuffle([...TF_STATEMENTS]),idx:0,score:0,streak:0,timer:null,timeLeft:30};
   document.getElementById('tf-complete').style.display='none';
-  document.getElementById('tf-statement').parentElement.style.display='flex';
-  document.querySelectorAll('#s-tf .hint-row,#s-tf button').forEach(b=>{if(!b.classList.contains('back-btn'))b.disabled=false;});
+  document.getElementById('tf-statement').parentElement.style.display='block';
+  document.getElementById('tf-btn-row').style.display='grid';
   renderTFQ();
   tfState.timer=setInterval(()=>{
     tfState.timeLeft--;
