@@ -2373,7 +2373,11 @@ function go(mode){
   if(mode==='home'){document.getElementById('s-home').classList.add('active');renderHome();maybeShowSummary();return;}
   if(mode==='pt'){document.getElementById('s-pt').classList.add('active');return;}
   if(mode==='fc'){document.getElementById('s-fc-screen').classList.add('active');startFC();return;}
-  if(mode==='match'){document.getElementById('s-match').classList.add('active');startMatch();return;}
+  if(mode==='match'){document.getElementById('s-match').classList.add('active');startMatch(0);return;}
+  if(mode==='sort'){document.getElementById('s-sort').classList.add('active');startSort();return;}
+  if(mode==='tf'){document.getElementById('s-tf').classList.add('active');startTF();return;}
+  if(mode==='rank-game'){document.getElementById('s-rank-game').classList.add('active');startRankGame();return;}
+  if(mode==='spot'){document.getElementById('s-spot').classList.add('active');startSpot();return;}
   if(mode==='qz'){showQuizModeSelector();return;}
   if(mode==='qz-run'){document.getElementById('s-qz-screen').classList.add('active');startQuiz();return;}
   if(mode==='lv'){document.getElementById('s-lv-screen').classList.add('active');startLevels();return;}
