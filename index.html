@@ -3796,7 +3796,7 @@ function tfAnswer(answer){
 function endTF(){
   stopTF();
   document.getElementById('tf-statement').parentElement.style.display='none';
-  document.querySelectorAll('#s-tf > div:nth-child(5)').forEach(e=>e.style.display='none');
+  document.getElementById('tf-btn-row').style.display='none';
   const comp=document.getElementById('tf-complete');
   comp.style.display='flex';
   document.getElementById('tf-final-score').textContent=`Score: ${tfState.score} correct in 30 seconds${tfState.score>=20?' — incredible! 🌟':tfState.score>=10?' — great work!':' — keep practicing!'}`;
