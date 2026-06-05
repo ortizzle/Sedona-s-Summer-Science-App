@@ -1031,8 +1031,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div id="tf-statement" style="background:rgba(255,255,255,0.9);border-radius:20px;padding:28px 24px;text-align:center;font-size:17px;font-weight:700;color:var(--gray-900);box-shadow:0 4px 20px rgba(0,0,0,0.1);width:100%;min-height:140px;display:flex;align-items:center;justify-content:center;line-height:1.5;"></div>
   </div>
   <div id="tf-btn-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 20px 32px;">
-    <button onclick="tfAnswer(true)" style="padding:20px;background:#dcfce7;color:#166534;border:2px solid #86efac;border-radius:16px;font-size:18px;font-weight:900;cursor:pointer;">✓ True</button>
-    <button onclick="tfAnswer(false)" style="padding:20px;background:#fee2e2;color:#991b1b;border:2px solid #fca5a5;border-radius:16px;font-size:18px;font-weight:900;cursor:pointer;">✗ False</button>
+    <button id="tf-true-btn" onclick="tfAnswer(true)" style="padding:22px 16px;background:rgba(22,163,74,0.08);color:#166534;border:2px solid rgba(22,163,74,0.3);border-radius:16px;font-size:24px;font-weight:900;cursor:pointer;transition:all .15s;">✓ True</button>
+    <button id="tf-false-btn" onclick="tfAnswer(false)" style="padding:22px 16px;background:rgba(220,38,38,0.08);color:#991b1b;border:2px solid rgba(220,38,38,0.3);border-radius:16px;font-size:24px;font-weight:900;cursor:pointer;transition:all .15s;">✗ False</button>
   </div>
   <div id="tf-complete" style="display:none;flex-direction:column;align-items:center;padding:32px 24px;text-align:center;">
     <div style="font-size:56px;margin-bottom:12px;">⏱️</div>
