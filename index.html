@@ -3887,8 +3887,8 @@ function spotAnswer(idx){
     const btn=document.getElementById(`spot-opt-${i}`);
     if(!btn)return;
     btn.onclick=null;
-    if(i===q.correct){btn.style.background='rgba(13,148,136,0.15)';btn.style.borderColor='var(--teal)';btn.style.color='#0f766e';}
-    else if(i===idx&&!correct){btn.style.background='#fee2e2';btn.style.borderColor='#dc2626';btn.style.color='#991b1b';}
+    if(i===q.correct){btn.style.background='#16a34a';btn.style.borderColor='#16a34a';btn.style.color='white';btn.style.fontWeight='800';}
+    else if(i===idx&&!correct){btn.style.background='#dc2626';btn.style.borderColor='#dc2626';btn.style.color='white';btn.style.fontWeight='700';}
   });
   document.getElementById('spot-exp').textContent=q.exp;
   document.getElementById('spot-exp').style.display='block';
