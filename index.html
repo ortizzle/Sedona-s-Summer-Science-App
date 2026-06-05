@@ -3836,6 +3836,7 @@ function renderRankQ(){
   document.getElementById('rank-order-text').textContent='—';
   document.getElementById('rank-next').className='next-btn';
   document.getElementById('rank-exp').style.display='none';
+  document.getElementById('rank-correct-order').style.display='none';
   document.getElementById('rank-badge').textContent=`${rankState.idx+1}/${rankState.qs.length}`;
   const items=document.getElementById('rank-items');
   items.innerHTML=q.items.map((item,i)=>`
