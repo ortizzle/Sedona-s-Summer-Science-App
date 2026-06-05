@@ -3778,11 +3778,21 @@ function tfAnswer(answer){
   if(tfState.timeLeft<=0)return;
   const correct=tfState.qs[tfState.idx].a===answer;
   const stmt=document.getElementById('tf-statement');
-  if(correct){tfState.score++;tfState.streak++;stmt.style.background='rgba(13,148,136,0.2)';}
-  else{tfState.streak=0;stmt.style.background='#fee2e2';}
+  const trueBtn=document.getElementById('tf-true-btn');
+  const falseBtn=document.getElementById('tf-false-btn');
+  // Flash selected button bold solid
+  if(answer){trueBtn.style.cssText+='background:#16a34a!important;color:white!important;border-color:#16a34a!important;transform:scale(1.04);';}
+  else{falseBtn.style.cssText+='background:#dc2626!important;color:white!important;border-color:#dc2626!important;transform:scale(1.04);';}
+  if(correct){tfState.score++;tfState.streak++;stmt.style.background='rgba(22,163,74,0.12)';}
+  else{tfState.streak=0;stmt.style.background='rgba(220,38,38,0.1)';}
   document.getElementById('tf-score').textContent=tfState.score;
   document.getElementById('tf-streak').textContent=tfState.streak;
-  setTimeout(()=>{stmt.style.background='rgba(255,255,255,0.9)';tfState.idx++;renderTFQ();},350);
+  setTimeout(()=>{
+    stmt.style.background='rgba(255,255,255,0.9)';
+    trueBtn.style.cssText='padding:22px 16px;background:rgba(22,163,74,0.08);color:#166534;border:2px solid rgba(22,163,74,0.3);border-radius:16px;font-size:24px;font-weight:900;cursor:pointer;transition:all .15s;';
+    falseBtn.style.cssText='padding:22px 16px;background:rgba(220,38,38,0.08);color:#991b1b;border:2px solid rgba(220,38,38,0.3);border-radius:16px;font-size:24px;font-weight:900;cursor:pointer;transition:all .15s;';
+    tfState.idx++;renderTFQ();
+  },400);
 }
 function endTF(){
   stopTF();
