@@ -3728,15 +3728,15 @@ function sortAnswer(bucketIdx){
   const card=document.getElementById('sort-card');
   if(correct){
     sortState.correct++;
-    card.style.background='rgba(13,148,136,0.15)';card.style.color='#0f766e';
-    card.style.borderColor='var(--teal)';
+    card.style.cssText+='background:#16a34a!important;color:white!important;border:3px solid #16a34a!important;font-size:26px!important;';
+    card.textContent='✓ ' + sortState.queue[sortState.idx][0];
   } else {
     sortState.wrong++;
-    card.style.background='#fee2e2';card.style.color='#991b1b';
-    setTimeout(()=>{card.style.background='rgba(255,255,255,0.9)';card.style.color='var(--purple-dark)';card.style.borderColor='transparent';},700);
+    card.style.cssText+='background:#dc2626!important;color:white!important;border:3px solid #dc2626!important;font-size:26px!important;';
+    card.textContent='✗ ' + sortState.queue[sortState.idx][0];
   }
   setTimeout(()=>{
-    card.style.background='rgba(255,255,255,0.9)';card.style.color='var(--purple-dark)';card.style.borderColor='transparent';
+    card.style.cssText='background:rgba(255,255,255,0.9);border-radius:20px;padding:28px 24px;text-align:center;font-size:22px;font-weight:800;color:var(--purple-dark);box-shadow:0 4px 20px rgba(0,0,0,0.1);width:100%;max-width:320px;min-height:100px;display:flex;align-items:center;justify-content:center;line-height:1.3;';
     sortState.idx++;
     document.getElementById('sort-badge').textContent=`${sortState.idx}/${sortState.queue.length}`;
     if(sortState.idx>=sortState.queue.length){
