@@ -3841,7 +3841,11 @@ function rankSelect(idx){
     // Show correct answer colors
     q.order.forEach((origIdx,pos)=>{
       const btn=document.getElementById(`rank-item-${origIdx}`);
-      if(btn){btn.style.background=correct?'var(--teal)':rankState.selected[pos]===origIdx?'var(--teal)':'#dc2626';btn.style.color='white';}
+      if(btn){
+        const wasRight=rankState.selected[pos]===origIdx;
+        btn.style.background=wasRight?'#16a34a':'#dc2626';
+        btn.style.color='white';btn.style.fontWeight='800';btn.style.borderColor=wasRight?'#16a34a':'#dc2626';
+      }
     });
     document.getElementById('rank-exp').textContent=q.exp;
     document.getElementById('rank-exp').style.display='block';
