@@ -3879,7 +3879,7 @@ function renderSpotQ(){
   document.getElementById('spot-next').className='next-btn';
   const opts=document.getElementById('spot-opts');
   opts.innerHTML=q.opts.map((o,i)=>`
-    <button id="spot-opt-${i}" onclick="spotAnswer(${i})" style="padding:12px 14px;background:rgba(255,255,255,0.9);border:2px solid var(--gray-200);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;text-align:left;color:var(--gray-700);">${o}</button>`).join('');
+    <button id="spot-opt-${i}" onclick="spotAnswer(${i})" style="padding:13px 15px;background:rgba(255,255,255,0.9);border:2px solid var(--gray-200);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;color:var(--gray-700);line-height:1.4;">${o}</button>`).join('');
 }
 function spotAnswer(idx){
   if(spotState.answered)return;
