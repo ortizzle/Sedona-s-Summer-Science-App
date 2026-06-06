@@ -4250,7 +4250,7 @@ function renderMatchGrid(){
     const placeholder=document.getElementById(`md-placeholder-${pos}`);
     placeholder.id=`md-${origIdx}`;
     placeholder.dataset.idx=origIdx;placeholder.dataset.side='def';
-    placeholder.style.cssText='background:rgba(13,148,136,0.08);border:2px solid rgba(13,148,136,0.2);border-radius:12px;padding:16px 12px;font-size:14px;color:#0f766e;cursor:pointer;min-height:88px;display:flex;align-items:center;justify-content:center;text-align:center;transition:all .2s;';
+    placeholder.style.cssText='background:#ccfbf1;border:2px solid #5eead4;border-radius:12px;padding:16px 12px;font-size:14px;color:#0f766e;cursor:pointer;min-height:88px;display:flex;align-items:center;justify-content:center;text-align:center;transition:all .2s;';
     placeholder.textContent=card.eq||card.def.slice(0,60)+(card.def.length>60?'…':'');
     placeholder.onclick=()=>selectMatch(placeholder,origIdx,'def');
   });
