@@ -4083,13 +4083,14 @@ function showRefPopup(){
         </div>
       </div>`;
   } else {
-    // Chemistry: show a mini periodic table link + key info
+    // Chemistry: PT first, key formulas below
     overlay.innerHTML=`
       <div style="background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;padding:16px 20px 32px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
           <div style="font-size:15px;font-weight:800;color:var(--purple-dark);">🧪 Quick Reference</div>
           <button onclick="closeRefPopup()" style="background:var(--gray-200);border:none;border-radius:99px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;">Done</button>
         </div>
+        <button onclick="showPeriodicTableOverlay()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0d9488,#0f766e);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">🧪 Open Periodic Table →</button>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
           ${[
             ['A = p⁺ + n⁰','Mass Number'],
@@ -4103,9 +4104,6 @@ function showRefPopup(){
               <span style="font-family:'Special Elite',cursive;font-size:15px;color:#1e3a5f;">${eq}</span>
               <span style="font-size:11px;color:var(--gray-500);font-weight:600;">${name}</span>
             </div>`).join('')}
-        </div>
-        <div style="margin-top:14px;">
-          <button onclick="showPeriodicTableOverlay()" style="width:100%;padding:12px;background:var(--teal);color:white;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;">🧪 Open Periodic Table →</button>
         </div>
       </div>`;
   }
