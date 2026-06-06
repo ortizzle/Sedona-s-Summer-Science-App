@@ -2644,7 +2644,7 @@ function startFC(){
   // Store all pools for scope switching
   f.pools={session:sessionCards,all:allCards,prev:prevCards,weak:weakCards};
   // Update scope pill counts
-  const scopeLabels={session:'This Session',all:'All Sessions',prev:'Prev Sessions',weak:'⚠️ Needs Work'};
+  const scopeLabels={session:'This Session',all:'All Sessions',prev:'Prev Sessions',weak:'🌱 Growth Cards'};
   const scopeCounts={session:sessionCards.length,all:allCards.length,prev:prevCards.length,weak:weakCards.length};
   document.querySelectorAll('#fc-scope-bar .fcf-btn').forEach(b=>b.classList.remove('active-scope'));
   Object.keys(scopeLabels).forEach(sc=>{
