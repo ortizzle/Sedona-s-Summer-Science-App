@@ -2218,7 +2218,7 @@ function loadProgress(){
     if(!d)return;
     S.totalXP=d.totalXP||0;S.bestStreak=d.bestStreak||0;S.masteredCards=d.masteredCards||0;
     S.studySeconds=d.studySeconds||0;
-    S.mistakes=d.mistakes||{};S.timingLog=d.timingLog||[];S.quizSessions=d.quizSessions||[];S.checkIns=d.checkIns||[];
+    S.mistakes=d.mistakes||{};S.weakCards=d.weakCards||{};S.timingLog=d.timingLog||[];S.quizSessions=d.quizSessions||[];S.checkIns=d.checkIns||[];
     if(d.badges)d.badges.forEach(sb=>{const b=S.badges.find(b=>b.id===sb.id);if(b){b.unlocked=sb.unlocked;b.earnedAt=sb.earnedAt||null;}});
   }catch(e){}
 }
