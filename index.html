@@ -2611,6 +2611,11 @@ function trackMistake(qId,mode,ms,correct){
 }
 
 // ─── FLASHCARDS ───────────────────────────────────────────────────────────
+function cardType(card){
+  if(card.type==='recall')return'recall';
+  if(card.eq)return'formula';
+  return'definition';
+}
 function startFC(){
   trackModeUsed('fc');
   const f=S.fc;
@@ -2622,7 +2627,34 @@ function startFC(){
     showBadgeToast({icon:'📋',name:`No flashcards yet for ${s.combined?s.title:`Session ${s.num}`} — added after each lesson`},true);
     go('home');return;
   }
-  f.deck=shuffle(sessionCards);f.wrong=[];f.idx=0;f.mastered=0;f.phase='main';f.flipped=false;f.sessionXP=0;
+  f.allCards=sessionCards;
+  if(!f.typeFilter)f.typeFilter='all';
+  // Update filter bar counts and disable empty types
+  ['all','definition','formula','recall'].forEach(type=>{
+    const btn=document.getElementById('fcf-'+type);
+    if(!btn)return;
+    const count=type==='all'?sessionCards.length:sessionCards.filter(c=>cardType(c)===type).length;
+    if(type==='recall'){btn.style.display=count>0?'':'none';}
+    else{btn.disabled=count===0;}
+    btn.textContent={all:'All',definition:'📖 Definitions',formula:'📐 Formulas',recall:'🧠 Recall'}[type]+(count>0?` (${count})`:'');
+  });
+  applyFCFilter();
+}
+function setFCFilter(type){
+  S.fc.typeFilter=type;
+  document.querySelectorAll('.fcf-btn').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('fcf-'+type);
+  if(btn)btn.classList.add('active');
+  applyFCFilter();
+}
+function applyFCFilter(){
+  const f=S.fc;
+  const filtered=f.typeFilter==='all'?f.allCards:f.allCards.filter(c=>cardType(c)===f.typeFilter);
+  if(!filtered.length){
+    showBadgeToast({icon:'📋',name:'No cards of that type in this session'},true);
+    return;
+  }
+  f.deck=shuffle([...filtered]);f.wrong=[];f.idx=0;f.mastered=0;f.phase='main';f.flipped=false;f.sessionXP=0;
   renderFC();
 }
 function renderFC(){
