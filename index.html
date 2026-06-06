@@ -3808,7 +3808,7 @@ function buildCheckinUI(){
   if(!rowsEl)return;
   rowsEl.innerHTML=CHECKIN_STEPS.map((step,si)=>`
     <div style="background:rgba(255,255,255,0.88);border-radius:14px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
-      <div style="font-size:12px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;">${step.icon} ${step.q}</div>
+      <div style="font-size:16px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;">${step.icon} ${step.q}</div>
       <div style="display:flex;justify-content:space-between;">
         ${step.emojis.map((e,i)=>`
           <div data-row="${si}" data-idx="${i}" onclick="ciSelect(${si},${i},this)" style="flex:1;text-align:center;cursor:pointer;padding:4px 2px;border-radius:8px;transition:background .15s;">
