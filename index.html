@@ -4237,7 +4237,7 @@ function renderMatchGrid(){
     const t=document.createElement('div');
     t.id=`mt-${i}`;
     t.dataset.idx=i;t.dataset.side='term';
-    t.style.cssText='background:rgba(255,255,255,0.9);border:2px solid var(--gray-200);border-radius:12px;padding:12px 10px;font-size:12px;font-weight:700;color:var(--purple-dark);cursor:pointer;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;transition:all .2s;';
+    t.style.cssText='background:rgba(255,255,255,0.9);border:2px solid var(--gray-200);border-radius:12px;padding:16px 12px;font-size:15px;font-weight:700;color:var(--purple-dark);cursor:pointer;min-height:88px;display:flex;align-items:center;justify-content:center;text-align:center;transition:all .2s;';
     t.textContent=card.term;
     t.onclick=()=>selectMatch(t,i,'term');
     grid.appendChild(t);
