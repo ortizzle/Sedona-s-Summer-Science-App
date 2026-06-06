@@ -675,6 +675,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <span class="nav-title">🃏 Flashcards</span>
     <span class="nav-badge" id="fc-xp-badge">+0 XP</span>
   </div>
+  <div class="fc-filter-bar" id="fc-filter-bar">
+    <button class="fcf-btn active" id="fcf-all"        onclick="setFCFilter('all')">All</button>
+    <button class="fcf-btn"        id="fcf-definition" onclick="setFCFilter('definition')">📖 Definitions</button>
+    <button class="fcf-btn"        id="fcf-formula"    onclick="setFCFilter('formula')">📐 Formulas</button>
+    <button class="fcf-btn"        id="fcf-recall"     onclick="setFCFilter('recall')" style="display:none;">🧠 Recall</button>
+  </div>
   <div class="fc-bar">
     <div class="fc-bar-track"><div class="fc-bar-fill" id="fc-bar-fill" style="width:0%"></div></div>
     <span class="fc-bar-txt" id="fc-bar-txt">0/15</span>
