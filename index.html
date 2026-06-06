@@ -677,6 +677,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <span class="nav-title">🃏 Flashcards</span>
     <span class="nav-badge" id="fc-xp-badge">+0 XP</span>
   </div>
+  <div class="fc-bar-label">Scope</div>
+  <div class="fc-filter-bar" id="fc-scope-bar">
+    <button class="fcf-btn active-scope" id="fcs-session"  onclick="setFCScope('session')">This Session</button>
+    <button class="fcf-btn"              id="fcs-all"      onclick="setFCScope('all')">All Sessions</button>
+    <button class="fcf-btn"              id="fcs-prev"     onclick="setFCScope('prev')">Prev Sessions</button>
+    <button class="fcf-btn"              id="fcs-weak"     onclick="setFCScope('weak')">⚠️ Needs Work</button>
+  </div>
+  <div class="fc-bar-label">Type</div>
   <div class="fc-filter-bar" id="fc-filter-bar">
     <button class="fcf-btn active" id="fcf-all"        onclick="setFCFilter('all')">All</button>
     <button class="fcf-btn"        id="fcf-definition" onclick="setFCFilter('definition')">📖 Definitions</button>
