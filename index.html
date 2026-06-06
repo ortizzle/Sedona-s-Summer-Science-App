@@ -2945,7 +2945,7 @@ function updateLvTabs(){
   const l=S.lv;[1,2,3].forEach(n=>{
     const t=document.getElementById('lv-tab-'+n);t.className='lv-tab';
     if(l.passed.includes(n))t.classList.add('passed');
-    else if(l.unlocked.includes(n))t.classList.add(n===l.curLv?'active':'');
+    else if(l.unlocked.includes(n)){if(n===l.curLv)t.classList.add('active');}
     else t.classList.add('locked');
   });
 }
