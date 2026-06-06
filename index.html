@@ -3892,24 +3892,36 @@ const SPOT_QUESTIONS=[
 
 // ─── SORT GAME LOGIC ──────────────────────────────────────────────────────
 let sortState={set:null,queue:[],idx:0,correct:0,wrong:0};
+const SORT_BG  =['#ede9fe','#ccfbf1','#ffedd5','#dbeafe'];
+const SORT_BDR =['#7c3aed','#0d9488','#ea580c','#2563eb'];
+const SORT_TXT =['#4c1d95','#0f766e','#9a3412','#1e3a8a'];
 function startSort(){
-  // Pick a sort set based on active session subject
   const subj=getSession().subject;
   const pool=SORT_SETS.filter(s=>s.subject===subj||s.subject==='Chemistry');
   const set=pool[Math.floor(Math.random()*pool.length)];
   const shuffled=shuffle([...set.items]);
   sortState={set,queue:shuffled,idx:0,correct:0,wrong:0};
   document.getElementById('sort-result').style.display='none';
-  document.getElementById('sort-prompt').textContent=`Sort each item into the right category.`;
+  document.getElementById('sort-feedback').style.display='none';
+  document.getElementById('sort-prompt').textContent='Sort each item into the right category.';
   document.getElementById('sort-badge').textContent=`0/${shuffled.length}`;
-  // Build buckets
   const cols=set.buckets.length<=2?'1fr 1fr':set.buckets.length===3?'1fr 1fr 1fr':'1fr 1fr';
   const buckets=document.getElementById('sort-buckets');
   buckets.style.gridTemplateColumns=cols;
-  buckets.innerHTML=set.buckets.map((b,i)=>`
-    <button onclick="sortAnswer(${i})" style="padding:14px 10px;background:${['rgba(124,58,237,0.1)','rgba(13,148,136,0.1)','rgba(234,88,12,0.1)','rgba(37,99,235,0.1)'][i]};border:2px solid ${['var(--purple)','var(--teal)','var(--orange)','#2563eb'][i]};border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;color:${['var(--purple-dark)','#0f766e','#9a3412','#1e3a8a'][i]};">${b}</button>`).join('');
+  sortRenderBuckets();
   document.getElementById('sort-card').textContent=shuffled[0][0];
+  document.getElementById('sort-card').style.cssText=sortCardBase();
   document.querySelector('#s-sort .nav').style.display='flex';
+}
+function sortCardBase(){
+  return 'background:white;border-radius:20px;padding:28px 24px;text-align:center;font-size:22px;font-weight:800;color:var(--purple-dark);box-shadow:0 4px 20px rgba(0,0,0,0.1);width:100%;max-width:320px;min-height:100px;display:flex;align-items:center;justify-content:center;line-height:1.3;';
+}
+function sortRenderBuckets(disabledCorrect){
+  const set=sortState.set;
+  document.getElementById('sort-buckets').innerHTML=set.buckets.map((b,i)=>{
+    const isCorrect=disabledCorrect!==undefined&&i===disabledCorrect;
+    return`<button onclick="sortAnswer(${i})" ${disabledCorrect!==undefined?'disabled':''} style="padding:14px 10px;background:${isCorrect?SORT_BDR[i]:SORT_BG[i]};border:2px solid ${SORT_BDR[i]};border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;color:${isCorrect?'white':SORT_TXT[i]};transition:all .2s;">${b}</button>`;
+  }).join('');
 }
 function sortAnswer(bucketIdx){
   const item=sortState.queue[sortState.idx];
@@ -3917,29 +3929,39 @@ function sortAnswer(bucketIdx){
   const card=document.getElementById('sort-card');
   if(correct){
     sortState.correct++;
-    card.style.cssText+='background:#16a34a!important;color:white!important;border:3px solid #16a34a!important;font-size:26px!important;';
-    card.textContent='✓ ' + sortState.queue[sortState.idx][0];
+    card.style.cssText=sortCardBase()+'background:#16a34a!important;color:white!important;';
+    card.textContent='✓ '+item[0];
+    setTimeout(()=>sortNext(),900);
   } else {
     sortState.wrong++;
-    card.style.cssText+='background:#dc2626!important;color:white!important;border:3px solid #dc2626!important;font-size:26px!important;';
-    card.textContent='✗ ' + sortState.queue[sortState.idx][0];
+    card.style.cssText=sortCardBase()+'background:#dc2626!important;color:white!important;';
+    card.textContent='✗ '+item[0];
+    // Highlight correct bucket, disable all
+    sortRenderBuckets(item[1]);
+    // Show why
+    const fb=document.getElementById('sort-feedback');
+    document.getElementById('sort-feedback-answer').textContent='✅ Should be: '+sortState.set.buckets[item[1]];
+    document.getElementById('sort-feedback-why').textContent=item[2]||'';
+    fb.style.display='block';
   }
-  setTimeout(()=>{
-    card.style.cssText='background:rgba(255,255,255,0.9);border-radius:20px;padding:28px 24px;text-align:center;font-size:22px;font-weight:800;color:var(--purple-dark);box-shadow:0 4px 20px rgba(0,0,0,0.1);width:100%;max-width:320px;min-height:100px;display:flex;align-items:center;justify-content:center;line-height:1.3;';
-    sortState.idx++;
-    document.getElementById('sort-badge').textContent=`${sortState.idx}/${sortState.queue.length}`;
-    if(sortState.idx>=sortState.queue.length){
-      // Done
-      document.getElementById('sort-buckets').innerHTML='';
-      document.getElementById('sort-card').textContent='';
-      document.getElementById('sort-result').style.display='flex';
-      document.getElementById('sort-result-icon').textContent=sortState.wrong===0?'🏆':'🎉';
-      document.getElementById('sort-result-title').textContent=`${sortState.set.title} — Complete!`;
-      document.getElementById('sort-result-score').textContent=`${sortState.correct}/${sortState.queue.length} correct${sortState.wrong===0?' — perfect! 🌟':''}`;
-    } else {
-      card.textContent=sortState.queue[sortState.idx][0];
-    }
-  },1600);
+}
+function sortNext(){
+  const card=document.getElementById('sort-card');
+  document.getElementById('sort-feedback').style.display='none';
+  sortState.idx++;
+  document.getElementById('sort-badge').textContent=`${sortState.idx}/${sortState.queue.length}`;
+  if(sortState.idx>=sortState.queue.length){
+    document.getElementById('sort-buckets').innerHTML='';
+    card.textContent='';
+    document.getElementById('sort-result').style.display='flex';
+    document.getElementById('sort-result-icon').textContent=sortState.wrong===0?'🏆':'🎉';
+    document.getElementById('sort-result-title').textContent=`${sortState.set.title} — Complete!`;
+    document.getElementById('sort-result-score').textContent=`${sortState.correct}/${sortState.queue.length} correct${sortState.wrong===0?' — perfect! 🌟':''}`;
+  } else {
+    card.style.cssText=sortCardBase();
+    card.textContent=sortState.queue[sortState.idx][0];
+    sortRenderBuckets();
+  }
 }
 
 // ─── TRUE/FALSE LOGIC ────────────────────────────────────────────────────
