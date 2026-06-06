@@ -2626,42 +2626,76 @@ function cardType(card){
   if(card.eq)return'formula';
   return'definition';
 }
+function weakCardKey(card){return`${card.session||0}-${card.id}`;}
 function startFC(){
   trackModeUsed('fc');
   const f=S.fc;
   const s=getSession();
-  const sessionCards=s.combined
-    ? CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
-    : CARDS.filter(c=>!c.session||c.session===s.num);
-  if(!sessionCards.length){
-    showBadgeToast({icon:'📋',name:`No flashcards yet for ${s.combined?s.title:`Session ${s.num}`} — added after each lesson`},true);
-    go('home');return;
-  }
-  f.allCards=sessionCards;
+  if(!f.scope)f.scope='session';
   if(!f.typeFilter)f.typeFilter='all';
-  // Update filter bar counts and disable empty types
+  // Build full card pool (all cards, used for scope counting)
+  const allCards=CARDS;
+  const sessionCards=s.combined
+    ? allCards.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
+    : allCards.filter(c=>!c.session||c.session===s.num);
+  const prevCards=allCards.filter(c=>c.session&&c.session<s.num);
+  const weakSet=new Set(Object.keys(S.weakCards).filter(k=>S.weakCards[k]>0));
+  const weakCards=allCards.filter(c=>weakSet.has(weakCardKey(c)));
+  // Store all pools for scope switching
+  f.pools={session:sessionCards,all:allCards,prev:prevCards,weak:weakCards};
+  // Update scope pill counts
+  const scopeLabels={session:'This Session',all:'All Sessions',prev:'Prev Sessions',weak:'⚠️ Needs Work'};
+  const scopeCounts={session:sessionCards.length,all:allCards.length,prev:prevCards.length,weak:weakCards.length};
+  document.querySelectorAll('#fc-scope-bar .fcf-btn').forEach(b=>b.classList.remove('active-scope'));
+  Object.keys(scopeLabels).forEach(sc=>{
+    const btn=document.getElementById('fcs-'+sc);
+    if(!btn)return;
+    const cnt=scopeCounts[sc];
+    btn.textContent=scopeLabels[sc]+(cnt>0?` (${cnt})`:'');
+    btn.disabled=cnt===0;
+    if(sc===f.scope)btn.classList.add('active-scope');
+  });
+  updateFCTypeCounts();
+  applyFCFilter();
+}
+function updateFCTypeCounts(){
+  const f=S.fc;
+  const pool=(f.pools&&f.pools[f.scope])||[];
   ['all','definition','formula','recall'].forEach(type=>{
     const btn=document.getElementById('fcf-'+type);
     if(!btn)return;
-    const count=type==='all'?sessionCards.length:sessionCards.filter(c=>cardType(c)===type).length;
+    const count=type==='all'?pool.length:pool.filter(c=>cardType(c)===type).length;
     if(type==='recall'){btn.style.display=count>0?'':'none';}
     else{btn.disabled=count===0;}
     btn.textContent={all:'All',definition:'📖 Definitions',formula:'📐 Formulas',recall:'🧠 Recall'}[type]+(count>0?` (${count})`:'');
+    if(type===f.typeFilter)btn.classList.add('active');
   });
+}
+function setFCScope(scope){
+  S.fc.scope=scope;
+  document.querySelectorAll('#fc-scope-bar .fcf-btn').forEach(b=>b.classList.remove('active-scope'));
+  const btn=document.getElementById('fcs-'+scope);
+  if(btn)btn.classList.add('active-scope');
+  // Reset type filter to all when scope changes so nothing breaks
+  S.fc.typeFilter='all';
+  document.querySelectorAll('#fc-filter-bar .fcf-btn').forEach(b=>b.classList.remove('active'));
+  const allBtn=document.getElementById('fcf-all');if(allBtn)allBtn.classList.add('active');
+  updateFCTypeCounts();
   applyFCFilter();
 }
 function setFCFilter(type){
   S.fc.typeFilter=type;
-  document.querySelectorAll('.fcf-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#fc-filter-bar .fcf-btn').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('fcf-'+type);
   if(btn)btn.classList.add('active');
   applyFCFilter();
 }
 function applyFCFilter(){
   const f=S.fc;
-  const filtered=f.typeFilter==='all'?f.allCards:f.allCards.filter(c=>cardType(c)===f.typeFilter);
+  const pool=(f.pools&&f.pools[f.scope])||[];
+  const filtered=f.typeFilter==='all'?pool:pool.filter(c=>cardType(c)===f.typeFilter);
   if(!filtered.length){
-    showBadgeToast({icon:'📋',name:'No cards of that type in this session'},true);
+    showBadgeToast({icon:'📋',name:'No cards for that combination — try a different scope or type'},true);
     return;
   }
   f.deck=shuffle([...filtered]);f.wrong=[];f.idx=0;f.mastered=0;f.phase='main';f.flipped=false;f.sessionXP=0;
