@@ -2787,7 +2787,7 @@ function answerFC(level){
     S.weakCards[k]=(S.weakCards[k]||0)+1;
     saveProgress();
     const weakCount=Object.keys(S.weakCards).filter(x=>S.weakCards[x]>0).length;
-    const wb=document.getElementById('fcs-weak');if(wb){wb.textContent=`⚠️ Needs Work (${weakCount})`;wb.disabled=false;}
+    const wb=document.getElementById('fcs-weak');if(wb){wb.textContent=`🌱 Growth Cards (${weakCount})`;wb.disabled=false;}
   }
   renderFC();
 }
