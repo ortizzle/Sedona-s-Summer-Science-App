@@ -3989,6 +3989,7 @@ function stopTF(){if(tfState.timer)clearInterval(tfState.timer);}
 function renderTFQ(){
   if(tfState.idx>=tfState.qs.length)tfState.idx=0; // cycle
   document.getElementById('tf-statement').textContent=tfState.qs[tfState.idx].s;
+  document.getElementById('tf-feedback').style.display='none';
 }
 function tfResetBtns(){
   document.getElementById('tf-true-btn').style.cssText='padding:22px 16px;background:rgba(22,163,74,0.08);color:#166534;border:2px solid rgba(22,163,74,0.3);border-radius:16px;font-size:24px;font-weight:900;cursor:pointer;transition:all .15s;';
