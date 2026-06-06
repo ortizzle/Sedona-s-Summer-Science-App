@@ -2771,14 +2771,21 @@ function answerFC(level){
   if(level==='yes'){
     f.mastered++;f.idx++;f.sessionXP+=10;addXP(10,'fc-xp-badge');
     flash('s-fc',true);checkBadge('first_correct');
+    // Clear from weak cards when mastered
+    const k=weakCardKey(card);
+    if(S.weakCards[k])delete S.weakCards[k];
+    saveProgress();
   } else if(level==='almost'){
-    // Re-queue near the end, no XP, no wrong list
     deck.splice(f.idx,1);
     const insertAt=Math.min(f.idx+3,deck.length);
     deck.splice(insertAt,0,card);
-    flash('s-fc',null);// neutral flash
+    flash('s-fc',null);
   } else {
     if(f.phase==='main')f.wrong.push(card);f.idx++;flash('s-fc',false);
+    // Persist to weak cards
+    const k=weakCardKey(card);
+    S.weakCards[k]=(S.weakCards[k]||0)+1;
+    saveProgress();
   }
   renderFC();
 }
