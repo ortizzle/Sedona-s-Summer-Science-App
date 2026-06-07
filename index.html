@@ -4539,6 +4539,79 @@ function closeRefPopup(){
   const el=document.getElementById('ref-popup-overlay');
   if(el)el.remove();
 }
+// ─── SCIENTIFIC CALCULATOR ─────────────────────────────────────────────────
+let calcExpr='';
+function showCalculatorOverlay(){
+  closeCalculator();
+  calcExpr='';
+  const overlay=document.createElement('div');
+  overlay.id='calc-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:flex-end;justify-content:center;';
+  overlay.onclick=e=>{if(e.target===overlay)closeCalculator();};
+  const keys=[
+    ['AC','⌫','(',')'],
+    ['√(','x²','^','÷'],
+    ['7','8','9','×'],
+    ['4','5','6','−'],
+    ['1','2','3','+'],
+    ['0','.','EXP','='],
+  ];
+  overlay.innerHTML=`
+    <div style="background:white;border-radius:20px 20px 0 0;width:100%;max-width:420px;padding:16px 18px 28px;" onclick="event.stopPropagation()">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:15px;font-weight:800;color:var(--purple-dark);">🧮 Scientific Calculator</div>
+        <button onclick="closeCalculator()" style="background:var(--gray-200);border:none;border-radius:99px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;">Done</button>
+      </div>
+      <div id="calc-display" style="background:var(--gray-100);border-radius:14px;padding:18px 16px;text-align:right;font-size:26px;font-weight:700;color:var(--gray-900);min-height:64px;margin-bottom:12px;overflow-x:auto;white-space:nowrap;font-family:'Special Elite',cursive;">0</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        ${keys.flat().map(k=>{
+          const isEquals = k==='=';
+          const isOp = ['÷','×','−','+'].includes(k);
+          const isFunc = ['AC','⌫','(',')','√(','x²','^','EXP'].includes(k);
+          const bg = isEquals?'var(--purple)':isOp?'var(--purple-dark)':isFunc?'var(--gray-200)':'white';
+          const color = (isOp||isEquals)?'white':isFunc?'var(--gray-700)':'var(--gray-900)';
+          const border = (!isOp&&!isEquals&&!isFunc)?'2px solid var(--gray-200)':'none';
+          return `<button onclick="calcPress('${k.replace(/'/g,"\\'")}')" style="padding:16px 0;border-radius:12px;border:${border};background:${bg};color:${color};font-size:17px;font-weight:800;cursor:pointer;">${k}</button>`;
+        }).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--gray-500);margin-top:12px;text-align:center;line-height:1.5;">💡 Tip: Use <strong>EXP</strong> for scientific notation — e.g., type <strong>6.022 EXP 23</strong> for 6.022×10²³ (Avogadro's number).</div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+function closeCalculator(){
+  const el=document.getElementById('calc-overlay');
+  if(el)el.remove();
+}
+function calcPress(k){
+  const display=document.getElementById('calc-display');
+  if(!display)return;
+  if(k==='AC'){
+    calcExpr='';
+  } else if(k==='⌫'){
+    calcExpr=calcExpr.slice(0,-1);
+  } else if(k==='='){
+    try{
+      let safe=calcExpr
+        .replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
+        .replace(/√\(/g,'Math.sqrt(')
+        .replace(/EXP/g,'e')
+        .replace(/\^/g,'**');
+      const result=Function('"use strict";return ('+safe+')')();
+      if(typeof result!=='number'||!isFinite(result))throw new Error('bad result');
+      calcExpr=String(Number(result.toPrecision(10)));
+    }catch(e){
+      calcExpr='';
+      display.textContent='Error';
+      setTimeout(()=>{display.textContent='0';},900);
+      return;
+    }
+  } else if(k==='x²'){
+    calcExpr+='^2';
+  } else {
+    calcExpr+=k;
+  }
+  display.textContent=calcExpr===''?'0':calcExpr;
+}
 function showPeriodicTableOverlay(){
   closeRefPopup();
   const overlay=document.createElement('div');
