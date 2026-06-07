@@ -4517,7 +4517,10 @@ function showRefPopup(){
           <div style="font-size:15px;font-weight:800;color:var(--purple-dark);">🧪 Quick Reference</div>
           <button onclick="closeRefPopup()" style="background:var(--gray-200);border:none;border-radius:99px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;">Done</button>
         </div>
-        <button onclick="showPeriodicTableOverlay()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0d9488,#0f766e);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:14px;">🧪 Open Periodic Table →</button>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <button onclick="showPeriodicTableOverlay()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,#0d9488,#0f766e);color:white;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;">🧪 Periodic Table</button>
+          <button onclick="showCalculatorOverlay()" style="flex:1;padding:14px 8px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;">🧮 Calculator</button>
+        </div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
           ${[
             ['A = p⁺ + n⁰','Mass Number'],
