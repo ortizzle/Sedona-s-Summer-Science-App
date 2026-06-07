@@ -4598,7 +4598,13 @@ function calcPress(k){
         .replace(/\^/g,'**');
       const result=Function('"use strict";return ('+safe+')')();
       if(typeof result!=='number'||!isFinite(result))throw new Error('bad result');
-      calcExpr=String(Number(result.toPrecision(10)));
+      const rounded=Number(result.toPrecision(10));
+      const str=String(rounded);
+      // Pretty-print scientific notation: 6.022e+23 → 6.022 × 10^23
+      const sup={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+      calcExpr = str.includes('e')
+        ? str.replace(/e\+?(-?)(\d+)/,(_,sign,exp)=>` × 10${(sign+exp).split('').map(c=>sup[c]||c).join('')}`)
+        : str;
     }catch(e){
       calcExpr='';
       display.textContent='Error';
