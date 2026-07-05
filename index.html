@@ -2693,7 +2693,7 @@ function maybeShowSummary(){
   const qDelta=S.timingLog.length-_snapQs;
   const badgeDelta=S.badges.filter(b=>b.unlocked).length-_snapBadges;
   const masteredDelta=S.masteredCards-_snapMastered;
-  if(!_lastCompletedMode||qDelta<1)return;
+  if(!_lastCompletedMode||(qDelta<1&&masteredDelta<1&&xpDelta<1))return;
   const newBadges=S.badges.filter(b=>b.unlocked&&b.earnedAt&&Date.now()-b.earnedAt<60000);
   const weak=Object.entries(S.mistakes).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,3)
     .map(([id])=>{const q=QS.find(q=>q.id===+id);return q?q.q.slice(0,60)+'…':null;}).filter(Boolean);
