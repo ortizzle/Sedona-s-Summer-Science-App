@@ -2617,6 +2617,86 @@ function importProgress(evt){
   evt.target.value='';// reset so same file can be re-imported
 }
 
+// ─── CROSS-DEVICE SYNC CODES ──────────────────────────────────────────────
+// A sync code is the full progress payload, gzipped and base64-encoded, with a
+// versioned prefix. Copy it on one device, paste it on another (iMessage,
+// Notes, email — anything that carries text). No account, no server.
+//   SSL2: gzip-compressed   ·   SSL2R: raw (fallback for older browsers)
+async function makeSyncCode(){
+  const json=serializeProgress();
+  if(typeof CompressionStream==='undefined')
+    return 'SSL2R:'+btoa(unescape(encodeURIComponent(json)));
+  const stream=new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'));
+  const buf=await new Response(stream).arrayBuffer();
+  let bin='';new Uint8Array(buf).forEach(b=>bin+=String.fromCharCode(b));
+  return 'SSL2:'+btoa(bin);
+}
+async function decodeSyncCode(code){
+  code=(code||'').trim();
+  if(code.startsWith('SSL2R:'))return decodeURIComponent(escape(atob(code.slice(6))));
+  if(code.startsWith('SSL2:')){
+    const bin=atob(code.slice(5));
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return await new Response(stream).text();
+  }
+  throw new Error('Not a valid sync code');
+}
+async function copySyncCode(){
+  try{
+    const code=await makeSyncCode();
+    let copied=false;
+    try{await navigator.clipboard.writeText(code);copied=true;}catch(e){}
+    markBackedUp();
+    if(copied){
+      showBadgeToast({icon:'📋',name:'Sync code copied! Paste it on the other device.'},true);
+    }else{
+      // Clipboard blocked — show the code so it can be selected manually
+      showSyncModal('Your sync code','Select and copy this code, then paste it on the other device:',code,null);
+    }
+    renderHaniDash();
+  }catch(e){
+    showBadgeToast({icon:'⚠️',name:'Could not create sync code'},true);
+  }
+}
+function pasteSyncCode(){
+  showSyncModal('Paste sync code','Paste the code copied from the other device. This replaces the progress on THIS device.','',applySyncCode);
+}
+async function applySyncCode(){
+  const ta=document.getElementById('sync-modal-text');
+  const errEl=document.getElementById('sync-modal-err');
+  try{
+    const json=await decodeSyncCode(ta.value);
+    const d=JSON.parse(json);
+    if(typeof d.totalXP!=='number')throw new Error('missing fields');
+    localStorage.setItem(STORE_KEY,JSON.stringify(migrateProgress(d)));
+    loadProgress();renderHome();renderHaniDash();
+    document.getElementById('sync-modal').remove();
+    showBadgeToast({icon:'✅',name:`Progress synced! XP: ${S.totalXP} · Best streak: ${S.bestStreak}`},true);
+  }catch(e){
+    if(errEl)errEl.textContent='❌ That doesn\'t look like a valid sync code — check it copied completely.';
+  }
+}
+function showSyncModal(title,sub,value,onApply){
+  const old=document.getElementById('sync-modal');if(old)old.remove();
+  const modal=document.createElement('div');
+  modal.id='sync-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML=`<div style="background:white;border-radius:18px;padding:20px;width:100%;max-width:400px;">
+    <div style="font-size:15px;font-weight:800;color:var(--purple-dark);margin-bottom:4px;">🔁 ${title}</div>
+    <div style="font-size:12px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">${sub}</div>
+    <textarea id="sync-modal-text" style="width:100%;height:110px;padding:10px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:11px;font-family:monospace;box-sizing:border-box;resize:vertical;word-break:break-all;">${value}</textarea>
+    <div id="sync-modal-err" style="font-size:12px;color:#991b1b;font-weight:600;min-height:18px;margin-top:6px;"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      ${onApply?'<button onclick="applySyncCode()" style="flex:1;padding:11px;background:var(--purple);color:white;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">Restore on this device</button>':''}
+      <button onclick="document.getElementById('sync-modal').remove()" style="flex:1;padding:11px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">${onApply?'Cancel':'Done'}</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  if(!value)document.getElementById('sync-modal-text').focus();
+}
+
 // ─── PERIODIC TABLE ───────────────────────────────────────────────────────
 function buildPeriodicTable(){
   const grid=document.getElementById('pt-grid');
