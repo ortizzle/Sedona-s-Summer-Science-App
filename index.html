@@ -4731,7 +4731,16 @@ function renderPhysicsEq(){
 let matchState={pairs:[],selected:null,matched:0,wrong:0,startTime:0,allCards:[],roundIdx:0,totalRounds:1};
 const MATCH_SIZE=6;
 function startMatch(roundIdx){
-  let sessionCards=CARDS.filter(c=>!c.session||c.session===getSession().num);
+  const s=getSession();
+  let sessionCards=s.combined
+    ? CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
+    : CARDS.filter(c=>!c.session||c.session===s.num);
+  // Sessions with no cards of their own (e.g. review sessions) fall back to everything studied so far
+  if(!sessionCards.length&&s.num)sessionCards=CARDS.filter(c=>c.session&&c.session<=s.num);
+  if(!sessionCards.length){
+    showBadgeToast({icon:'📋',name:'No flashcards yet for this session'},true);
+    go('home');return;
+  }
   // Remove cards whose right-side display text duplicates another card — prevents unresolvable ties
   const seen=new Set();
   sessionCards=sessionCards.filter(c=>{const key=c.eq||c.def;if(seen.has(key))return false;seen.add(key);return true;});
