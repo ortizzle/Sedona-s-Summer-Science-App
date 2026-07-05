@@ -3088,6 +3088,12 @@ function startFC(){
   trackModeUsed('fc');
   const f=S.fc;
   const s=getSession();
+  // Theme the card watermarks for the active subject
+  const meta=getSubjectMeta(s.subject);
+  const front=document.querySelector('#s-fc-screen .card-front');
+  const back=document.querySelector('#s-fc-screen .card-back');
+  if(front)front.setAttribute('data-wm',meta.cardFront);
+  if(back)back.setAttribute('data-wm',meta.cardBack);
   if(!f.scope)f.scope='session';
   if(!f.typeFilter)f.typeFilter='all';
   // Build full card pool (all cards, used for scope counting)
