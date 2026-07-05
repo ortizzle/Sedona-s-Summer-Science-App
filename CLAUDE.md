@@ -167,6 +167,8 @@ When building a new session, pull the Google Drive materials first to ground the
 - [ ] Write SESSIONS entry with `why`, `concepts`, `formulas`, `story`, `resources`
 - [ ] Write 15–30 CARDS entries (vocab, formulas, common mistakes)
 - [ ] Write 18–24 QS entries (6–8 per level, levels 1–3)
+- [ ] Add the subject to SUBJECTS_META (icon + card watermarks)
+- [ ] Add subject-tagged entries to TF_STATEMENTS / SORT_SETS / RANK_QUESTIONS / SPOT_QUESTIONS
 - [ ] Add a subject badge to BADGES_DEF
 - [ ] Test on mobile (iPhone): home screen, flashcards, quiz, educator portal
 - [ ] Verify Hani's Hangout shows the new session data correctly
