@@ -2580,7 +2580,9 @@ function loadProgress(){
   if(!d)return;
   try{
     applyProgress(migrateProgress(d));
-    // Refresh the rolling backup to this known-good launch state
+    // Re-persist (heals a corrupt main key, applies migrations) and refresh
+    // the rolling backup to this known-good launch state
+    saveProgress();
     localStorage.setItem(BACKUP_KEY,serializeProgress());
   }catch(e){}
 }
