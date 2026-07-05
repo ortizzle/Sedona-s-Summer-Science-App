@@ -5096,7 +5096,15 @@ checkBadge=function(id){if(!TEST_MODE||TEST_RECORD)_checkBadge(id);};
 // ─── INIT ─────────────────────────────────────────────────────────────────
 // ─── STUDY TIME TRACKER ───────────────────────────────────────────────────
 let _studyTimer=null;
-function startStudyTimer(){if(_studyTimer)return;_studyTimer=setInterval(()=>{S.studySeconds++;if(S.studySeconds%30===0)saveProgress();},1000);}
+// Only count time on actual study screens — not the welcome/check-in gates,
+// not Hani's portal, and not preview mode — so "Study Time" stays honest.
+const NON_STUDY_SCREENS=['s-welcome','s-checkin','s-hani'];
+function startStudyTimer(){if(_studyTimer)return;_studyTimer=setInterval(()=>{
+  const active=document.querySelector('.screen.active');
+  if(!active||NON_STUDY_SCREENS.includes(active.id))return;
+  if(TEST_MODE&&!TEST_RECORD)return;
+  S.studySeconds++;if(S.studySeconds%30===0)saveProgress();
+},1000);}
 function stopStudyTimer(){if(_studyTimer){clearInterval(_studyTimer);_studyTimer=null;saveProgress();}}
 document.addEventListener('visibilitychange',()=>{document.hidden?stopStudyTimer():startStudyTimer();});
 startStudyTimer();
