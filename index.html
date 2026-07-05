@@ -1571,6 +1571,19 @@ let ACTIVE_SESSION = 0; // index into SESSIONS array
 
 function getSession(){ return SESSIONS[ACTIVE_SESSION]; }
 
+// ─── SUBJECT REGISTRY ─────────────────────────────────────────────────────
+// One entry per subject. When adding a new subject (Biology, Algebra,
+// History…), add a row here and the UI theming follows automatically:
+//   icon       — used anywhere the subject needs an emblem
+//   cardFront  — small watermark text on flashcard fronts
+//   cardBack   — big faded emblem on flashcard backs
+const SUBJECTS_META={
+  Chemistry:{icon:'⚗️',cardFront:'H₂O  NaCl  CO₂',cardBack:'⚛'},
+  Physics:  {icon:'🚀',cardFront:'F=ma  p=mv  v=fλ',cardBack:'🚀'},
+};
+const SUBJECT_DEFAULT_META={icon:'📚',cardFront:'✎  ✎  ✎',cardBack:'★'};
+function getSubjectMeta(subject){return SUBJECTS_META[subject]||SUBJECT_DEFAULT_META;}
+
 // ─── FLASHCARD DATA ────────────────────────────────────────────────────────
 const CARDS=[
   // ── Session 1: Chemistry — Atoms, Isotopes & Ions ──
