@@ -14,7 +14,18 @@ This is a progressive web app (PWA) built to help Sedona (a middle/high school s
 
 ## Architecture
 
-The entire app lives in a single file: **`index.html`**. There is no build system, no backend, no database. All data is hardcoded as JavaScript arrays at the top of the script block, with `localStorage` used for XP, badge state, and custom cards. Keep this architecture — do not introduce a build step or separate JS files unless the user explicitly asks.
+The app lives in a single file: **`index.html`**, plus three small support files: `manifest.json` (PWA install), `icon.svg`, and `sw.js` (service worker — caches the app shell and CDN assets so the PWA genuinely works offline; bump `CACHE_VERSION` in it if caching behavior changes). There is no build system, no backend, no database. All data is hardcoded as JavaScript arrays at the top of the script block, with `localStorage` used for XP, badge state, and custom cards. Keep this architecture — do not introduce a build step or a backend unless the user explicitly asks.
+
+---
+
+## Storage, Backup & Sync
+
+Progress persistence is versioned and centralized in `index.html`:
+
+- **`serializeProgress()` / `applyProgress()` / `migrateProgress()`** — the single payload format used by localStorage, file export/import, and sync codes. Every payload carries `v: SCHEMA_VERSION`. **If you change the saved shape, bump `SCHEMA_VERSION` and add a migration step to `migrateProgress()`** so older devices upgrade in place.
+- **Keys**: `sedona_asl_s1` (main), `sedona_asl_s1_backup` (rolling backup written once per launch; auto-restored if the main key is corrupt), `sedona_custom_cards` (Hani's card edits).
+- **Cross-device sync**: `makeSyncCode()` / `decodeSyncCode()` produce a gzip+base64 code with prefix `SSL2:` (`SSL2R:` = uncompressed fallback). Copy it on one device, paste it on the other via the "Backup & Cross-Device Sync" card in Hani's portal. No account, no server. A future cloud adapter (e.g. Drive) must reuse `serializeProgress()` — do not invent a second format.
+- **Backup reminders**: `S.lastBackupTs` is set by any export/share/sync-code copy; the portal warns when it's missing or older than 7 days.
 
 ---
 
