@@ -4441,7 +4441,10 @@ function nextRankQ(){
 // ─── SPOT THE MISTAKE LOGIC ───────────────────────────────────────────────
 let spotState={qs:[],idx:0,correct:0,answered:false};
 function startSpot(){
-  spotState={qs:shuffle([...SPOT_QUESTIONS]),idx:0,correct:0,answered:false};
+  const subj=getSession().subject;
+  const mine=shuffle(SPOT_QUESTIONS.filter(t=>t.subj===subj));
+  const rest=shuffle(SPOT_QUESTIONS.filter(t=>t.subj!==subj));
+  spotState={qs:[...mine,...rest],idx:0,correct:0,answered:false};
   document.getElementById('spot-complete').style.display='none';
   document.getElementById('spot-next').className='next-btn';
   document.getElementById('spot-exp').style.display='none';
