@@ -3316,13 +3316,10 @@ function handleLvA(sel){
 }
 function nextLv(){
   const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;
-  if(l.idx>=deck.length){
-    // If already unlocked next level (second tap after completion message) → load it
+  if(l.idx>=deck.length&&l.done){
+    // Completion screen tap → advance to next level, or go home from level 3
     if(l.curLv<3&&l.unlocked.includes(l.curLv+1)){loadLv(l.curLv+1);return;}
-    // All levels complete → go home
-    if(l.passed.length===3){go('home');return;}
-    // First tap after finishing — let renderLvQ run the completion block to unlock next
-    renderLvQ();return;
+    go('home');return;
   }
   renderLvQ();
 }
