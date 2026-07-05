@@ -2570,14 +2570,30 @@ function loadProgress(){
   }catch(e){}
 }
 
+function backupFileName(){
+  const d=new Date();
+  return `sedona-progress-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+}
+function markBackedUp(){S.lastBackupTs=Date.now();saveProgress();}
 function exportProgress(){
-  const data=localStorage.getItem('sedona_asl_s1')||'{}';
-  const blob=new Blob([data],{type:'application/json'});
+  markBackedUp();
+  const blob=new Blob([serializeProgress()],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  const d=new Date();
-  a.download=`sedona-progress-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.download=backupFileName();
   a.click();URL.revokeObjectURL(a.href);
+}
+// iPhone-friendly export: opens the native share sheet (AirDrop, Drive, Files…)
+async function shareProgress(){
+  const file=new File([serializeProgress()],backupFileName(),{type:'application/json'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file],title:'Sedona\'s Lab progress backup'});
+      markBackedUp();
+    }catch(e){/* user cancelled the share sheet */}
+  }else{
+    exportProgress();
+  }
 }
 function importProgress(evt){
   const file=evt.target.files[0];if(!file)return;
@@ -2585,7 +2601,7 @@ function importProgress(evt){
   reader.onload=e=>{
     try{
       const d=JSON.parse(e.target.result);
-      localStorage.setItem('sedona_asl_s1',JSON.stringify(d));
+      localStorage.setItem(STORE_KEY,JSON.stringify(migrateProgress(d)));
       loadProgress();renderHome();renderHaniDash();
       const msg=document.getElementById('import-msg');
       msg.textContent='✅ Progress restored! XP: '+d.totalXP+', Streak: '+d.bestStreak;
