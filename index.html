@@ -3824,7 +3824,7 @@ function buildCheckinUI(){
       return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" id="ci-pill-${x.num}" style="padding:4px 11px;border-radius:99px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:${active?'white':'rgba(255,255,255,0.18)'};color:${active?'var(--purple-dark)':'rgba(255,255,255,0.75)'};">S${x.num}</button>`;
     }).join('');
   }
-  if(nameEl)nameEl.textContent=`Session ${s.num} — ${s.title}`;
+  if(nameEl)nameEl.textContent=s.combined?`${s.icon} ${s.title}`:`Session ${s.num} — ${s.title}`;
   if(subEl)subEl.textContent=`${s.subject} · ${s.date}`;
   // Build question rows
   const rowsEl=document.getElementById('ci-rows');
