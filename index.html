@@ -3751,8 +3751,9 @@ function confirmReset(){
 }
 function doReset(){
   try{localStorage.removeItem('sedona_asl_s1');}catch(e){}
-  S.totalXP=0;S.bestStreak=0;S.masteredCards=0;S.mistakes={};S.timingLog=[];S.quizSessions=[];S.haniUnlocked=true;
+  S.totalXP=0;S.bestStreak=0;S.masteredCards=0;S.mistakes={};S.weakCards={};S.timingLog=[];S.quizSessions=[];S.checkIns=[];S.studySeconds=0;S.modesUsed=new Set();S.haniUnlocked=true;
   S.badges=BADGES_DEF.map(b=>({...b}));
+  takeSnapshot();
   renderHome();
   renderHaniDash();
   showBadgeToast({icon:'✅',name:'Session reset! Fresh start.'},true);
