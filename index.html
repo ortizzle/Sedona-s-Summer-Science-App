@@ -3252,7 +3252,7 @@ function startLevels(){
 function loadLv(lv){
   const l=S.lv;
   l.curLv=lv;l.qs=shuffle(QS.filter(q=>q.lv===lv&&getQSFilter()(q))).slice(0,10).map(shuffleOpts);
-  l.wrong=[];l.mastered=new Set();l.idx=0;l.phase='main';l.hintUsed=false;updateLvTabs();renderLvQ();
+  l.wrong=[];l.mastered=new Set();l.idx=0;l.phase='main';l.hintUsed=false;l.misses=0;l.done=false;l.perfected=false;updateLvTabs();renderLvQ();
 }
 function switchLv(n){if(S.lv.unlocked.includes(n))loadLv(n);}
 function updateLvTabs(){
