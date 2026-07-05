@@ -3790,13 +3790,25 @@ function renderHaniDash(){
       </div>
     </div>
     <div class="hani-section">
-      <div class="hani-section-title">💾 Progress Backup</div>
+      <div class="hani-section-title">💾 Backup &amp; Cross-Device Sync</div>
       <div class="hani-card">
-        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Export Sedona's progress as a file to carry between devices. Import it back on any device to restore her XP, badges, and history.</div>
+        ${(()=>{
+          if(!S.totalXP)return '';
+          const days=S.lastBackupTs?Math.floor((Date.now()-S.lastBackupTs)/86400000):null;
+          if(days===null)return '<div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 12px;font-size:12px;color:#991b1b;font-weight:700;margin-bottom:12px;">⚠️ No backup yet! iPhones can clear browser data — copy a sync code or export a file now.</div>';
+          if(days>=7)return `<div style="background:#fff7ed;border:1.5px solid #fdba74;border-radius:10px;padding:10px 12px;font-size:12px;color:#9a3412;font-weight:700;margin-bottom:12px;">⏰ Last backup was ${days} days ago — time for a fresh one.</div>`;
+          return `<div style="font-size:11px;color:#166534;font-weight:600;margin-bottom:12px;">✅ Last backup: ${days===0?'today':days===1?'yesterday':days+' days ago'}</div>`;
+        })()}
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:10px;line-height:1.5;"><strong style="color:var(--purple-dark);">Sync between devices:</strong> copy a sync code here, send it to the other device (iMessage, Notes…), then paste it there. No account needed.</div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <button onclick="copySyncCode()" style="flex:1;padding:12px;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📋 Copy Sync Code</button>
+          <button onclick="pasteSyncCode()" style="flex:1;padding:12px;background:white;color:#6d28d9;border:2px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📥 Paste Sync Code</button>
+        </div>
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:10px;line-height:1.5;"><strong style="color:var(--gray-700);">File backup:</strong> save a progress file to Drive or Files as a long-term archive.</div>
         <div style="display:flex;gap:10px;margin-bottom:10px;">
-          <button onclick="exportProgress()" style="flex:1;padding:12px;background:#ede9fe;color:#6d28d9;border:2px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📤 Export Progress</button>
+          <button onclick="shareProgress()" style="flex:1;padding:12px;background:#ede9fe;color:#6d28d9;border:2px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📤 Export / Share File</button>
           <label style="flex:1;padding:12px;background:#ecfdf5;color:#166534;border:2px solid #86efac;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;text-align:center;display:block;">
-            📥 Import Progress
+            📥 Import File
             <input type="file" accept=".json" onchange="importProgress(event)" style="display:none;">
           </label>
         </div>
