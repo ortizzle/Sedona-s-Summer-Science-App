@@ -3139,17 +3139,26 @@ function showQuizModeSelector(){
     </div>`;
   document.body.appendChild(modal);
 }
+// "This session only" filter: for combined review sessions there is no single
+// session number, so fall back to the subject-wide filter.
+function getSessionOnlyFilter(){
+  const s=getSession();
+  if(s.combined)return getQSFilter();
+  return q=>q.session===s.num;
+}
 function launchQuiz(sessionOnly){
   QZ_SESSION_ONLY=sessionOnly;
-  const filter=sessionOnly?(q=>q.session===getSession().num):getQSFilter();
+  const filter=sessionOnly?getSessionOnlyFilter():getQSFilter();
   if(!QS.some(filter)){noQuestionsYet();return;}
+  const modal=document.getElementById('quiz-mode-modal');
+  if(modal)modal.remove();
   go('qz-run');
 }
 function startQuiz(){
   trackModeUsed('qz');updateRefButtons();
   const q=S.qz;
   const sessionFilter=QZ_SESSION_ONLY
-    ?q=>q.session===getSession().num
+    ?getSessionOnlyFilter()
     :getQSFilter();
   const pool=QS.filter(sessionFilter);
   const easy=shuffle(pool.filter(q=>q.lv===1)).slice(0,5);
