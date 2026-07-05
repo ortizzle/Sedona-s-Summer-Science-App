@@ -3786,7 +3786,7 @@ function confirmReset(){
   document.getElementById('reset-confirm').style.display='block';
 }
 function doReset(){
-  try{localStorage.removeItem('sedona_asl_s1');}catch(e){}
+  try{localStorage.removeItem(STORE_KEY);localStorage.removeItem(BACKUP_KEY);}catch(e){}
   S.totalXP=0;S.bestStreak=0;S.masteredCards=0;S.mistakes={};S.weakCards={};S.timingLog=[];S.quizSessions=[];S.checkIns=[];S.studySeconds=0;S.modesUsed=new Set();S.haniUnlocked=true;
   S.badges=BADGES_DEF.map(b=>({...b}));
   takeSnapshot();
