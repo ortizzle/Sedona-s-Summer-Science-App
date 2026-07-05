@@ -2516,24 +2516,57 @@ const S={
 };
 
 // ─── LOCALSTORAGE ─────────────────────────────────────────────────────────
+// Storage skeleton for the multi-subject portal:
+//  • Every payload carries a schema version (v). When the shape changes,
+//    bump SCHEMA_VERSION and add a step to migrateProgress() — old devices'
+//    data then upgrades in place instead of breaking.
+//  • A rolling backup key is written once per app launch, so if the main key
+//    is ever corrupted mid-session we can recover to the state at launch.
+//  • The same serialized payload powers file export, import, and sync codes —
+//    one format everywhere, so any future cloud adapter reuses it untouched.
+const SCHEMA_VERSION=2;
+const STORE_KEY='sedona_asl_s1';
+const BACKUP_KEY='sedona_asl_s1_backup';
+function serializeProgress(){
+  return JSON.stringify({
+    v:SCHEMA_VERSION,
+    totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,
+    studySeconds:S.studySeconds,lastBackupTs:S.lastBackupTs||null,
+    mistakes:S.mistakes,weakCards:S.weakCards,timingLog:S.timingLog,quizSessions:S.quizSessions,checkIns:S.checkIns,
+    badges:S.badges.map(b=>({id:b.id,unlocked:b.unlocked,earnedAt:b.earnedAt}))
+  });
+}
 function saveProgress(){
-  try{
-    localStorage.setItem('sedona_asl_s1',JSON.stringify({
-      totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,
-      studySeconds:S.studySeconds,
-      mistakes:S.mistakes,weakCards:S.weakCards,timingLog:S.timingLog,quizSessions:S.quizSessions,checkIns:S.checkIns,
-      badges:S.badges.map(b=>({id:b.id,unlocked:b.unlocked,earnedAt:b.earnedAt}))
-    }));
-  }catch(e){}
+  try{localStorage.setItem(STORE_KEY,serializeProgress());}catch(e){}
+}
+// Upgrade older payloads to the current schema. Add one block per version.
+function migrateProgress(d){
+  if(!d.v){ // v1 → v2: fields introduced over time; fill defaults
+    d.weakCards=d.weakCards||{};d.checkIns=d.checkIns||[];d.studySeconds=d.studySeconds||0;
+    d.v=2;
+  }
+  return d;
+}
+function applyProgress(d){
+  S.totalXP=d.totalXP||0;S.bestStreak=d.bestStreak||0;S.masteredCards=d.masteredCards||0;
+  S.studySeconds=d.studySeconds||0;S.lastBackupTs=d.lastBackupTs||null;
+  S.mistakes=d.mistakes||{};S.weakCards=d.weakCards||{};S.timingLog=d.timingLog||[];S.quizSessions=d.quizSessions||[];S.checkIns=d.checkIns||[];
+  S.badges=BADGES_DEF.map(b=>({...b}));
+  if(d.badges)d.badges.forEach(sb=>{const b=S.badges.find(b=>b.id===sb.id);if(b){b.unlocked=sb.unlocked;b.earnedAt=sb.earnedAt||null;}});
 }
 function loadProgress(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(STORE_KEY)||'null');}catch(e){d=null;}
+  if(!d){
+    // Main key missing or corrupt — fall back to the launch-time backup
+    try{d=JSON.parse(localStorage.getItem(BACKUP_KEY)||'null');}catch(e){d=null;}
+    if(d)setTimeout(()=>showBadgeToast({icon:'🛟',name:'Progress restored from automatic backup'},true),800);
+  }
+  if(!d)return;
   try{
-    const d=JSON.parse(localStorage.getItem('sedona_asl_s1')||'null');
-    if(!d)return;
-    S.totalXP=d.totalXP||0;S.bestStreak=d.bestStreak||0;S.masteredCards=d.masteredCards||0;
-    S.studySeconds=d.studySeconds||0;
-    S.mistakes=d.mistakes||{};S.weakCards=d.weakCards||{};S.timingLog=d.timingLog||[];S.quizSessions=d.quizSessions||[];S.checkIns=d.checkIns||[];
-    if(d.badges)d.badges.forEach(sb=>{const b=S.badges.find(b=>b.id===sb.id);if(b){b.unlocked=sb.unlocked;b.earnedAt=sb.earnedAt||null;}});
+    applyProgress(migrateProgress(d));
+    // Refresh the rolling backup to this known-good launch state
+    localStorage.setItem(BACKUP_KEY,serializeProgress());
   }catch(e){}
 }
 
