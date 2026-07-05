@@ -3463,9 +3463,12 @@ function showHaniLock(){
   document.getElementById('hani-input').value='';
   document.getElementById('hani-err').textContent='';
 }
+// Passcode is stored as an FNV-1a hash — never in plaintext (see CLAUDE.md).
+const HANI_PASS_HASH=3246729140;
+function fnv1a(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}return h;}
 function tryUnlock(){
   const val=document.getElementById('hani-input').value.trim().toLowerCase();
-  if(val==='jazzclub'){
+  if(fnv1a(val)===HANI_PASS_HASH){
     S.haniUnlocked=true;
     document.getElementById('hani-lock-view').style.display='none';
     renderHaniDash();
