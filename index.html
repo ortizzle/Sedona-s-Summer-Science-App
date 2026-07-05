@@ -3355,7 +3355,8 @@ function handleQQA(sel){
     qq.score+=10;qq.correct++;qq.streak++;
     document.getElementById('qq-score').textContent=qq.score;
     qq.sessionXP+=25;addXP(25,'qq-xp-badge');
-    showStreak(qq.streak);S.bestStreak=Math.max(S.bestStreak,qq.streak);
+    document.getElementById('qq-xp-badge').textContent='+'+qq.sessionXP+' XP';
+    showStreak(qq.streak);if(!TEST_MODE||TEST_RECORD)S.bestStreak=Math.max(S.bestStreak,qq.streak);
     flash('s-qq',true);checkBadge('first_correct');
   } else {
     qq.streak=0;qq.hearts--;updQQHearts();
