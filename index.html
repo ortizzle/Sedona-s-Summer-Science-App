@@ -3210,7 +3210,8 @@ function handleQA(sel){
   if(ok){
     q.score+=10+(q.streak*2);q.streak++;q.correct++;
     q.sessionXP+=15;addXP(15,'qz-xp-badge');
-    showStreak(q.streak);S.bestStreak=Math.max(S.bestStreak,q.streak);
+    document.getElementById('qz-xp-badge').textContent='+'+q.sessionXP+' XP';
+    showStreak(q.streak);if(!TEST_MODE||TEST_RECORD)S.bestStreak=Math.max(S.bestStreak,q.streak);
     flash('s-qz',true);checkBadge('first_correct');
   } else {
     q.streak=0;flash('s-qz',false);
