@@ -3303,7 +3303,8 @@ function handleLvA(sel){
   const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;const item=deck[l.idx];const ok=sel===item.ans;
   if(ok){
     l.mastered.add(item.id);l.sessionXP+=20;addXP(20,'lv-xp-badge');
-    l.streak++;showStreak(l.streak);S.bestStreak=Math.max(S.bestStreak,l.streak);
+    document.getElementById('lv-xp-badge').textContent='+'+l.sessionXP+' XP';
+    l.streak++;showStreak(l.streak);if(!TEST_MODE||TEST_RECORD)S.bestStreak=Math.max(S.bestStreak,l.streak);
     flash('s-lv',true);checkBadge('first_correct');
     if(l.phase==='main')l.idx++;else l.wrong.splice(l.idx,1);
   } else {
