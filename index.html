@@ -3267,18 +3267,22 @@ function renderLvQ(){
   const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;
   if(l.idx>=deck.length){
     if(l.phase==='main'&&l.wrong.length){l.phase='retry';l.idx=0;renderLvQ();return;}
-    const perfected=l.wrong.length===0;
-    if(perfected&&!l.passed.includes(l.curLv))l.passed.push(l.curLv);
-    l.sessionXP+=perfected?50:20;addXP(perfected?50:20,'lv-xp-badge');
-    if(perfected)launchConfetti(40);
-    if(perfected&&l.curLv===1)checkBadge('level_easy');
-    if(perfected&&l.curLv===2)checkBadge('level_medium');
-    if(perfected&&l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
-    updateLvTabs();
-    if(l.passed.length===3){checkBadge('levels_complete');launchConfetti(80);}
-    document.getElementById('lv-next').textContent=perfected?(l.curLv<3?'🎉 Perfect! Next level unlocked ↗':'🏆 All Levels Complete!'):'📚 Keep practicing to unlock the next level!';
+    if(!l.done){
+      l.done=true;
+      l.perfected=l.misses===0;
+      if(l.perfected&&!l.passed.includes(l.curLv))l.passed.push(l.curLv);
+      l.sessionXP+=l.perfected?50:20;addXP(l.perfected?50:20,'lv-xp-badge');
+      document.getElementById('lv-xp-badge').textContent='+'+l.sessionXP+' XP';
+      if(l.perfected)launchConfetti(40);
+      if(l.perfected&&l.curLv===1)checkBadge('level_easy');
+      if(l.perfected&&l.curLv===2)checkBadge('level_medium');
+      if(l.perfected&&l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
+      updateLvTabs();
+      if(l.passed.length===3){checkBadge('levels_complete');launchConfetti(80);}
+    }
+    document.getElementById('lv-next').textContent=l.perfected?(l.curLv<3?'🎉 Perfect! Next Level →':'🏆 All Levels Complete!'):(l.curLv<3?'Next Level →':'← Back Home');
     document.getElementById('lv-next').classList.add('on');
-    document.getElementById('lv-q-text').textContent=perfected?('Level '+(l.curLv<3?l.curLv+' perfected! Next level unlocked.':'3 complete — champion!')):'Good effort! Answer every question correctly to unlock the next level.';
+    document.getElementById('lv-q-text').textContent=l.perfected?('Level '+(l.curLv<3?l.curLv+' perfected — zero misses!':'3 complete — champion!')):'Good work clearing the retry round! Aim for zero misses to perfect this level — you can retry it from the tabs above.';
     document.getElementById('lv-opts').innerHTML='';return;
   }
   l.hintUsed=false;const item=deck[l.idx];
