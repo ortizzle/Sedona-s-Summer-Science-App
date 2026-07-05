@@ -4300,7 +4300,10 @@ function sortNext(){
 let tfState={qs:[],idx:0,score:0,streak:0,timer:null,timeLeft:30};
 function startTF(){
   const subj=getSession().subject;
-  tfState={qs:shuffle([...TF_STATEMENTS]),idx:0,score:0,streak:0,timer:null,timeLeft:30};
+  // Active subject's statements first, everything else after (30s rarely gets past them)
+  const mine=shuffle(TF_STATEMENTS.filter(t=>t.subj===subj));
+  const rest=shuffle(TF_STATEMENTS.filter(t=>t.subj!==subj));
+  tfState={qs:[...mine,...rest],idx:0,score:0,streak:0,timer:null,timeLeft:30};
   document.getElementById('tf-complete').style.display='none';
   document.getElementById('tf-statement').parentElement.style.display='block';
   document.getElementById('tf-btn-row').style.display='grid';
