@@ -5073,6 +5073,8 @@ function enterTestMode(record){
   // Don't call go() here — let the caller decide where to navigate
 }
 function exitTestMode(){
+  if(TEST_MODE&&!TEST_RECORD&&_previewSnap){Object.assign(S,_previewSnap);}
+  _previewSnap=null;
   TEST_MODE=false;TEST_RECORD=false;
   document.getElementById('test-mode-banner').style.display='none';
   document.querySelectorAll('.screen').forEach(s=>s.style.paddingTop='');
