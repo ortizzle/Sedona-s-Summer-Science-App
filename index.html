@@ -5131,6 +5131,10 @@ loadProgress();
 takeSnapshot();
 buildPeriodicTable();
 applySession();
+// Register service worker so the app (and CDN fonts/KaTeX) work fully offline
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
 // Start on welcome screen — chooseSedona() will show welcome-back toast after check-in
 function showWelcomeBack(){
   if(S.totalXP>0){
