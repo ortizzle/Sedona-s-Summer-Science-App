@@ -3306,7 +3306,7 @@ function handleLvA(sel){
     flash('s-lv',true);checkBadge('first_correct');
     if(l.phase==='main')l.idx++;else l.wrong.splice(l.idx,1);
   } else {
-    l.streak=0;
+    l.streak=0;l.misses++;
     if(l.phase==='main'){l.wrong.push(item);l.idx++;}
     else{const w=l.wrong.splice(l.idx,1)[0];l.wrong.push(w);}
     trackMistake(item.id,'lv',null,false);flash('s-lv',false);
