@@ -1,7 +1,7 @@
 {
   "name": "Sedona's Science Lab",
   "short_name": "Science Lab",
-  "description": "Chemistry study app for Sedona",
+  "description": "Multi-subject study app for Sedona — science, math, history & more",
   "start_url": "/Sedona-s-Summer-Science-App/",
   "display": "standalone",
   "background_color": "#4c1d95",
