@@ -4160,60 +4160,60 @@ const TF_STATEMENTS=[
 
 // ─── RANK & ORDER DATA ────────────────────────────────────────────────────
 const RANK_QUESTIONS=[
-  {q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
+  {subj:'Chemistry',q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
    items:['He','Ne','Li','Na'],order:[0,1,2,3],
    exp:'Noble gases are tiny (full shells). He < Ne (same group, He has fewer shells). Li and Na are period 2 & 3 alkali metals — Na has more shells so it\'s larger.'},
-  {q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
+  {subj:'Chemistry',q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
    items:['F','Cl','Na','K'],order:[0,1,2,3],
    exp:'F (period 2 halogen) < Cl (period 3 halogen) < Na (period 3 alkali metal) < K (period 4 alkali metal). More shells = bigger atom.'},
-  {q:'Rank by INCREASING ionization energy (easiest to remove first)',criterion:'Ionization energy: easiest → hardest',
+  {subj:'Chemistry',q:'Rank by INCREASING ionization energy (easiest to remove first)',criterion:'Ionization energy: easiest → hardest',
    items:['Fr','Na','Cl','He'],order:[0,1,2,3],
    exp:'Fr (alkali metal, 7 shells) loses electrons easiest. Na is easier than Cl. He (noble gas, 1 shell) is hardest to remove an electron from.'},
-  {q:'Rank by INCREASING momentum: all moving at 10 m/s',criterion:'p = mv at 10 m/s',
+  {subj:'Physics',q:'Rank by INCREASING momentum: all moving at 10 m/s',criterion:'p = mv at 10 m/s',
    items:['2 kg ball','0.5 kg ball','5 kg ball','10 kg ball'],order:[1,0,2,3],
    exp:'p = mv. At same speed, more mass = more momentum. 0.5×10=5, 2×10=20, 5×10=50, 10×10=100 kg·m/s.'},
-  {q:'Rank by INCREASING gravitational force on a 1 kg mass',criterion:'Fg = mg on different planets',
+  {subj:'Physics',q:'Rank by INCREASING gravitational force on a 1 kg mass',criterion:'Fg = mg on different planets',
    items:['Moon (g=1.6)','Mars (g=3.7)','Earth (g=9.8)','Jupiter (g=24.8)'],order:[0,1,2,3],
    exp:'Fg = mg. Moon weakest, then Mars, Earth, Jupiter strongest. All have same 1 kg mass so just multiply by g.'},
-  {q:'Rank by INCREASING electronegativity (least greedy for electrons first)',criterion:'Electronegativity: least → most',
+  {subj:'Chemistry',q:'Rank by INCREASING electronegativity (least greedy for electrons first)',criterion:'Electronegativity: least → most',
    items:['Fr','Na','N','F'],order:[0,1,2,3],
    exp:'Bottom-left = lowest electronegativity. Fr (bottom-left corner) < Na < N < F (top-right = highest EN in all elements).'},
-  {q:'Rank these ions by INCREASING number of electrons',criterion:'Electron count: fewest → most',
+  {subj:'Chemistry',q:'Rank these ions by INCREASING number of electrons',criterion:'Electron count: fewest → most',
    items:['Na⁺','Mg²⁺','O²⁻','F⁻'],order:[1,0,3,2],
    exp:'Mg²⁺: 12−2=10e⁻. Na⁺: 11−1=10e⁻... wait, both 10! Use atomic number: Mg²⁺ technically same as Na⁺ (both 10e⁻). F⁻: 9+1=10. O²⁻: 8+2=10. All isoelectronic with Ne — trick question, all have 10!'},
 ];
 
 // ─── SPOT THE MISTAKE DATA ────────────────────────────────────────────────
 const SPOT_QUESTIONS=[
-  {q:'What is the charge of an ion with 11 protons and 10 electrons?',
+  {subj:'Chemistry',q:'What is the charge of an ion with 11 protons and 10 electrons?',
    answer:'Charge = 11 − 10 = −1. This is a sodium anion, Na⁻.',
    opts:['The subtraction is backwards — it should be electrons minus protons to get the sign right','The charge calculation is correct, just misidentified as an anion instead of a cation — the sign should be +1','Sodium\'s atomic number is not 11 — that\'s the issue','The formula used is for mass number, not charge'],
    correct:1,exp:'Charge = Protons − Electrons = 11 − 10 = +1 (positive). More protons than electrons → cation. This is Na⁺.'},
-  {q:'What type of bond forms in H₂O?',
+  {subj:'Chemistry',q:'What type of bond forms in H₂O?',
    answer:'H₂O is an ionic compound because hydrogen is a metal in Group 1A.',
    opts:['The formula for water is incorrect','The bond type is right but the reasoning is flawed — water is ionic for a different reason','Hydrogen is actually a nonmetal, so H₂O is a covalent compound formed by sharing electrons','The statement is partially correct — H₂O has both ionic and covalent character'],
    correct:2,exp:'Hydrogen is a nonmetal despite being in Group 1A. H₂O is covalent — two nonmetals sharing electrons.'},
-  {q:'Balance the equation: H₂ + O₂ → H₂O',
+  {subj:'Chemistry',q:'Balance the equation: H₂ + O₂ → H₂O',
    answer:'The equation is already balanced: 2 hydrogen and 2 oxygen on each side.',
    opts:['The oxygen count on the right is 1 (from H₂O), but O₂ on the left provides 2 — so it\'s actually unbalanced','The hydrogen count on each side is off — H₂ has 2H but H₂O only has 2H so they match','The reasoning is sound — both sides have equal counts of each element','The products are incorrect for this type of reaction'],
    correct:0,exp:'Left: 2O (from O₂). Right: 1O (from H₂O). Unbalanced! Correct: 2H₂ + O₂ → 2H₂O.'},
-  {q:'What happens to gravitational force when distance doubles?',
+  {subj:'Physics',q:'What happens to gravitational force when distance doubles?',
    answer:'If the distance doubles, the gravitational force is halved because Fg ∝ 1/R.',
    opts:['The relationship is stated correctly and the conclusion follows logically','The proportionality written is 1/R but the law of gravitation uses R² — so halving is wrong, it becomes ¼','The formula Fg ∝ 1/R is correct for gravitational acceleration, just not for force','Distance affects gravity but the exact relationship depends on the planet\'s mass'],
    correct:1,exp:'Fg ∝ 1/R². Double R → R² becomes 4× larger → force is ¼ not ½. Always squared.'},
-  {q:'Calculate momentum of a 3 kg object at 4 m/s.',
+  {subj:'Physics',q:'Calculate momentum of a 3 kg object at 4 m/s.',
    answer:'p = 3 + 4 = 7 kg·m/s',
    opts:['The units kg·m/s are incorrect for momentum','The mass and velocity values should be reversed in the formula','Momentum uses multiplication not addition — p = mv = 12 kg·m/s','The calculation is right but the significant figures need adjustment'],
    correct:2,exp:'p = mv = 3 × 4 = 12 kg·m/s. Momentum is always mass TIMES velocity, never addition.'},
-  {q:'An ionic compound has Mg²⁺ and Cl⁻. What is the formula?',
+  {subj:'Chemistry',q:'An ionic compound has Mg²⁺ and Cl⁻. What is the formula?',
    answer:'The formula is MgCl because each ion has one charge.',
    opts:['The formula looks correct — one metal and one nonmetal','The charges cancel correctly for MgCl — 1+ and 1− equal zero','The charges don\'t balance — Mg is 2+ so two Cl⁻ ions are needed, giving MgCl₂','The name would be written differently but the formula is fine'],
    correct:2,exp:'Zero charge rule: Mg (2+) needs two Cl⁻ (each 1−) to reach net charge zero. Formula is MgCl₂.'},
-  {q:'What is the molar mass of H₂O? (H=1.008, O=16.00)',
+  {subj:'Chemistry',q:'What is the molar mass of H₂O? (H=1.008, O=16.00)',
    answer:'Molar mass = 1.008 + 16.00 = 17.008 g/mol',
    opts:['The atomic masses listed are incorrect — hydrogen and oxygen have different values','The calculation method is right but the final rounding is off','Only one hydrogen atom was counted — the subscript 2 means there are 2 H atoms, giving 18.016 g/mol','The molar mass formula should use Avogadro\'s number, not direct addition'],
    correct:2,exp:'H₂O has TWO hydrogen atoms. Molar mass = 2(1.008) + 16.00 = 18.016 g/mol. The subscript always tells you how many atoms.'},
-  {q:'A combustion reaction: C₃H₈ + O₂ → CO₂ + H₂O. Is this balanced?',
+  {subj:'Chemistry',q:'A combustion reaction: C₃H₈ + O₂ → CO₂ + H₂O. Is this balanced?',
    answer:'Yes, balanced: 3C on left, 1C on right — close enough for estimation.',
    opts:['It is balanced — the carbon count matches when you account for the coefficients','Combustion equations only need to be approximately balanced since oxygen is in excess','The carbon atoms are not equal (3 left, 1 right) and equations require exact balance — never approximate','The hydrogen is balanced but oxygen is not, which is the actual error'],
    correct:2,exp:'3C left vs 1C right — NOT balanced. Balanced form: C₃H₈ + 5O₂ → 3CO₂ + 4H₂O. Exact balance is always required.'},
@@ -4226,7 +4226,10 @@ const SORT_BDR =['#7c3aed','#0d9488','#ea580c','#2563eb'];
 const SORT_TXT =['#4c1d95','#0f766e','#9a3412','#1e3a8a'];
 function startSort(){
   const subj=getSession().subject;
-  const pool=SORT_SETS.filter(s=>s.subject===subj||s.subject==='Chemistry');
+  // Prefer sets that match the active subject; fall back to everything if the
+  // subject has none yet (e.g. a brand-new subject with no sort sets written).
+  const matching=SORT_SETS.filter(s=>s.subject===subj);
+  const pool=matching.length?matching:SORT_SETS;
   const set=pool[Math.floor(Math.random()*pool.length)];
   const shuffled=shuffle([...set.items]);
   sortState={set,queue:shuffled,idx:0,correct:0,wrong:0};
