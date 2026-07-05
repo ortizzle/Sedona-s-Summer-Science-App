@@ -5116,12 +5116,14 @@ renderHome();
 function applySession(){
   const s=getSession();
   document.getElementById('home-sub-el').textContent=s.combined?`${s.icon} ${s.title}`:` ${s.subject} · Session ${s.num}`;
-  document.getElementById('sb-name-el').textContent=`Session ${s.num} — ${s.title}`;
+  document.getElementById('sb-name-el').textContent=s.combined?`${s.icon} ${s.title}`:`Session ${s.num} — ${s.title}`;
   document.getElementById('sb-date-el').innerHTML=`${s.date} · ${s.subject} &nbsp;· <span style="font-size:12px;opacity:0.85;">tap to learn more ›</span>`;
+  const sqLabel=document.getElementById('session-quiz-label');
+  if(sqLabel)sqLabel.textContent=s.combined?s.title:`Session ${s.num} only`;
   // Rebuild lesson modal header
   const modalHeader=document.getElementById('lesson-modal-header');
   if(modalHeader)modalHeader.innerHTML=`
-    <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.85;margin-bottom:4px;">📚 SESSION ${s.num}</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.85;margin-bottom:4px;">📚 ${s.combined?'SUBJECT REVIEW':'SESSION '+s.num}</div>
     <div style="font-size:20px;font-weight:800;margin-bottom:2px;">${s.title}</div>
     <div style="font-size:13px;opacity:0.8;">${s.date} · ${s.unit}</div>`;
   // Rebuild lesson modal body
