@@ -4370,7 +4370,10 @@ function endTF(){
 // ─── RANK & ORDER LOGIC ───────────────────────────────────────────────────
 let rankState={qs:[],idx:0,correct:0,selected:[],answered:false};
 function startRankGame(){
-  rankState={qs:shuffle([...RANK_QUESTIONS]),idx:0,correct:0,selected:[],answered:false};
+  const subj=getSession().subject;
+  const mine=shuffle(RANK_QUESTIONS.filter(t=>t.subj===subj));
+  const rest=shuffle(RANK_QUESTIONS.filter(t=>t.subj!==subj));
+  rankState={qs:[...mine,...rest],idx:0,correct:0,selected:[],answered:false};
   document.getElementById('rank-complete').style.display='none';
   document.getElementById('rank-next').className='next-btn';
   document.getElementById('rank-exp').style.display='none';
