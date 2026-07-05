@@ -3020,10 +3020,10 @@ function renderFC(){
   const deck=f.phase==='main'?f.deck:f.wrong;
   if(f.idx>=deck.length){
     if(f.phase==='main'&&f.wrong.length){f.phase='retry';f.idx=0;f.wrong=shuffle(f.wrong);renderFC();return;}
-    S.masteredCards=Math.max(S.masteredCards,f.mastered);
+    if(!TEST_MODE||TEST_RECORD){S.masteredCards=Math.max(S.masteredCards,f.mastered);}
     if(S.masteredCards>=10)checkBadge('fc_mastered_10');
     saveProgress();
-    checkBadge('fc_complete');showRes('fc',f.mastered,CARDS.length,f.sessionXP);return;
+    checkBadge('fc_complete');showRes('fc',f.mastered,f.deck.length,f.sessionXP);return;
   }
   const card=deck[f.idx];
   document.getElementById('fc-bar-fill').style.width=Math.round(f.idx/deck.length*100)+'%';
