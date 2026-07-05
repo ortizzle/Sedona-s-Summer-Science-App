@@ -2838,7 +2838,8 @@ function addXP(n,badgeEl){
   if(S.totalXP>=500)checkBadge('xp_500');
   if(S.totalXP>=1000)checkBadge('xp_1000');
   updateXPBar();saveProgress();
-  if(badgeEl){const el=document.getElementById(badgeEl);if(el)el.textContent='+'+S.totalXP+' XP';}
+  // Flash the amount just earned; round badges are refreshed by each mode with its round total
+  if(badgeEl){const el=document.getElementById(badgeEl);if(el&&badgeEl!=='h-xp-amt')el.textContent='+'+n+' XP';}
 }
 function updateXPBar(){
   const i=getLvInfo();
