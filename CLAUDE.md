@@ -101,9 +101,9 @@ Badges are unlocked by gameplay events (streaks, session completion, mastery). W
 
 3. **Create quiz questions** — Add entries to `QS[]`. Write 6–8 questions per level (1, 2, 3) per session. Level 1 = recall, Level 2 = apply, Level 3 = reason/analyze.
 
-4. **Subject-specific UI** — The periodic table widget is chemistry-specific. For other subjects, similar reference tools can be added (e.g., a number line for math, timeline for history). Wrap them in a conditional that checks `getSession().subject`.
+4. **Register the subject** — Add an entry to `SUBJECTS_META` (icon, `cardFront` watermark text, `cardBack` emblem). Flashcard theming picks it up automatically; unknown subjects fall back to a neutral look.
 
-5. **Card aesthetic watermarks** — The card backs currently show `H₂O NaCl CO₂` and `⚛` watermarks (chemistry). Update these for the active subject or make them dynamic.
+5. **Tag mini-game content** — `TF_STATEMENTS`, `RANK_QUESTIONS`, and `SPOT_QUESTIONS` entries carry a `subj` field, and `SORT_SETS` a `subject` field. Games lead with the active subject's entries, so add at least a handful per new subject. The periodic table widget is chemistry-specific; similar reference tools can be added per subject (number line for math, timeline for history) behind a `getSession().subject` check.
 
 6. **Educator portal** — Hani's Hangout (the password-protected educator view) automatically reflects any new sessions and questions because it reads from the same `SESSIONS`/`QS` arrays.
 
