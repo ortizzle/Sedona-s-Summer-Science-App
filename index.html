@@ -5047,8 +5047,21 @@ function trackModeUsed(mode){
   if(S.modesUsed.size>=4)checkBadge('all_modes');
 }
 let TEST_RECORD=false;
+let _previewSnap=null;
+function takePreviewSnapshot(){
+  // Preview mode must leave zero trace: some stats (bestStreak, masteredCards,
+  // quizSessions…) are mutated in-memory by gameplay code, so snapshot and
+  // restore everything persistable on exit.
+  return {
+    totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,studySeconds:S.studySeconds,
+    mistakes:JSON.parse(JSON.stringify(S.mistakes)),weakCards:JSON.parse(JSON.stringify(S.weakCards)),
+    timingLog:S.timingLog.slice(),quizSessions:S.quizSessions.slice(),checkIns:S.checkIns.slice(),
+    modesUsed:new Set(S.modesUsed),badges:S.badges.map(b=>({...b})),
+  };
+}
 function enterTestMode(record){
   TEST_MODE=true;TEST_RECORD=!!record;
+  if(!record&&!_previewSnap)_previewSnap=takePreviewSnapshot();
   const banner=document.getElementById('test-mode-banner');
   banner.style.display='flex';
   banner.style.background=record?'linear-gradient(135deg,#7c3aed,#6d28d9)':'linear-gradient(135deg,#2dd4bf,#0891b2)';
