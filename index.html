@@ -3168,7 +3168,7 @@ function renderQ(){
   }
   q.hintUsed=false;const item=q.qs[q.idx];
   q.qStart=Date.now();
-  document.getElementById('qz-q-label').textContent='QUESTION '+(q.idx+1)+' / '+QZ_COUNT;
+  document.getElementById('qz-q-label').textContent='QUESTION '+(q.idx+1)+' / '+q.qs.length;
   document.getElementById('qz-q-text').textContent=item.q;
   buildOpts('qz-opts',item.opts,'handleQA');
   document.getElementById('qz-exp').className='exp-box';
