@@ -3220,7 +3220,7 @@ function handleQA(sel){
   document.getElementById('qz-streak').textContent=q.streak+' ⚡';
   document.getElementById('qz-correct').textContent=q.correct+'/'+q.total;
   revealOpts('qz-opts',sel,item.ans);showExp('qz-exp',ok,item.ex);
-  const isLast=q.idx===QZ_COUNT-1;
+  const isLast=q.idx===q.qs.length-1;
   document.getElementById('qz-next').textContent=isLast?'See Results →':'Next →';
   document.getElementById('qz-next').classList.add('on');
   const skipBtn=document.getElementById('qz-skip');
