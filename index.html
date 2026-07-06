@@ -3281,15 +3281,20 @@ function startFC(){
   // Build full card pool (all cards, used for scope counting)
   const allCards=CARDS;
   const sessionCards=s.combined
-    ? allCards.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
+    ? allCards.filter(c=>sessionSubject(c.session)===s.subject)
     : allCards.filter(c=>!c.session||c.session===s.num);
-  const prevCards=allCards.filter(c=>c.session&&c.session<s.num);
+  // Subjects never mingle: "All"/"Prev" build from the active subject only
+  // (mixedReview sessions keep the old cross-subject behavior on purpose)
+  const inScope=c=>s.mixedReview?!!c.session:sessionSubject(c.session)===s.subject;
+  const subjectCards=allCards.filter(inScope);
+  const prevCards=allCards.filter(c=>c.session&&c.session<s.num&&inScope(c));
   const weakSet=new Set(Object.keys(S.weakCards).filter(k=>S.weakCards[k]>0));
   const weakCards=allCards.filter(c=>weakSet.has(weakCardKey(c)));
   // Store all pools for scope switching
-  f.pools={session:sessionCards,all:allCards,prev:prevCards,weak:weakCards};
+  f.pools={session:sessionCards,all:subjectCards,prev:prevCards,weak:weakCards};
   // Update scope pill counts
-  const scopeLabels={session:'This Session',all:'All Sessions',prev:'Prev Sessions',weak:'🌱 Growth Cards'};
+  const scopeAllLabel=s.mixedReview?'All Sessions':`All ${s.subject}`;
+  const scopeLabels={session:'This Session',all:scopeAllLabel,prev:'Prev Sessions',weak:'🌱 Growth Cards'};
   const scopeCounts={session:sessionCards.length,all:allCards.length,prev:prevCards.length,weak:weakCards.length};
   document.querySelectorAll('#fc-scope-bar .fcf-btn').forEach(b=>b.classList.remove('active-scope'));
   Object.keys(scopeLabels).forEach(sc=>{
