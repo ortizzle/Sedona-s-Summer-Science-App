@@ -4226,7 +4226,6 @@ const CHECKIN_STEPS=[
   },
 ];
 let checkinAnswers={};
-let checkinStep=0;
 
 function chooseSedona(){
   buildSessionPickerUI();
@@ -4326,66 +4325,6 @@ function chooseHani(){
   enterTestMode(false); // Auto-enable preview mode — Hani browsing shouldn't record anything
   go('hani');
 }
-function renderCheckinStep(){
-  const step=CHECKIN_STEPS[checkinStep];
-  document.getElementById('checkin-step-icon').textContent=step.icon;
-  document.getElementById('checkin-q-text').textContent=step.q;
-  document.getElementById('checkin-q-sub').textContent=step.sub;
-  document.getElementById('checkin-step-indicator').textContent=`${checkinStep+1} of ${CHECKIN_STEPS.length}`;
-  document.getElementById('checkin-next-btn').textContent=checkinStep===CHECKIN_STEPS.length-1?'Let\'s go! 🚀':'Continue →';
-  document.getElementById('checkin-next-btn').classList.remove('ready');
-  const scale=document.getElementById('emoji-scale');
-  scale.innerHTML=step.emojis.map((e,i)=>`
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-      <button class="emoji-btn" onclick="selectCheckin(${i})" id="ci-btn-${i}">${e}</button>
-      <span class="emoji-label">${step.labels[i]}</span>
-    </div>`).join('');
-}
-function selectCheckin(idx){
-  document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('ci-btn-'+idx).classList.add('selected');
-  // Scale is reversed: leftmost (idx 0) = highest score (5)
-  checkinAnswers[CHECKIN_STEPS[checkinStep].key]=5-idx;
-  document.getElementById('checkin-next-btn').classList.add('ready');
-}
-function checkinBack(){
-  if(checkinStep===0){go('welcome');}
-  else{checkinStep--;renderCheckinStep();}
-}
-function checkinNext(){
-  if(!checkinAnswers[CHECKIN_STEPS[checkinStep].key])return;
-  checkinStep++;
-  if(checkinStep<CHECKIN_STEPS.length){
-    renderCheckinStep();
-  } else {
-    // Save check-in
-    S.checkIns.push({
-      ts:Date.now(),
-      feeling:checkinAnswers.feeling,
-      confidence:checkinAnswers.confidence,
-      sleep:checkinAnswers.sleep,
-      distraction:checkinAnswers.distraction,
-      selfStudy:checkinAnswers.selfStudy,
-      session:getSession().num
-    });
-    if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
-    saveProgress();
-    // Show fun explainer AFTER check-in, before home
-    const s=getSession();
-    if(s.story){
-      document.getElementById('checkin-questions').style.display='none';
-      document.getElementById('checkin-explainer').style.display='flex';
-      document.getElementById('explainer-emoji').textContent=s.story.emoji;
-      document.getElementById('explainer-hook').textContent=s.story.hook;
-      document.getElementById('explainer-body').textContent=s.story.body;
-      document.getElementById('explainer-ready-btn').textContent=s.story.readyLabel;
-      document.getElementById('explainer-session-label').textContent=`Session ${s.num} · ${s.subject}`;
-    } else {
-      go('home');
-    }
-  }
-}
-
 function haniQFilter(sessionFilter, btn){
   // Update button styles
   document.querySelectorAll('[id^="qf-"]').forEach(b=>{
@@ -5605,13 +5544,6 @@ function showWelcomeBack(){
     },400);
   }
 }
-// Override chooseSedona to show welcome-back after check-in
-const _checkinNext=checkinNext;
-checkinNext=function(){
-  const wasLast=checkinStep===CHECKIN_STEPS.length-1;
-  _checkinNext();
-  if(wasLast)showWelcomeBack();
-};
 renderHome();
 function applySession(){
   const s=getSession();
