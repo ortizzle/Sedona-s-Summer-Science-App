@@ -4173,75 +4173,52 @@ function chooseSedona(){
   go('checkin');
   document.getElementById('s-checkin').scrollTop=0;
 }
-function buildCheckinUI(){
+// Sign-in flow: Sedona picks her subject & session FIRST. The mood check-in
+// questions moved to the first quiz of the day (see launchQuiz), where
+// "how are you feeling / how confident" matters most for reading her results.
+function buildSessionPickerUI(){
   const s=getSession();
-  // Build session pills
   const pillsEl=document.getElementById('ci-sess-pills');
   const nameEl=document.getElementById('ci-sess-name');
   const subEl=document.getElementById('ci-sess-sub');
-  if(pillsEl){
-    // Group session pills by subject (order of first appearance)
-    const groups=[];
-    SESSIONS.filter(x=>!x.combined&&x.num).forEach(x=>{
-      let g=groups.find(g=>g.subject===x.subject);
-      if(!g){g={subject:x.subject,sessions:[]};groups.push(g);}
-      g.sessions.push(x);
-    });
-    pillsEl.innerHTML=groups.map(g=>`
-      <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
-        <span style="font-size:13px;width:20px;text-align:center;" title="${g.subject}">${getSubjectMeta(g.subject).icon}</span>
-        ${g.sessions.map(x=>{
-          const active=x.num===s.num;
-          return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" id="ci-pill-${x.num}" style="padding:4px 11px;border-radius:99px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:${active?'white':'rgba(255,255,255,0.18)'};color:${active?'var(--purple-dark)':'rgba(255,255,255,0.75)'};">S${x.num}</button>`;
-        }).join('')}
-      </div>`).join('');
-  }
+  if(pillsEl)pillsEl.innerHTML='';// header stays compact — the body below is the picker
   if(nameEl)nameEl.textContent=s.combined?`${s.icon} ${s.title}`:`Session ${s.num} — ${s.title}`;
   if(subEl)subEl.textContent=`${s.subject} · ${s.date}`;
-  // Build question rows
   const rowsEl=document.getElementById('ci-rows');
   if(!rowsEl)return;
-  rowsEl.innerHTML=CHECKIN_STEPS.map((step,si)=>`
-    <div style="background:rgba(255,255,255,0.88);border-radius:14px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
-      <div style="font-size:16px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;">${step.icon} ${step.q}</div>
-      <div style="display:flex;justify-content:space-between;">
-        ${step.emojis.map((e,i)=>`
-          <div data-row="${si}" data-idx="${i}" onclick="ciSelect(${si},${i},this)" style="flex:1;text-align:center;cursor:pointer;padding:4px 2px;border-radius:8px;transition:background .15s;">
-            <div style="font-size:22px;">${e}</div>
-            <div style="font-size:9px;color:var(--gray-500);margin-top:1px;">${step.labels[i]}</div>
-          </div>`).join('')}
-      </div>
+  // Group sessions by subject; whole-subject review modes get their own group
+  const groups=[];
+  SESSIONS.filter(x=>!x.combined&&x.num).forEach(x=>{
+    let g=groups.find(g=>g.subject===x.subject);
+    if(!g){g={subject:x.subject,sessions:[]};groups.push(g);}
+    g.sessions.push(x);
+  });
+  const sessionBtn=x=>{
+    const active=x===s;
+    return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" style="width:100%;padding:11px 14px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'var(--purple)':'transparent'};background:${active?'#ede9fe':'rgba(255,255,255,0.88)'};color:${active?'var(--purple-dark)':'var(--gray-700)'};box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+      ${active?'✅ ':''}${x.combined?`${x.icon} ${x.title}`:`S${x.num} · ${x.title}`}<br><span style="font-size:11px;opacity:.65;font-weight:600;">${x.date}</span>
+    </button>`;
+  };
+  rowsEl.innerHTML=groups.map(g=>`
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:12px;font-weight:900;color:var(--purple-dark);letter-spacing:.8px;">${getSubjectMeta(g.subject).icon} ${g.subject.toUpperCase()}</div>
+      ${g.sessions.map(sessionBtn).join('')}
     </div>`).join('')
-  +`<button onclick="ciSubmit()" id="ci-submit-btn" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:4px;opacity:.45;" disabled>Let\'s go! 🚀</button>
+  +`<div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:12px;font-weight:900;color:var(--teal);letter-spacing:.8px;">🎓 EXAM REVIEW — WHOLE SUBJECT</div>
+      ${SESSIONS.filter(x=>x.combined).map(sessionBtn).join('')}
+    </div>`
+  +`<button onclick="ciStartSession()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:4px;">Let\'s go! 🚀</button>
    <button onclick="go('welcome')" style="width:100%;padding:10px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;">← Back</button>`;
 }
 function ciPickSession(idx){
+  const scr=document.getElementById('s-checkin');
+  const y=scr?scr.scrollTop:0;
   setActiveSession(idx);
-  buildCheckinUI();
-  document.getElementById('s-checkin').scrollTop=0;
+  buildSessionPickerUI();
+  if(scr)scr.scrollTop=y;// keep her place in the list
 }
-function ciSelect(row,idx,el){
-  // Deselect others in same row
-  document.querySelectorAll(`[data-row="${row}"]`).forEach(d=>{d.style.background='';});
-  el.style.background='rgba(124,58,237,0.15)';
-  checkinAnswers[CHECKIN_STEPS[row].key]=5-idx;
-  // Enable submit if all answered
-  const allDone=CHECKIN_STEPS.every((_,i)=>checkinAnswers[CHECKIN_STEPS[i].key]);
-  const btn=document.getElementById('ci-submit-btn');
-  if(btn){btn.disabled=!allDone;btn.style.opacity=allDone?'1':'.45';}
-}
-function ciSubmit(){
-  S.checkIns.push({
-    ts:Date.now(),
-    feeling:checkinAnswers.feeling,
-    confidence:checkinAnswers.confidence,
-    sleep:checkinAnswers.sleep,
-    distraction:checkinAnswers.distraction,
-    selfStudy:checkinAnswers.selfStudy,
-    session:getSession().num
-  });
-  if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
-  saveProgress();
+function ciStartSession(){
   const s=getSession();
   if(s.story){
     document.getElementById('ci-rows').style.display='none';
@@ -4254,7 +4231,6 @@ function ciSubmit(){
     document.getElementById('s-checkin').scrollTop=0;
   } else {finishExplainerGoHome();}
 }
-function startCheckinQuestions(){buildCheckinUI();}
 function finishExplainerGoHome(){
   // Reset for next time
   const rows=document.getElementById('ci-rows');
