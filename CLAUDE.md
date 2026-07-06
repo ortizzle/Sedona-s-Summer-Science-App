@@ -14,7 +14,18 @@ This is a progressive web app (PWA) built to help Sedona (a middle/high school s
 
 ## Architecture
 
-The entire app lives in a single file: **`index.html`**. There is no build system, no backend, no database. All data is hardcoded as JavaScript arrays at the top of the script block, with `localStorage` used for XP, badge state, and custom cards. Keep this architecture — do not introduce a build step or separate JS files unless the user explicitly asks.
+The app lives in a single file: **`index.html`**, plus three small support files: `manifest.json` (PWA install), `icon.svg`, and `sw.js` (service worker — caches the app shell and CDN assets so the PWA genuinely works offline; bump `CACHE_VERSION` in it if caching behavior changes). There is no build system, no backend, no database. All data is hardcoded as JavaScript arrays at the top of the script block, with `localStorage` used for XP, badge state, and custom cards. Keep this architecture — do not introduce a build step or a backend unless the user explicitly asks.
+
+---
+
+## Storage, Backup & Sync
+
+Progress persistence is versioned and centralized in `index.html`:
+
+- **`serializeProgress()` / `applyProgress()` / `migrateProgress()`** — the single payload format used by localStorage, file export/import, and sync codes. Every payload carries `v: SCHEMA_VERSION`. **If you change the saved shape, bump `SCHEMA_VERSION` and add a migration step to `migrateProgress()`** so older devices upgrade in place.
+- **Keys**: `sedona_asl_s1` (main), `sedona_asl_s1_backup` (rolling backup written once per launch; auto-restored if the main key is corrupt), `sedona_custom_cards` (Hani's card edits).
+- **Cross-device sync**: `makeSyncCode()` / `decodeSyncCode()` produce a gzip+base64 code with prefix `SSL2:` (`SSL2R:` = uncompressed fallback). Copy it on one device, paste it on the other via the "Backup & Cross-Device Sync" card in Hani's portal. No account, no server. A future cloud adapter (e.g. Drive) must reuse `serializeProgress()` — do not invent a second format.
+- **Backup reminders**: `S.lastBackupTs` is set by any export/share/sync-code copy; the portal warns when it's missing or older than 7 days.
 
 ---
 
@@ -90,9 +101,9 @@ Badges are unlocked by gameplay events (streaks, session completion, mastery). W
 
 3. **Create quiz questions** — Add entries to `QS[]`. Write 6–8 questions per level (1, 2, 3) per session. Level 1 = recall, Level 2 = apply, Level 3 = reason/analyze.
 
-4. **Subject-specific UI** — The periodic table widget is chemistry-specific. For other subjects, similar reference tools can be added (e.g., a number line for math, timeline for history). Wrap them in a conditional that checks `getSession().subject`.
+4. **Register the subject** — Add an entry to `SUBJECTS_META` (icon, `cardFront` watermark text, `cardBack` emblem). Flashcard theming picks it up automatically; unknown subjects fall back to a neutral look.
 
-5. **Card aesthetic watermarks** — The card backs currently show `H₂O NaCl CO₂` and `⚛` watermarks (chemistry). Update these for the active subject or make them dynamic.
+5. **Tag mini-game content** — `TF_STATEMENTS`, `RANK_QUESTIONS`, and `SPOT_QUESTIONS` entries carry a `subj` field, and `SORT_SETS` a `subject` field. Games lead with the active subject's entries, so add at least a handful per new subject. The periodic table widget is chemistry-specific; similar reference tools can be added per subject (number line for math, timeline for history) behind a `getSession().subject` check.
 
 6. **Educator portal** — Hani's Hangout (the password-protected educator view) automatically reflects any new sessions and questions because it reads from the same `SESSIONS`/`QS` arrays.
 
@@ -156,6 +167,8 @@ When building a new session, pull the Google Drive materials first to ground the
 - [ ] Write SESSIONS entry with `why`, `concepts`, `formulas`, `story`, `resources`
 - [ ] Write 15–30 CARDS entries (vocab, formulas, common mistakes)
 - [ ] Write 18–24 QS entries (6–8 per level, levels 1–3)
+- [ ] Add the subject to SUBJECTS_META (icon + card watermarks)
+- [ ] Add subject-tagged entries to TF_STATEMENTS / SORT_SETS / RANK_QUESTIONS / SPOT_QUESTIONS
 - [ ] Add a subject badge to BADGES_DEF
 - [ ] Test on mobile (iPhone): home screen, flashcards, quiz, educator portal
 - [ ] Verify Hani's Hangout shows the new session data correctly

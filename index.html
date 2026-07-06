@@ -179,9 +179,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   background:repeating-linear-gradient(180deg,transparent 0px,transparent 27px,rgba(180,160,120,0.18) 27px,rgba(180,160,120,0.18) 28px);
   pointer-events:none;
 }
-/* chemical formula watermark */
+/* subject watermark — text comes from data-wm, set per subject (see SUBJECTS_META) */
 .card-front::after{
-  content:'H₂O  NaCl  CO₂';
+  content:attr(data-wm);
   position:absolute;bottom:10px;right:14px;
   font-family:'Courier New',monospace;font-size:11px;
   color:rgba(100,70,30,0.18);letter-spacing:3px;pointer-events:none;
@@ -213,9 +213,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   background:repeating-linear-gradient(180deg,transparent 0px,transparent 27px,rgba(180,160,120,0.18) 27px,rgba(180,160,120,0.18) 28px);
   pointer-events:none;
 }
-/* atom watermark bottom-left on back */
+/* big emblem watermark bottom-left on back — per subject via data-wm */
 .card-back::after{
-  content:'⚛';position:absolute;font-size:80px;opacity:0.06;
+  content:attr(data-wm);position:absolute;font-size:80px;opacity:0.06;
   bottom:-8px;left:8px;pointer-events:none;color:#7c3aed;
 }
 
@@ -552,6 +552,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" id="h-mastered">0</div><div class="stat-lbl">Mastered</div></div>
     <div class="stat"><div class="stat-icon">🏅</div><div class="stat-val" id="h-badges">0</div><div class="stat-lbl">Badges</div></div>
   </div>
+  <!-- Spaced-repetition warm-up: shown when Growth Cards are waiting -->
+  <div id="warmup-banner" style="display:none;padding:0 20px 14px;"></div>
   <!-- STUDY RESOURCES -->
   <!-- STUDY RESOURCES -->
   <div class="sec-div"><div class="sec-div-line sec-div-line-l"></div><div class="sec-div-label">📖 Study Resources</div><div class="sec-div-line sec-div-line-r"></div></div>
@@ -698,7 +700,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="fc-status" id="fc-status"></div>
   <div class="card-area">
     <div class="flip-card" id="flip-card" onclick="flipCard()">
-      <div class="card-face card-front">
+      <div class="card-face card-front" data-wm="H₂O  NaCl  CO₂">
         <!-- type badge -->
         <div id="fc-type-badge" style="position:absolute;top:10px;left:12px;font-size:10px;font-weight:800;padding:2px 8px;border-radius:99px;z-index:2;"></div>
         <!-- formula card: equation is the star -->
@@ -713,7 +715,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <div class="card-eq" id="fc-eq" style="display:none;"></div>
         <div class="card-hint-text" id="fc-front-hint">Tap to reveal · tap again to flip back</div>
       </div>
-      <div class="card-face card-back">
+      <div class="card-face card-back" data-wm="⚛">
         <div class="card-def" id="fc-def"></div>
         <div class="card-eq-back" id="fc-eq-back" style="display:none;"></div>
         <div class="card-hint-text">Tap card to flip back</div>
@@ -1570,6 +1572,19 @@ const SESSIONS = [
 let ACTIVE_SESSION = 0; // index into SESSIONS array
 
 function getSession(){ return SESSIONS[ACTIVE_SESSION]; }
+
+// ─── SUBJECT REGISTRY ─────────────────────────────────────────────────────
+// One entry per subject. When adding a new subject (Biology, Algebra,
+// History…), add a row here and the UI theming follows automatically:
+//   icon       — used anywhere the subject needs an emblem
+//   cardFront  — small watermark text on flashcard fronts
+//   cardBack   — big faded emblem on flashcard backs
+const SUBJECTS_META={
+  Chemistry:{icon:'⚗️',cardFront:'H₂O  NaCl  CO₂',cardBack:'⚛'},
+  Physics:  {icon:'🚀',cardFront:'F=ma  p=mv  v=fλ',cardBack:'🚀'},
+};
+const SUBJECT_DEFAULT_META={icon:'📚',cardFront:'✎  ✎  ✎',cardBack:'★'};
+function getSubjectMeta(subject){return SUBJECTS_META[subject]||SUBJECT_DEFAULT_META;}
 
 // ─── FLASHCARD DATA ────────────────────────────────────────────────────────
 const CARDS=[
@@ -2516,35 +2531,86 @@ const S={
 };
 
 // ─── LOCALSTORAGE ─────────────────────────────────────────────────────────
+// Storage skeleton for the multi-subject portal:
+//  • Every payload carries a schema version (v). When the shape changes,
+//    bump SCHEMA_VERSION and add a step to migrateProgress() — old devices'
+//    data then upgrades in place instead of breaking.
+//  • A rolling backup key is written once per app launch, so if the main key
+//    is ever corrupted mid-session we can recover to the state at launch.
+//  • The same serialized payload powers file export, import, and sync codes —
+//    one format everywhere, so any future cloud adapter reuses it untouched.
+const SCHEMA_VERSION=2;
+const STORE_KEY='sedona_asl_s1';
+const BACKUP_KEY='sedona_asl_s1_backup';
+function serializeProgress(){
+  return JSON.stringify({
+    v:SCHEMA_VERSION,
+    totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,
+    studySeconds:S.studySeconds,lastBackupTs:S.lastBackupTs||null,
+    mistakes:S.mistakes,weakCards:S.weakCards,timingLog:S.timingLog,quizSessions:S.quizSessions,checkIns:S.checkIns,
+    badges:S.badges.map(b=>({id:b.id,unlocked:b.unlocked,earnedAt:b.earnedAt}))
+  });
+}
 function saveProgress(){
-  try{
-    localStorage.setItem('sedona_asl_s1',JSON.stringify({
-      totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,
-      studySeconds:S.studySeconds,
-      mistakes:S.mistakes,weakCards:S.weakCards,timingLog:S.timingLog,quizSessions:S.quizSessions,checkIns:S.checkIns,
-      badges:S.badges.map(b=>({id:b.id,unlocked:b.unlocked,earnedAt:b.earnedAt}))
-    }));
-  }catch(e){}
+  try{localStorage.setItem(STORE_KEY,serializeProgress());}catch(e){}
+}
+// Upgrade older payloads to the current schema. Add one block per version.
+function migrateProgress(d){
+  if(!d.v){ // v1 → v2: fields introduced over time; fill defaults
+    d.weakCards=d.weakCards||{};d.checkIns=d.checkIns||[];d.studySeconds=d.studySeconds||0;
+    d.v=2;
+  }
+  return d;
+}
+function applyProgress(d){
+  S.totalXP=d.totalXP||0;S.bestStreak=d.bestStreak||0;S.masteredCards=d.masteredCards||0;
+  S.studySeconds=d.studySeconds||0;S.lastBackupTs=d.lastBackupTs||null;
+  S.mistakes=d.mistakes||{};S.weakCards=d.weakCards||{};S.timingLog=d.timingLog||[];S.quizSessions=d.quizSessions||[];S.checkIns=d.checkIns||[];
+  S.badges=BADGES_DEF.map(b=>({...b}));
+  if(d.badges)d.badges.forEach(sb=>{const b=S.badges.find(b=>b.id===sb.id);if(b){b.unlocked=sb.unlocked;b.earnedAt=sb.earnedAt||null;}});
 }
 function loadProgress(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem(STORE_KEY)||'null');}catch(e){d=null;}
+  if(!d){
+    // Main key missing or corrupt — fall back to the launch-time backup
+    try{d=JSON.parse(localStorage.getItem(BACKUP_KEY)||'null');}catch(e){d=null;}
+    if(d)setTimeout(()=>showBadgeToast({icon:'🛟',name:'Progress restored from automatic backup'},true),800);
+  }
+  if(!d)return;
   try{
-    const d=JSON.parse(localStorage.getItem('sedona_asl_s1')||'null');
-    if(!d)return;
-    S.totalXP=d.totalXP||0;S.bestStreak=d.bestStreak||0;S.masteredCards=d.masteredCards||0;
-    S.studySeconds=d.studySeconds||0;
-    S.mistakes=d.mistakes||{};S.weakCards=d.weakCards||{};S.timingLog=d.timingLog||[];S.quizSessions=d.quizSessions||[];S.checkIns=d.checkIns||[];
-    if(d.badges)d.badges.forEach(sb=>{const b=S.badges.find(b=>b.id===sb.id);if(b){b.unlocked=sb.unlocked;b.earnedAt=sb.earnedAt||null;}});
+    applyProgress(migrateProgress(d));
+    // Re-persist (heals a corrupt main key, applies migrations) and refresh
+    // the rolling backup to this known-good launch state
+    saveProgress();
+    localStorage.setItem(BACKUP_KEY,serializeProgress());
   }catch(e){}
 }
 
+function backupFileName(){
+  const d=new Date();
+  return `sedona-progress-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+}
+function markBackedUp(){S.lastBackupTs=Date.now();saveProgress();}
 function exportProgress(){
-  const data=localStorage.getItem('sedona_asl_s1')||'{}';
-  const blob=new Blob([data],{type:'application/json'});
+  markBackedUp();
+  const blob=new Blob([serializeProgress()],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  const d=new Date();
-  a.download=`sedona-progress-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.download=backupFileName();
   a.click();URL.revokeObjectURL(a.href);
+}
+// iPhone-friendly export: opens the native share sheet (AirDrop, Drive, Files…)
+async function shareProgress(){
+  const file=new File([serializeProgress()],backupFileName(),{type:'application/json'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file],title:'Sedona\'s Lab progress backup'});
+      markBackedUp();
+    }catch(e){/* user cancelled the share sheet */}
+  }else{
+    exportProgress();
+  }
 }
 function importProgress(evt){
   const file=evt.target.files[0];if(!file)return;
@@ -2552,7 +2618,7 @@ function importProgress(evt){
   reader.onload=e=>{
     try{
       const d=JSON.parse(e.target.result);
-      localStorage.setItem('sedona_asl_s1',JSON.stringify(d));
+      localStorage.setItem(STORE_KEY,JSON.stringify(migrateProgress(d)));
       loadProgress();renderHome();renderHaniDash();
       const msg=document.getElementById('import-msg');
       msg.textContent='✅ Progress restored! XP: '+d.totalXP+', Streak: '+d.bestStreak;
@@ -2566,6 +2632,86 @@ function importProgress(evt){
   };
   reader.readAsText(file);
   evt.target.value='';// reset so same file can be re-imported
+}
+
+// ─── CROSS-DEVICE SYNC CODES ──────────────────────────────────────────────
+// A sync code is the full progress payload, gzipped and base64-encoded, with a
+// versioned prefix. Copy it on one device, paste it on another (iMessage,
+// Notes, email — anything that carries text). No account, no server.
+//   SSL2: gzip-compressed   ·   SSL2R: raw (fallback for older browsers)
+async function makeSyncCode(){
+  const json=serializeProgress();
+  if(typeof CompressionStream==='undefined')
+    return 'SSL2R:'+btoa(unescape(encodeURIComponent(json)));
+  const stream=new Blob([json]).stream().pipeThrough(new CompressionStream('gzip'));
+  const buf=await new Response(stream).arrayBuffer();
+  let bin='';new Uint8Array(buf).forEach(b=>bin+=String.fromCharCode(b));
+  return 'SSL2:'+btoa(bin);
+}
+async function decodeSyncCode(code){
+  code=(code||'').trim();
+  if(code.startsWith('SSL2R:'))return decodeURIComponent(escape(atob(code.slice(6))));
+  if(code.startsWith('SSL2:')){
+    const bin=atob(code.slice(5));
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return await new Response(stream).text();
+  }
+  throw new Error('Not a valid sync code');
+}
+async function copySyncCode(){
+  try{
+    const code=await makeSyncCode();
+    let copied=false;
+    try{await navigator.clipboard.writeText(code);copied=true;}catch(e){}
+    markBackedUp();
+    if(copied){
+      showBadgeToast({icon:'📋',name:'Sync code copied! Paste it on the other device.'},true);
+    }else{
+      // Clipboard blocked — show the code so it can be selected manually
+      showSyncModal('Your sync code','Select and copy this code, then paste it on the other device:',code,null);
+    }
+    renderHaniDash();
+  }catch(e){
+    showBadgeToast({icon:'⚠️',name:'Could not create sync code'},true);
+  }
+}
+function pasteSyncCode(){
+  showSyncModal('Paste sync code','Paste the code copied from the other device. This replaces the progress on THIS device.','',applySyncCode);
+}
+async function applySyncCode(){
+  const ta=document.getElementById('sync-modal-text');
+  const errEl=document.getElementById('sync-modal-err');
+  try{
+    const json=await decodeSyncCode(ta.value);
+    const d=JSON.parse(json);
+    if(typeof d.totalXP!=='number')throw new Error('missing fields');
+    localStorage.setItem(STORE_KEY,JSON.stringify(migrateProgress(d)));
+    loadProgress();renderHome();renderHaniDash();
+    document.getElementById('sync-modal').remove();
+    showBadgeToast({icon:'✅',name:`Progress synced! XP: ${S.totalXP} · Best streak: ${S.bestStreak}`},true);
+  }catch(e){
+    if(errEl)errEl.textContent='❌ That doesn\'t look like a valid sync code — check it copied completely.';
+  }
+}
+function showSyncModal(title,sub,value,onApply){
+  const old=document.getElementById('sync-modal');if(old)old.remove();
+  const modal=document.createElement('div');
+  modal.id='sync-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML=`<div style="background:white;border-radius:18px;padding:20px;width:100%;max-width:400px;">
+    <div style="font-size:15px;font-weight:800;color:var(--purple-dark);margin-bottom:4px;">🔁 ${title}</div>
+    <div style="font-size:12px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">${sub}</div>
+    <textarea id="sync-modal-text" style="width:100%;height:110px;padding:10px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:11px;font-family:monospace;box-sizing:border-box;resize:vertical;word-break:break-all;">${value}</textarea>
+    <div id="sync-modal-err" style="font-size:12px;color:#991b1b;font-weight:600;min-height:18px;margin-top:6px;"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      ${onApply?'<button onclick="applySyncCode()" style="flex:1;padding:11px;background:var(--purple);color:white;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">Restore on this device</button>':''}
+      <button onclick="document.getElementById('sync-modal').remove()" style="flex:1;padding:11px;background:var(--gray-200);color:var(--gray-700);border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">${onApply?'Cancel':'Done'}</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  if(!value)document.getElementById('sync-modal-text').focus();
 }
 
 // ─── PERIODIC TABLE ───────────────────────────────────────────────────────
@@ -2693,7 +2839,7 @@ function maybeShowSummary(){
   const qDelta=S.timingLog.length-_snapQs;
   const badgeDelta=S.badges.filter(b=>b.unlocked).length-_snapBadges;
   const masteredDelta=S.masteredCards-_snapMastered;
-  if(!_lastCompletedMode||qDelta<1)return;
+  if(!_lastCompletedMode||(qDelta<1&&masteredDelta<1&&xpDelta<1))return;
   const newBadges=S.badges.filter(b=>b.unlocked&&b.earnedAt&&Date.now()-b.earnedAt<60000);
   const weak=Object.entries(S.mistakes).filter(([,c])=>c>0).sort((a,b)=>b[1]-a[1]).slice(0,3)
     .map(([id])=>{const q=QS.find(q=>q.id===+id);return q?q.q.slice(0,60)+'…':null;}).filter(Boolean);
@@ -2742,7 +2888,28 @@ function renderHome(){
   document.getElementById('h-streak').textContent=S.bestStreak;
   document.getElementById('h-mastered').textContent=S.masteredCards;
   document.getElementById('h-badges').textContent=S.badges.filter(b=>b.unlocked).length;
+  renderWarmupBanner();
   renderGrowthZone();renderBadges();
+}
+// Spaced repetition: nudge a quick review of cards she was still learning
+// last time, before diving into new material.
+function renderWarmupBanner(){
+  const wb=document.getElementById('warmup-banner');
+  if(!wb)return;
+  const weakCount=Object.keys(S.weakCards).filter(k=>S.weakCards[k]>0).length;
+  if(!weakCount){wb.style.display='none';wb.innerHTML='';return;}
+  wb.style.display='block';
+  wb.innerHTML=`<button onclick="startWarmup()" style="width:100%;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #6ee7b7;border-radius:var(--radius-sm);padding:13px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;">
+    <span style="font-size:26px;">🌱</span>
+    <span>
+      <span style="display:block;font-size:14px;font-weight:800;color:#065f46;">Warm-up first: ${weakCount} card${weakCount>1?'s':''} to grow</span>
+      <span style="display:block;font-size:11px;color:#047857;margin-top:1px;font-weight:600;">Quick review of what you were still learning — then dive in →</span>
+    </span>
+  </button>`;
+}
+function startWarmup(){
+  S.fc.scope='weak';S.fc.typeFilter='all';
+  go('fc');
 }
 function renderGrowthZone(){
   const list=document.getElementById('gz-list'),ctr=document.getElementById('gz-count');
@@ -2838,7 +3005,8 @@ function addXP(n,badgeEl){
   if(S.totalXP>=500)checkBadge('xp_500');
   if(S.totalXP>=1000)checkBadge('xp_1000');
   updateXPBar();saveProgress();
-  if(badgeEl){const el=document.getElementById(badgeEl);if(el)el.textContent='+'+S.totalXP+' XP';}
+  // Flash the amount just earned; round badges are refreshed by each mode with its round total
+  if(badgeEl){const el=document.getElementById(badgeEl);if(el&&badgeEl!=='h-xp-amt')el.textContent='+'+n+' XP';}
 }
 function updateXPBar(){
   const i=getLvInfo();
@@ -2945,6 +3113,12 @@ function startFC(){
   trackModeUsed('fc');
   const f=S.fc;
   const s=getSession();
+  // Theme the card watermarks for the active subject
+  const meta=getSubjectMeta(s.subject);
+  const front=document.querySelector('#s-fc-screen .card-front');
+  const back=document.querySelector('#s-fc-screen .card-back');
+  if(front)front.setAttribute('data-wm',meta.cardFront);
+  if(back)back.setAttribute('data-wm',meta.cardBack);
   if(!f.scope)f.scope='session';
   if(!f.typeFilter)f.typeFilter='all';
   // Build full card pool (all cards, used for scope counting)
@@ -3020,10 +3194,10 @@ function renderFC(){
   const deck=f.phase==='main'?f.deck:f.wrong;
   if(f.idx>=deck.length){
     if(f.phase==='main'&&f.wrong.length){f.phase='retry';f.idx=0;f.wrong=shuffle(f.wrong);renderFC();return;}
-    S.masteredCards=Math.max(S.masteredCards,f.mastered);
+    if(!TEST_MODE||TEST_RECORD){S.masteredCards=Math.max(S.masteredCards,f.mastered);}
     if(S.masteredCards>=10)checkBadge('fc_mastered_10');
     saveProgress();
-    checkBadge('fc_complete');showRes('fc',f.mastered,CARDS.length,f.sessionXP);return;
+    checkBadge('fc_complete');showRes('fc',f.mastered,f.deck.length,f.sessionXP);return;
   }
   const card=deck[f.idx];
   document.getElementById('fc-bar-fill').style.width=Math.round(f.idx/deck.length*100)+'%';
@@ -3138,17 +3312,26 @@ function showQuizModeSelector(){
     </div>`;
   document.body.appendChild(modal);
 }
+// "This session only" filter: for combined review sessions there is no single
+// session number, so fall back to the subject-wide filter.
+function getSessionOnlyFilter(){
+  const s=getSession();
+  if(s.combined)return getQSFilter();
+  return q=>q.session===s.num;
+}
 function launchQuiz(sessionOnly){
   QZ_SESSION_ONLY=sessionOnly;
-  const filter=sessionOnly?(q=>q.session===getSession().num):getQSFilter();
+  const filter=sessionOnly?getSessionOnlyFilter():getQSFilter();
   if(!QS.some(filter)){noQuestionsYet();return;}
+  const modal=document.getElementById('quiz-mode-modal');
+  if(modal)modal.remove();
   go('qz-run');
 }
 function startQuiz(){
   trackModeUsed('qz');updateRefButtons();
   const q=S.qz;
   const sessionFilter=QZ_SESSION_ONLY
-    ?q=>q.session===getSession().num
+    ?getSessionOnlyFilter()
     :getQSFilter();
   const pool=QS.filter(sessionFilter);
   const easy=shuffle(pool.filter(q=>q.lv===1)).slice(0,5);
@@ -3168,7 +3351,7 @@ function renderQ(){
   }
   q.hintUsed=false;const item=q.qs[q.idx];
   q.qStart=Date.now();
-  document.getElementById('qz-q-label').textContent='QUESTION '+(q.idx+1)+' / '+QZ_COUNT;
+  document.getElementById('qz-q-label').textContent='QUESTION '+(q.idx+1)+' / '+q.qs.length;
   document.getElementById('qz-q-text').textContent=item.q;
   buildOpts('qz-opts',item.opts,'handleQA');
   document.getElementById('qz-exp').className='exp-box';
@@ -3210,7 +3393,8 @@ function handleQA(sel){
   if(ok){
     q.score+=10+(q.streak*2);q.streak++;q.correct++;
     q.sessionXP+=15;addXP(15,'qz-xp-badge');
-    showStreak(q.streak);S.bestStreak=Math.max(S.bestStreak,q.streak);
+    document.getElementById('qz-xp-badge').textContent='+'+q.sessionXP+' XP';
+    showStreak(q.streak);if(!TEST_MODE||TEST_RECORD)S.bestStreak=Math.max(S.bestStreak,q.streak);
     flash('s-qz',true);checkBadge('first_correct');
   } else {
     q.streak=0;flash('s-qz',false);
@@ -3220,7 +3404,7 @@ function handleQA(sel){
   document.getElementById('qz-streak').textContent=q.streak+' ⚡';
   document.getElementById('qz-correct').textContent=q.correct+'/'+q.total;
   revealOpts('qz-opts',sel,item.ans);showExp('qz-exp',ok,item.ex);
-  const isLast=q.idx===QZ_COUNT-1;
+  const isLast=q.idx===q.qs.length-1;
   document.getElementById('qz-next').textContent=isLast?'See Results →':'Next →';
   document.getElementById('qz-next').classList.add('on');
   const skipBtn=document.getElementById('qz-skip');
@@ -3252,7 +3436,7 @@ function startLevels(){
 function loadLv(lv){
   const l=S.lv;
   l.curLv=lv;l.qs=shuffle(QS.filter(q=>q.lv===lv&&getQSFilter()(q))).slice(0,10).map(shuffleOpts);
-  l.wrong=[];l.mastered=new Set();l.idx=0;l.phase='main';l.hintUsed=false;updateLvTabs();renderLvQ();
+  l.wrong=[];l.mastered=new Set();l.idx=0;l.phase='main';l.hintUsed=false;l.misses=0;l.done=false;l.perfected=false;updateLvTabs();renderLvQ();
 }
 function switchLv(n){if(S.lv.unlocked.includes(n))loadLv(n);}
 function updateLvTabs(){
@@ -3267,18 +3451,22 @@ function renderLvQ(){
   const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;
   if(l.idx>=deck.length){
     if(l.phase==='main'&&l.wrong.length){l.phase='retry';l.idx=0;renderLvQ();return;}
-    const perfected=l.wrong.length===0;
-    if(perfected&&!l.passed.includes(l.curLv))l.passed.push(l.curLv);
-    l.sessionXP+=perfected?50:20;addXP(perfected?50:20,'lv-xp-badge');
-    if(perfected)launchConfetti(40);
-    if(perfected&&l.curLv===1)checkBadge('level_easy');
-    if(perfected&&l.curLv===2)checkBadge('level_medium');
-    if(perfected&&l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
-    updateLvTabs();
-    if(l.passed.length===3){checkBadge('levels_complete');launchConfetti(80);}
-    document.getElementById('lv-next').textContent=perfected?(l.curLv<3?'🎉 Perfect! Next level unlocked ↗':'🏆 All Levels Complete!'):'📚 Keep practicing to unlock the next level!';
+    if(!l.done){
+      l.done=true;
+      l.perfected=l.misses===0;
+      if(l.perfected&&!l.passed.includes(l.curLv))l.passed.push(l.curLv);
+      l.sessionXP+=l.perfected?50:20;addXP(l.perfected?50:20,'lv-xp-badge');
+      document.getElementById('lv-xp-badge').textContent='+'+l.sessionXP+' XP';
+      if(l.perfected)launchConfetti(40);
+      if(l.perfected&&l.curLv===1)checkBadge('level_easy');
+      if(l.perfected&&l.curLv===2)checkBadge('level_medium');
+      if(l.perfected&&l.curLv<3&&!l.unlocked.includes(l.curLv+1))l.unlocked.push(l.curLv+1);
+      updateLvTabs();
+      if(l.passed.length===3){checkBadge('levels_complete');launchConfetti(80);}
+    }
+    document.getElementById('lv-next').textContent=l.perfected?(l.curLv<3?'🎉 Perfect! Next Level →':'🏆 All Levels Complete!'):(l.curLv<3?'Next Level →':'← Back Home');
     document.getElementById('lv-next').classList.add('on');
-    document.getElementById('lv-q-text').textContent=perfected?('Level '+(l.curLv<3?l.curLv+' perfected! Next level unlocked.':'3 complete — champion!')):'Good effort! Answer every question correctly to unlock the next level.';
+    document.getElementById('lv-q-text').textContent=l.perfected?('Level '+(l.curLv<3?l.curLv+' perfected — zero misses!':'3 complete — champion!')):'Good work clearing the retry round! Aim for zero misses to perfect this level — you can retry it from the tabs above.';
     document.getElementById('lv-opts').innerHTML='';return;
   }
   l.hintUsed=false;const item=deck[l.idx];
@@ -3298,11 +3486,12 @@ function handleLvA(sel){
   const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;const item=deck[l.idx];const ok=sel===item.ans;
   if(ok){
     l.mastered.add(item.id);l.sessionXP+=20;addXP(20,'lv-xp-badge');
-    l.streak++;showStreak(l.streak);S.bestStreak=Math.max(S.bestStreak,l.streak);
+    document.getElementById('lv-xp-badge').textContent='+'+l.sessionXP+' XP';
+    l.streak++;showStreak(l.streak);if(!TEST_MODE||TEST_RECORD)S.bestStreak=Math.max(S.bestStreak,l.streak);
     flash('s-lv',true);checkBadge('first_correct');
     if(l.phase==='main')l.idx++;else l.wrong.splice(l.idx,1);
   } else {
-    l.streak=0;
+    l.streak=0;l.misses++;
     if(l.phase==='main'){l.wrong.push(item);l.idx++;}
     else{const w=l.wrong.splice(l.idx,1)[0];l.wrong.push(w);}
     trackMistake(item.id,'lv',null,false);flash('s-lv',false);
@@ -3312,13 +3501,10 @@ function handleLvA(sel){
 }
 function nextLv(){
   const l=S.lv;const deck=l.phase==='main'?l.qs:l.wrong;
-  if(l.idx>=deck.length){
-    // If already unlocked next level (second tap after completion message) → load it
+  if(l.idx>=deck.length&&l.done){
+    // Completion screen tap → advance to next level, or go home from level 3
     if(l.curLv<3&&l.unlocked.includes(l.curLv+1)){loadLv(l.curLv+1);return;}
-    // All levels complete → go home
-    if(l.passed.length===3){go('home');return;}
-    // First tap after finishing — let renderLvQ run the completion block to unlock next
-    renderLvQ();return;
+    go('home');return;
   }
   renderLvQ();
 }
@@ -3352,7 +3538,8 @@ function handleQQA(sel){
     qq.score+=10;qq.correct++;qq.streak++;
     document.getElementById('qq-score').textContent=qq.score;
     qq.sessionXP+=25;addXP(25,'qq-xp-badge');
-    showStreak(qq.streak);S.bestStreak=Math.max(S.bestStreak,qq.streak);
+    document.getElementById('qq-xp-badge').textContent='+'+qq.sessionXP+' XP';
+    showStreak(qq.streak);if(!TEST_MODE||TEST_RECORD)S.bestStreak=Math.max(S.bestStreak,qq.streak);
     flash('s-qq',true);checkBadge('first_correct');
   } else {
     qq.streak=0;qq.hearts--;updQQHearts();
@@ -3449,9 +3636,12 @@ function showHaniLock(){
   document.getElementById('hani-input').value='';
   document.getElementById('hani-err').textContent='';
 }
+// Passcode is stored as an FNV-1a hash — never in plaintext (see CLAUDE.md).
+const HANI_PASS_HASH=3246729140;
+function fnv1a(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}return h;}
 function tryUnlock(){
   const val=document.getElementById('hani-input').value.trim().toLowerCase();
-  if(val==='jazzclub'){
+  if(fnv1a(val)===HANI_PASS_HASH){
     S.haniUnlocked=true;
     document.getElementById('hani-lock-view').style.display='none';
     renderHaniDash();
@@ -3644,13 +3834,25 @@ function renderHaniDash(){
       </div>
     </div>
     <div class="hani-section">
-      <div class="hani-section-title">💾 Progress Backup</div>
+      <div class="hani-section-title">💾 Backup &amp; Cross-Device Sync</div>
       <div class="hani-card">
-        <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Export Sedona's progress as a file to carry between devices. Import it back on any device to restore her XP, badges, and history.</div>
+        ${(()=>{
+          if(!S.totalXP)return '';
+          const days=S.lastBackupTs?Math.floor((Date.now()-S.lastBackupTs)/86400000):null;
+          if(days===null)return '<div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 12px;font-size:12px;color:#991b1b;font-weight:700;margin-bottom:12px;">⚠️ No backup yet! iPhones can clear browser data — copy a sync code or export a file now.</div>';
+          if(days>=7)return `<div style="background:#fff7ed;border:1.5px solid #fdba74;border-radius:10px;padding:10px 12px;font-size:12px;color:#9a3412;font-weight:700;margin-bottom:12px;">⏰ Last backup was ${days} days ago — time for a fresh one.</div>`;
+          return `<div style="font-size:11px;color:#166534;font-weight:600;margin-bottom:12px;">✅ Last backup: ${days===0?'today':days===1?'yesterday':days+' days ago'}</div>`;
+        })()}
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:10px;line-height:1.5;"><strong style="color:var(--purple-dark);">Sync between devices:</strong> copy a sync code here, send it to the other device (iMessage, Notes…), then paste it there. No account needed.</div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;">
+          <button onclick="copySyncCode()" style="flex:1;padding:12px;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:white;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📋 Copy Sync Code</button>
+          <button onclick="pasteSyncCode()" style="flex:1;padding:12px;background:white;color:#6d28d9;border:2px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📥 Paste Sync Code</button>
+        </div>
+        <div style="font-size:13px;color:var(--gray-500);margin-bottom:10px;line-height:1.5;"><strong style="color:var(--gray-700);">File backup:</strong> save a progress file to Drive or Files as a long-term archive.</div>
         <div style="display:flex;gap:10px;margin-bottom:10px;">
-          <button onclick="exportProgress()" style="flex:1;padding:12px;background:#ede9fe;color:#6d28d9;border:2px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📤 Export Progress</button>
+          <button onclick="shareProgress()" style="flex:1;padding:12px;background:#ede9fe;color:#6d28d9;border:2px solid #c4b5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;">📤 Export / Share File</button>
           <label style="flex:1;padding:12px;background:#ecfdf5;color:#166534;border:2px solid #86efac;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;text-align:center;display:block;">
-            📥 Import Progress
+            📥 Import File
             <input type="file" accept=".json" onchange="importProgress(event)" style="display:none;">
           </label>
         </div>
@@ -3736,9 +3938,10 @@ function confirmReset(){
   document.getElementById('reset-confirm').style.display='block';
 }
 function doReset(){
-  try{localStorage.removeItem('sedona_asl_s1');}catch(e){}
-  S.totalXP=0;S.bestStreak=0;S.masteredCards=0;S.mistakes={};S.timingLog=[];S.quizSessions=[];S.haniUnlocked=true;
+  try{localStorage.removeItem(STORE_KEY);localStorage.removeItem(BACKUP_KEY);}catch(e){}
+  S.totalXP=0;S.bestStreak=0;S.masteredCards=0;S.mistakes={};S.weakCards={};S.timingLog=[];S.quizSessions=[];S.checkIns=[];S.studySeconds=0;S.modesUsed=new Set();S.lastBackupTs=null;S.haniUnlocked=true;
   S.badges=BADGES_DEF.map(b=>({...b}));
+  takeSnapshot();
   renderHome();
   renderHaniDash();
   showBadgeToast({icon:'✅',name:'Session reset! Fresh start.'},true);
@@ -3810,7 +4013,7 @@ function buildCheckinUI(){
       return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" id="ci-pill-${x.num}" style="padding:4px 11px;border-radius:99px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:${active?'white':'rgba(255,255,255,0.18)'};color:${active?'var(--purple-dark)':'rgba(255,255,255,0.75)'};">S${x.num}</button>`;
     }).join('');
   }
-  if(nameEl)nameEl.textContent=`Session ${s.num} — ${s.title}`;
+  if(nameEl)nameEl.textContent=s.combined?`${s.icon} ${s.title}`:`Session ${s.num} — ${s.title}`;
   if(subEl)subEl.textContent=`${s.subject} · ${s.date}`;
   // Build question rows
   const rowsEl=document.getElementById('ci-rows');
@@ -4104,96 +4307,98 @@ const SORT_SETS=[
 ];
 
 // ─── TRUE/FALSE DATA ───────────────────────────────────────────────────────
+// Each statement is tagged with its subject so the game can lead with the
+// active subject's content (and future subjects can add their own entries).
 const TF_STATEMENTS=[
   // Chemistry
-  {s:'Protons and neutrons are in the nucleus.',a:true},
-  {s:'Electrons have a mass of 1 AMU.',a:false,fix:'Electrons have 0 AMU — too light to count.'},
-  {s:'Cations are positively charged ions.',a:true},
-  {s:'Isotopes of the same element have the same number of neutrons.',a:false,fix:'Isotopes have DIFFERENT neutron counts.'},
-  {s:'Noble gases never form ions because they have a full valence shell.',a:true},
-  {s:'Atomic radius increases going left to right across a period.',a:false,fix:'Atomic radius DECREASES left to right (more protons pull electrons in).'},
-  {s:'Ionic bonds form between two nonmetals.',a:false,fix:'Ionic bonds form between a METAL and a NONMETAL.'},
-  {s:'CO₂ is a covalent compound.',a:true},
-  {s:'The mole contains 6.022×10²³ particles.',a:true},
-  {s:'Limiting reactant is the one present in the largest amount.',a:false,fix:'Limiting reactant is the one that runs out FIRST — produces less product.'},
-  {s:'Combustion of hydrocarbons always produces CO₂ and H₂O.',a:true},
-  {s:'Subscripts can be changed when balancing equations.',a:false,fix:'NEVER change subscripts. Only change coefficients.'},
-  {s:'NAG rule: salts with Nitrate are always soluble.',a:true},
-  {s:'Anions are formed when atoms gain electrons.',a:true},
-  {s:'Molarity is measured in mol/L.',a:true},
+  {subj:'Chemistry',s:'Protons and neutrons are in the nucleus.',a:true},
+  {subj:'Chemistry',s:'Electrons have a mass of 1 AMU.',a:false,fix:'Electrons have 0 AMU — too light to count.'},
+  {subj:'Chemistry',s:'Cations are positively charged ions.',a:true},
+  {subj:'Chemistry',s:'Isotopes of the same element have the same number of neutrons.',a:false,fix:'Isotopes have DIFFERENT neutron counts.'},
+  {subj:'Chemistry',s:'Noble gases never form ions because they have a full valence shell.',a:true},
+  {subj:'Chemistry',s:'Atomic radius increases going left to right across a period.',a:false,fix:'Atomic radius DECREASES left to right (more protons pull electrons in).'},
+  {subj:'Chemistry',s:'Ionic bonds form between two nonmetals.',a:false,fix:'Ionic bonds form between a METAL and a NONMETAL.'},
+  {subj:'Chemistry',s:'CO₂ is a covalent compound.',a:true},
+  {subj:'Chemistry',s:'The mole contains 6.022×10²³ particles.',a:true},
+  {subj:'Chemistry',s:'Limiting reactant is the one present in the largest amount.',a:false,fix:'Limiting reactant is the one that runs out FIRST — produces less product.'},
+  {subj:'Chemistry',s:'Combustion of hydrocarbons always produces CO₂ and H₂O.',a:true},
+  {subj:'Chemistry',s:'Subscripts can be changed when balancing equations.',a:false,fix:'NEVER change subscripts. Only change coefficients.'},
+  {subj:'Chemistry',s:'NAG rule: salts with Nitrate are always soluble.',a:true},
+  {subj:'Chemistry',s:'Anions are formed when atoms gain electrons.',a:true},
+  {subj:'Chemistry',s:'Molarity is measured in mol/L.',a:true},
+  {subj:'Chemistry',s:'Fe is the symbol for Iron.',a:true},
+  {subj:'Chemistry',s:'The octet rule requires 8 valence electrons for stability.',a:true},
+  {subj:'Chemistry',s:'Metals form anions by gaining electrons.',a:false,fix:'Metals form CATIONS by LOSING electrons. Nonmetals gain electrons to form anions.'},
   // Physics
-  {s:'Momentum is a vector quantity.',a:true},
-  {s:'In a closed system, total momentum is conserved.',a:true},
-  {s:'Weightlessness in orbit means there is no gravity.',a:false,fix:'Astronauts are in free fall — gravity still acts, just no contact force.'},
-  {s:'The gravitational constant G equals 9.8 m/s².',a:false,fix:'g ≈ 9.8 m/s² is surface gravity. G = 6.67×10⁻¹¹ N·m²/kg².'},
-  {s:'Doubling the distance between masses halves the gravitational force.',a:false,fix:'Doubling distance makes gravity 4× weaker (inverse square law).'},
-  {s:'Kinetic energy depends on the square of velocity.',a:true},
-  {s:'Lower orbits require faster orbital speeds.',a:true},
-  {s:'Like charges attract each other.',a:false,fix:'Like charges REPEL. Opposite charges attract.'},
-  {s:'Work is done when force is perpendicular to motion.',a:false,fix:'No work when force is perpendicular. Work = F × displacement IN THE SAME DIRECTION.'},
-  {s:'An inelastic collision conserves kinetic energy.',a:false,fix:'Inelastic collisions lose KE (to heat/sound). Elastic collisions conserve KE.'},
-  {s:'Impulse equals the change in momentum.',a:true},
-  {s:'Fe is the symbol for Iron.',a:true},
-  {s:'The octet rule requires 8 valence electrons for stability.',a:true},
-  {s:'Metals form anions by gaining electrons.',a:false,fix:'Metals form CATIONS by LOSING electrons. Nonmetals gain electrons to form anions.'},
+  {subj:'Physics',s:'Momentum is a vector quantity.',a:true},
+  {subj:'Physics',s:'In a closed system, total momentum is conserved.',a:true},
+  {subj:'Physics',s:'Weightlessness in orbit means there is no gravity.',a:false,fix:'Astronauts are in free fall — gravity still acts, just no contact force.'},
+  {subj:'Physics',s:'The gravitational constant G equals 9.8 m/s².',a:false,fix:'g ≈ 9.8 m/s² is surface gravity. G = 6.67×10⁻¹¹ N·m²/kg².'},
+  {subj:'Physics',s:'Doubling the distance between masses halves the gravitational force.',a:false,fix:'Doubling distance makes gravity 4× weaker (inverse square law).'},
+  {subj:'Physics',s:'Kinetic energy depends on the square of velocity.',a:true},
+  {subj:'Physics',s:'Lower orbits require faster orbital speeds.',a:true},
+  {subj:'Physics',s:'Like charges attract each other.',a:false,fix:'Like charges REPEL. Opposite charges attract.'},
+  {subj:'Physics',s:'Work is done when force is perpendicular to motion.',a:false,fix:'No work when force is perpendicular. Work = F × displacement IN THE SAME DIRECTION.'},
+  {subj:'Physics',s:'An inelastic collision conserves kinetic energy.',a:false,fix:'Inelastic collisions lose KE (to heat/sound). Elastic collisions conserve KE.'},
+  {subj:'Physics',s:'Impulse equals the change in momentum.',a:true},
 ];
 
 // ─── RANK & ORDER DATA ────────────────────────────────────────────────────
 const RANK_QUESTIONS=[
-  {q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
+  {subj:'Chemistry',q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
    items:['He','Ne','Li','Na'],order:[0,1,2,3],
    exp:'Noble gases are tiny (full shells). He < Ne (same group, He has fewer shells). Li and Na are period 2 & 3 alkali metals — Na has more shells so it\'s larger.'},
-  {q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
+  {subj:'Chemistry',q:'Rank by INCREASING atomic radius (smallest first)',criterion:'Atomic radius: smaller → larger',
    items:['F','Cl','Na','K'],order:[0,1,2,3],
    exp:'F (period 2 halogen) < Cl (period 3 halogen) < Na (period 3 alkali metal) < K (period 4 alkali metal). More shells = bigger atom.'},
-  {q:'Rank by INCREASING ionization energy (easiest to remove first)',criterion:'Ionization energy: easiest → hardest',
+  {subj:'Chemistry',q:'Rank by INCREASING ionization energy (easiest to remove first)',criterion:'Ionization energy: easiest → hardest',
    items:['Fr','Na','Cl','He'],order:[0,1,2,3],
    exp:'Fr (alkali metal, 7 shells) loses electrons easiest. Na is easier than Cl. He (noble gas, 1 shell) is hardest to remove an electron from.'},
-  {q:'Rank by INCREASING momentum: all moving at 10 m/s',criterion:'p = mv at 10 m/s',
+  {subj:'Physics',q:'Rank by INCREASING momentum: all moving at 10 m/s',criterion:'p = mv at 10 m/s',
    items:['2 kg ball','0.5 kg ball','5 kg ball','10 kg ball'],order:[1,0,2,3],
    exp:'p = mv. At same speed, more mass = more momentum. 0.5×10=5, 2×10=20, 5×10=50, 10×10=100 kg·m/s.'},
-  {q:'Rank by INCREASING gravitational force on a 1 kg mass',criterion:'Fg = mg on different planets',
+  {subj:'Physics',q:'Rank by INCREASING gravitational force on a 1 kg mass',criterion:'Fg = mg on different planets',
    items:['Moon (g=1.6)','Mars (g=3.7)','Earth (g=9.8)','Jupiter (g=24.8)'],order:[0,1,2,3],
    exp:'Fg = mg. Moon weakest, then Mars, Earth, Jupiter strongest. All have same 1 kg mass so just multiply by g.'},
-  {q:'Rank by INCREASING electronegativity (least greedy for electrons first)',criterion:'Electronegativity: least → most',
+  {subj:'Chemistry',q:'Rank by INCREASING electronegativity (least greedy for electrons first)',criterion:'Electronegativity: least → most',
    items:['Fr','Na','N','F'],order:[0,1,2,3],
    exp:'Bottom-left = lowest electronegativity. Fr (bottom-left corner) < Na < N < F (top-right = highest EN in all elements).'},
-  {q:'Rank these ions by INCREASING number of electrons',criterion:'Electron count: fewest → most',
+  {subj:'Chemistry',q:'Rank these ions by INCREASING number of electrons',criterion:'Electron count: fewest → most',
    items:['Na⁺','Mg²⁺','O²⁻','F⁻'],order:[1,0,3,2],
    exp:'Mg²⁺: 12−2=10e⁻. Na⁺: 11−1=10e⁻... wait, both 10! Use atomic number: Mg²⁺ technically same as Na⁺ (both 10e⁻). F⁻: 9+1=10. O²⁻: 8+2=10. All isoelectronic with Ne — trick question, all have 10!'},
 ];
 
 // ─── SPOT THE MISTAKE DATA ────────────────────────────────────────────────
 const SPOT_QUESTIONS=[
-  {q:'What is the charge of an ion with 11 protons and 10 electrons?',
+  {subj:'Chemistry',q:'What is the charge of an ion with 11 protons and 10 electrons?',
    answer:'Charge = 11 − 10 = −1. This is a sodium anion, Na⁻.',
    opts:['The subtraction is backwards — it should be electrons minus protons to get the sign right','The charge calculation is correct, just misidentified as an anion instead of a cation — the sign should be +1','Sodium\'s atomic number is not 11 — that\'s the issue','The formula used is for mass number, not charge'],
    correct:1,exp:'Charge = Protons − Electrons = 11 − 10 = +1 (positive). More protons than electrons → cation. This is Na⁺.'},
-  {q:'What type of bond forms in H₂O?',
+  {subj:'Chemistry',q:'What type of bond forms in H₂O?',
    answer:'H₂O is an ionic compound because hydrogen is a metal in Group 1A.',
    opts:['The formula for water is incorrect','The bond type is right but the reasoning is flawed — water is ionic for a different reason','Hydrogen is actually a nonmetal, so H₂O is a covalent compound formed by sharing electrons','The statement is partially correct — H₂O has both ionic and covalent character'],
    correct:2,exp:'Hydrogen is a nonmetal despite being in Group 1A. H₂O is covalent — two nonmetals sharing electrons.'},
-  {q:'Balance the equation: H₂ + O₂ → H₂O',
+  {subj:'Chemistry',q:'Balance the equation: H₂ + O₂ → H₂O',
    answer:'The equation is already balanced: 2 hydrogen and 2 oxygen on each side.',
    opts:['The oxygen count on the right is 1 (from H₂O), but O₂ on the left provides 2 — so it\'s actually unbalanced','The hydrogen count on each side is off — H₂ has 2H but H₂O only has 2H so they match','The reasoning is sound — both sides have equal counts of each element','The products are incorrect for this type of reaction'],
    correct:0,exp:'Left: 2O (from O₂). Right: 1O (from H₂O). Unbalanced! Correct: 2H₂ + O₂ → 2H₂O.'},
-  {q:'What happens to gravitational force when distance doubles?',
+  {subj:'Physics',q:'What happens to gravitational force when distance doubles?',
    answer:'If the distance doubles, the gravitational force is halved because Fg ∝ 1/R.',
    opts:['The relationship is stated correctly and the conclusion follows logically','The proportionality written is 1/R but the law of gravitation uses R² — so halving is wrong, it becomes ¼','The formula Fg ∝ 1/R is correct for gravitational acceleration, just not for force','Distance affects gravity but the exact relationship depends on the planet\'s mass'],
    correct:1,exp:'Fg ∝ 1/R². Double R → R² becomes 4× larger → force is ¼ not ½. Always squared.'},
-  {q:'Calculate momentum of a 3 kg object at 4 m/s.',
+  {subj:'Physics',q:'Calculate momentum of a 3 kg object at 4 m/s.',
    answer:'p = 3 + 4 = 7 kg·m/s',
    opts:['The units kg·m/s are incorrect for momentum','The mass and velocity values should be reversed in the formula','Momentum uses multiplication not addition — p = mv = 12 kg·m/s','The calculation is right but the significant figures need adjustment'],
    correct:2,exp:'p = mv = 3 × 4 = 12 kg·m/s. Momentum is always mass TIMES velocity, never addition.'},
-  {q:'An ionic compound has Mg²⁺ and Cl⁻. What is the formula?',
+  {subj:'Chemistry',q:'An ionic compound has Mg²⁺ and Cl⁻. What is the formula?',
    answer:'The formula is MgCl because each ion has one charge.',
    opts:['The formula looks correct — one metal and one nonmetal','The charges cancel correctly for MgCl — 1+ and 1− equal zero','The charges don\'t balance — Mg is 2+ so two Cl⁻ ions are needed, giving MgCl₂','The name would be written differently but the formula is fine'],
    correct:2,exp:'Zero charge rule: Mg (2+) needs two Cl⁻ (each 1−) to reach net charge zero. Formula is MgCl₂.'},
-  {q:'What is the molar mass of H₂O? (H=1.008, O=16.00)',
+  {subj:'Chemistry',q:'What is the molar mass of H₂O? (H=1.008, O=16.00)',
    answer:'Molar mass = 1.008 + 16.00 = 17.008 g/mol',
    opts:['The atomic masses listed are incorrect — hydrogen and oxygen have different values','The calculation method is right but the final rounding is off','Only one hydrogen atom was counted — the subscript 2 means there are 2 H atoms, giving 18.016 g/mol','The molar mass formula should use Avogadro\'s number, not direct addition'],
    correct:2,exp:'H₂O has TWO hydrogen atoms. Molar mass = 2(1.008) + 16.00 = 18.016 g/mol. The subscript always tells you how many atoms.'},
-  {q:'A combustion reaction: C₃H₈ + O₂ → CO₂ + H₂O. Is this balanced?',
+  {subj:'Chemistry',q:'A combustion reaction: C₃H₈ + O₂ → CO₂ + H₂O. Is this balanced?',
    answer:'Yes, balanced: 3C on left, 1C on right — close enough for estimation.',
    opts:['It is balanced — the carbon count matches when you account for the coefficients','Combustion equations only need to be approximately balanced since oxygen is in excess','The carbon atoms are not equal (3 left, 1 right) and equations require exact balance — never approximate','The hydrogen is balanced but oxygen is not, which is the actual error'],
    correct:2,exp:'3C left vs 1C right — NOT balanced. Balanced form: C₃H₈ + 5O₂ → 3CO₂ + 4H₂O. Exact balance is always required.'},
@@ -4206,7 +4411,10 @@ const SORT_BDR =['#7c3aed','#0d9488','#ea580c','#2563eb'];
 const SORT_TXT =['#4c1d95','#0f766e','#9a3412','#1e3a8a'];
 function startSort(){
   const subj=getSession().subject;
-  const pool=SORT_SETS.filter(s=>s.subject===subj||s.subject==='Chemistry');
+  // Prefer sets that match the active subject; fall back to everything if the
+  // subject has none yet (e.g. a brand-new subject with no sort sets written).
+  const matching=SORT_SETS.filter(s=>s.subject===subj);
+  const pool=matching.length?matching:SORT_SETS;
   const set=pool[Math.floor(Math.random()*pool.length)];
   const shuffled=shuffle([...set.items]);
   sortState={set,queue:shuffled,idx:0,correct:0,wrong:0};
@@ -4277,7 +4485,10 @@ function sortNext(){
 let tfState={qs:[],idx:0,score:0,streak:0,timer:null,timeLeft:30};
 function startTF(){
   const subj=getSession().subject;
-  tfState={qs:shuffle([...TF_STATEMENTS]),idx:0,score:0,streak:0,timer:null,timeLeft:30};
+  // Active subject's statements first, everything else after (30s rarely gets past them)
+  const mine=shuffle(TF_STATEMENTS.filter(t=>t.subj===subj));
+  const rest=shuffle(TF_STATEMENTS.filter(t=>t.subj!==subj));
+  tfState={qs:[...mine,...rest],idx:0,score:0,streak:0,timer:null,timeLeft:30};
   document.getElementById('tf-complete').style.display='none';
   document.getElementById('tf-statement').parentElement.style.display='block';
   document.getElementById('tf-btn-row').style.display='grid';
@@ -4344,7 +4555,10 @@ function endTF(){
 // ─── RANK & ORDER LOGIC ───────────────────────────────────────────────────
 let rankState={qs:[],idx:0,correct:0,selected:[],answered:false};
 function startRankGame(){
-  rankState={qs:shuffle([...RANK_QUESTIONS]),idx:0,correct:0,selected:[],answered:false};
+  const subj=getSession().subject;
+  const mine=shuffle(RANK_QUESTIONS.filter(t=>t.subj===subj));
+  const rest=shuffle(RANK_QUESTIONS.filter(t=>t.subj!==subj));
+  rankState={qs:[...mine,...rest],idx:0,correct:0,selected:[],answered:false};
   document.getElementById('rank-complete').style.display='none';
   document.getElementById('rank-next').className='next-btn';
   document.getElementById('rank-exp').style.display='none';
@@ -4412,7 +4626,10 @@ function nextRankQ(){
 // ─── SPOT THE MISTAKE LOGIC ───────────────────────────────────────────────
 let spotState={qs:[],idx:0,correct:0,answered:false};
 function startSpot(){
-  spotState={qs:shuffle([...SPOT_QUESTIONS]),idx:0,correct:0,answered:false};
+  const subj=getSession().subject;
+  const mine=shuffle(SPOT_QUESTIONS.filter(t=>t.subj===subj));
+  const rest=shuffle(SPOT_QUESTIONS.filter(t=>t.subj!==subj));
+  spotState={qs:[...mine,...rest],idx:0,correct:0,answered:false};
   document.getElementById('spot-complete').style.display='none';
   document.getElementById('spot-next').className='next-btn';
   document.getElementById('spot-exp').style.display='none';
@@ -4717,7 +4934,16 @@ function renderPhysicsEq(){
 let matchState={pairs:[],selected:null,matched:0,wrong:0,startTime:0,allCards:[],roundIdx:0,totalRounds:1};
 const MATCH_SIZE=6;
 function startMatch(roundIdx){
-  let sessionCards=CARDS.filter(c=>!c.session||c.session===getSession().num);
+  const s=getSession();
+  let sessionCards=s.combined
+    ? CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
+    : CARDS.filter(c=>!c.session||c.session===s.num);
+  // Sessions with no cards of their own (e.g. review sessions) fall back to everything studied so far
+  if(!sessionCards.length&&s.num)sessionCards=CARDS.filter(c=>c.session&&c.session<=s.num);
+  if(!sessionCards.length){
+    showBadgeToast({icon:'📋',name:'No flashcards yet for this session'},true);
+    go('home');return;
+  }
   // Remove cards whose right-side display text duplicates another card — prevents unresolvable ties
   const seen=new Set();
   sessionCards=sessionCards.filter(c=>{const key=c.eq||c.def;if(seen.has(key))return false;seen.add(key);return true;});
@@ -5023,8 +5249,21 @@ function trackModeUsed(mode){
   if(S.modesUsed.size>=4)checkBadge('all_modes');
 }
 let TEST_RECORD=false;
+let _previewSnap=null;
+function takePreviewSnapshot(){
+  // Preview mode must leave zero trace: some stats (bestStreak, masteredCards,
+  // quizSessions…) are mutated in-memory by gameplay code, so snapshot and
+  // restore everything persistable on exit.
+  return {
+    totalXP:S.totalXP,bestStreak:S.bestStreak,masteredCards:S.masteredCards,studySeconds:S.studySeconds,
+    mistakes:JSON.parse(JSON.stringify(S.mistakes)),weakCards:JSON.parse(JSON.stringify(S.weakCards)),
+    timingLog:S.timingLog.slice(),quizSessions:S.quizSessions.slice(),checkIns:S.checkIns.slice(),
+    modesUsed:new Set(S.modesUsed),badges:S.badges.map(b=>({...b})),
+  };
+}
 function enterTestMode(record){
   TEST_MODE=true;TEST_RECORD=!!record;
+  if(!record&&!_previewSnap)_previewSnap=takePreviewSnapshot();
   const banner=document.getElementById('test-mode-banner');
   banner.style.display='flex';
   banner.style.background=record?'linear-gradient(135deg,#7c3aed,#6d28d9)':'linear-gradient(135deg,#2dd4bf,#0891b2)';
@@ -5036,6 +5275,8 @@ function enterTestMode(record){
   // Don't call go() here — let the caller decide where to navigate
 }
 function exitTestMode(){
+  if(TEST_MODE&&!TEST_RECORD&&_previewSnap){Object.assign(S,_previewSnap);}
+  _previewSnap=null;
   TEST_MODE=false;TEST_RECORD=false;
   document.getElementById('test-mode-banner').style.display='none';
   document.querySelectorAll('.screen').forEach(s=>s.style.paddingTop='');
@@ -5057,7 +5298,15 @@ checkBadge=function(id){if(!TEST_MODE||TEST_RECORD)_checkBadge(id);};
 // ─── INIT ─────────────────────────────────────────────────────────────────
 // ─── STUDY TIME TRACKER ───────────────────────────────────────────────────
 let _studyTimer=null;
-function startStudyTimer(){if(_studyTimer)return;_studyTimer=setInterval(()=>{S.studySeconds++;if(S.studySeconds%30===0)saveProgress();},1000);}
+// Only count time on actual study screens — not the welcome/check-in gates,
+// not Hani's portal, and not preview mode — so "Study Time" stays honest.
+const NON_STUDY_SCREENS=['s-welcome','s-checkin','s-hani'];
+function startStudyTimer(){if(_studyTimer)return;_studyTimer=setInterval(()=>{
+  const active=document.querySelector('.screen.active');
+  if(!active||NON_STUDY_SCREENS.includes(active.id))return;
+  if(TEST_MODE&&!TEST_RECORD)return;
+  S.studySeconds++;if(S.studySeconds%30===0)saveProgress();
+},1000);}
 function stopStudyTimer(){if(_studyTimer){clearInterval(_studyTimer);_studyTimer=null;saveProgress();}}
 document.addEventListener('visibilitychange',()=>{document.hidden?stopStudyTimer():startStudyTimer();});
 startStudyTimer();
@@ -5067,6 +5316,10 @@ loadProgress();
 takeSnapshot();
 buildPeriodicTable();
 applySession();
+// Register service worker so the app (and CDN fonts/KaTeX) work fully offline
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
 // Start on welcome screen — chooseSedona() will show welcome-back toast after check-in
 function showWelcomeBack(){
   if(S.totalXP>0){
@@ -5093,12 +5346,14 @@ renderHome();
 function applySession(){
   const s=getSession();
   document.getElementById('home-sub-el').textContent=s.combined?`${s.icon} ${s.title}`:` ${s.subject} · Session ${s.num}`;
-  document.getElementById('sb-name-el').textContent=`Session ${s.num} — ${s.title}`;
+  document.getElementById('sb-name-el').textContent=s.combined?`${s.icon} ${s.title}`:`Session ${s.num} — ${s.title}`;
   document.getElementById('sb-date-el').innerHTML=`${s.date} · ${s.subject} &nbsp;· <span style="font-size:12px;opacity:0.85;">tap to learn more ›</span>`;
+  const sqLabel=document.getElementById('session-quiz-label');
+  if(sqLabel)sqLabel.textContent=s.combined?s.title:`Session ${s.num} only`;
   // Rebuild lesson modal header
   const modalHeader=document.getElementById('lesson-modal-header');
   if(modalHeader)modalHeader.innerHTML=`
-    <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.85;margin-bottom:4px;">📚 SESSION ${s.num}</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.85;margin-bottom:4px;">📚 ${s.combined?'SUBJECT REVIEW':'SESSION '+s.num}</div>
     <div style="font-size:20px;font-weight:800;margin-bottom:2px;">${s.title}</div>
     <div style="font-size:13px;opacity:0.8;">${s.date} · ${s.unit}</div>`;
   // Rebuild lesson modal body
@@ -5106,16 +5361,16 @@ function applySession(){
   if(modalBody){
     modalBody.innerHTML=`
       <p style="font-size:14px;color:#374151;line-height:1.6;margin:0 0 16px;"><strong>Why this matters:</strong> ${s.why}</p>
-      <div style="background:#f5f3ff;border-left:4px solid #7c3aed;border-radius:8px;padding:14px;margin-bottom:16px;">
+      ${(s.concepts&&s.concepts.length)?`<div style="background:#f5f3ff;border-left:4px solid #7c3aed;border-radius:8px;padding:14px;margin-bottom:16px;">
         <div style="font-weight:700;color:#5b21b6;margin-bottom:10px;font-size:13px;">🔑 KEY CONCEPTS</div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#374151;">
           ${s.concepts.map(c=>`<div><strong>${c.title}</strong><br>${c.body}</div>`).join('')}
         </div>
-      </div>
-      <div style="background:#ecfdf5;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#166534;">
+      </div>`:''}
+      ${s.formulas?`<div style="background:#ecfdf5;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#166534;">
         <strong>💡 Key Formulas:</strong><br>
         <span style="font-family:monospace;font-size:13px;">${s.formulas.replace(/\n/g,'<br>')}</span>
-      </div>
+      </div>`:''}
       <button onclick="document.getElementById('lesson-modal').style.display='none'" style="width:100%;padding:12px;background:linear-gradient(135deg,#6d28d9,#7c3aed);color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Got it! Let's study 🚀</button>
     `;
   }
@@ -5126,8 +5381,8 @@ function applySession(){
 <div id="rank-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
   <div style="max-width:420px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.4);">
     <div style="background:linear-gradient(135deg,#4c1d95,#6d28d9);padding:18px 20px;color:white;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.8;margin-bottom:4px;">⚗️ XP RANK PROGRESSION</div>
-      <div style="font-size:18px;font-weight:800;">Your Chemistry Journey</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;opacity:0.8;margin-bottom:4px;">🎓 XP RANK PROGRESSION</div>
+      <div style="font-size:18px;font-weight:800;">Your Learning Journey</div>
       <div style="font-size:12px;opacity:0.75;margin-top:2px;">Earn XP by answering questions, mastering flashcards, and completing quizzes</div>
     </div>
     <div style="padding:16px 20px 20px;" id="rank-map-body"></div>
