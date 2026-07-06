@@ -3464,7 +3464,7 @@ function showQuizModeSelector(){
       <div style="font-size:13px;color:var(--gray-500);margin-bottom:18px;">Choose your practice scope:</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <button onclick="launchQuiz(false)" style="padding:16px;border-radius:14px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;font-size:14px;font-weight:800;cursor:pointer;text-align:left;">
-          🌟 All Sessions — Cumulative<br><span style="font-size:12px;opacity:.8;font-weight:600;">Questions from every session studied so far</span>
+          🌟 ${s.mixedReview?'All Sessions':'All '+s.subject} — Cumulative<br><span style="font-size:12px;opacity:.8;font-weight:600;">${s.mixedReview?'Questions from every session studied so far':`Questions from every ${s.subject} session so far`}</span>
         </button>
         <button onclick="launchQuiz(true)" style="padding:16px;border-radius:14px;background:linear-gradient(135deg,#0f766e,#0d9488);color:white;border:none;font-size:14px;font-weight:800;cursor:pointer;text-align:left;">
           📚 This Session Only — ${s.combined?s.title:`Session ${s.num}: ${s.title}`}<br><span style="font-size:12px;opacity:.8;font-weight:600;">Focus on just today's material</span>
