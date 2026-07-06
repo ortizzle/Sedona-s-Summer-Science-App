@@ -58,7 +58,11 @@ Each study session corresponds to one tutoring meeting. A session belongs to one
 }
 ```
 
-`combined: true` sessions are multi-subject review sessions that span multiple subjects. Filter them out when building single-subject views.
+`combined: true` sessions are whole-subject review modes (e.g. "All Chemistry"). Filter them out when building single-subject session lists.
+
+**Content scoping rule — subjects never mingle.** All cumulative views (Sprint Quiz "All X — Cumulative", flashcard "All"/"Prev Sessions" scopes, Card Match fallbacks, `getQSFilter()`) build from **previous sessions of the same subject only**. Physics never deals History flashcards. The single exception is sessions flagged `mixedReview: true` (the summer comp-rehearsal Session 10), which intentionally span subjects — never make cross-subject the default again.
+
+**Session numbering (8th-grade plan).** The internal `num` stays globally unique forever — it is the join key for `CARDS`/`QS` and the saved-progress data, and must never collide or be renumbered. For 8th grade, each subject's sessions should *display* as Session 1..N within that subject (derived from the session's position among its subject's sessions), while `num` keeps incrementing globally under the hood. Summer sessions 1–13 keep their historical numbers. Also expected for 8th grade: sessions will likely bundle **one week of class notes per session** rather than one tutoring meeting per session — confirm the exact rhythm with Hani when the first real unit lands.
 
 ### CARDS (Flashcards)
 ```js
