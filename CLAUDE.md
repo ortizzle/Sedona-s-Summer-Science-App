@@ -1,4 +1,4 @@
-# Claude Guide — Sedona's Science Lab
+# Claude Guide — Sedona's Learning Lab (formerly Science Lab)
 
 ## Vision
 
@@ -144,6 +144,7 @@ The password is stored as a hardcoded hash in the script. Do not log it or expos
 |---------|----------|--------|
 | Chemistry | 1, 3 | Active — NGSS Unit 3 |
 | Physics | 2, 4 | Active — Motion, Forces, Energy |
+| History | 13 | Demo placeholder (Age of Exploration) — replace with real class content when 8th grade starts |
 
 When adding new subjects in future school years, add a row to this table.
 
