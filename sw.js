@@ -1,4 +1,4 @@
-// Service worker for Sedona's Science Lab — makes the PWA genuinely work offline.
+// Service worker for Sedona's Learning Lab — makes the PWA genuinely work offline.
 // Strategy:
 //   • App shell (index.html): network-first, so updates arrive when online,
 //     with the cached copy as the offline fallback.
