@@ -1,4 +1,4 @@
-# Claude Guide — Sedona's Science Lab
+# Claude Guide — Sedona's Learning Lab (formerly Science Lab)
 
 ## Vision
 
@@ -132,6 +132,7 @@ The password is stored as a hardcoded hash in the script. Do not log it or expos
 - **Mobile-first, touch-friendly.** All tap targets ≥ 44px. No hover-only interactions.
 - **Gamified.** XP, levels, streaks, badges, confetti — these matter. Don't remove gamification elements to simplify.
 - **Story-first.** Every session starts with a narrative hook that connects the material to the student's real life. Write these in second person, present tense, with genuine enthusiasm.
+- **Sign-in flow**: Sedona picks subject & session first (subject-grouped picker), then reads the story hook. The 5-question mood check-in appears once per day, gated on the first quiz launch (`launchQuiz` → `showQuizCheckin`) — that's where feeling/confidence data is most meaningful for interpreting results.
 - **Mistake-tolerant.** The Growth Zone (Mistake Journal) surfaces wrong answers without shame. Wrong answers get rich explanations with tips and mnemonics.
 - **One file.** The PWA works offline and installs from the home screen. Do not introduce dependencies that require a server or build step.
 - **Sedona's voice.** She's a sharp student who responds well to wit and real-world stakes. Avoid condescending tone. Assume she can handle "why this is actually cool" explanations.
@@ -144,6 +145,7 @@ The password is stored as a hardcoded hash in the script. Do not log it or expos
 |---------|----------|--------|
 | Chemistry | 1, 3 | Active — NGSS Unit 3 |
 | Physics | 2, 4 | Active — Motion, Forces, Energy |
+| History | 13 | Demo placeholder (Age of Exploration) — replace with real class content when 8th grade starts |
 
 When adding new subjects in future school years, add a row to this table.
 

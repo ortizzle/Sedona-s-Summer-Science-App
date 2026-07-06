@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Sedona's Science Lab</title>
+<title>Sedona's Learning Lab</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Science Lab">
+<meta name="apple-mobile-web-app-title" content="Learning Lab">
 <meta name="theme-color" content="#7c3aed">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -470,7 +470,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div id="s-welcome" class="screen active">
   <div class="welcome-screen">
     <div class="welcome-logo">⚗️</div>
-    <div class="welcome-title">Sedona's Science Lab</div>
+    <div class="welcome-title">Sedona's Learning Lab</div>
     <div class="welcome-sub">Who's here today?</div>
     <div class="who-cards">
       <button class="who-card" onclick="chooseSedona()" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:var(--purple-dark);">
@@ -499,13 +499,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       <button onclick="go('welcome')" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">←</button>
       <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;opacity:.7;">TODAY'S SESSION — tap to change</div>
     </div>
-    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;" id="ci-sess-pills"></div>
+    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:8px;" id="ci-sess-pills"></div>
     <div id="ci-sess-name" style="font-size:15px;font-weight:800;"></div>
     <div id="ci-sess-sub" style="font-size:11px;opacity:.65;"></div>
   </div>
-  <div style="padding:10px 20px 4px;font-size:12px;color:var(--gray-500);">Tap one per row — about 20 seconds.</div>
-  <!-- All 5 questions at once -->
-  <div style="display:flex;flex-direction:column;gap:10px;padding:0 20px 28px;" id="ci-rows"></div>
+  <div style="padding:10px 20px 4px;font-size:12px;color:var(--gray-500);">Pick today's subject and session, then hit go. 🚀</div>
+  <!-- Subject & session picker (check-in questions moved to the first quiz of the day) -->
+  <div style="display:flex;flex-direction:column;gap:14px;padding:0 20px 28px;" id="ci-rows"></div>
   <!-- Explainer (shown after submit) -->
   <div id="checkin-explainer" style="display:none;flex-direction:column;align-items:center;padding:16px 24px 32px;">
     <div style="font-size:72px;margin-bottom:12px;" id="explainer-emoji">⚗️</div>
@@ -522,7 +522,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="home-hero">
     <div class="logo">⚗️</div>
     <div>
-      <div class="home-title">Sedona's Advanced Science Lab</div>
+      <div class="home-title">Sedona's Learning Lab</div>
       <div class="home-sub" id="home-sub-el">Chemistry · Session 1</div>
     </div>
   </div>
@@ -621,7 +621,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         <!-- Red margin line -->
         <div style="position:absolute;left:42px;top:0;bottom:0;width:1.5px;background:rgba(220,60,60,0.25);pointer-events:none;"></div>
         <!-- Title -->
-        <div style="font-family:'Special Elite',cursive;font-size:16px;font-weight:700;color:#3a2810;margin-bottom:14px;padding-left:12px;letter-spacing:0.5px;">📋 Lab Rules — Sedona's Science Lab</div>
+        <div style="font-family:'Special Elite',cursive;font-size:16px;font-weight:700;color:#3a2810;margin-bottom:14px;padding-left:12px;letter-spacing:0.5px;">📋 Lab Rules — Sedona's Learning Lab</div>
         <!-- Rules -->
         <div style="display:flex;flex-direction:column;gap:11px;font-family:'Special Elite',cursive;font-size:13px;color:#2c1810;line-height:1.55;padding-left:12px;">
           <div style="display:flex;gap:10px;"><span style="flex-shrink:0;color:#7a5c3a;font-weight:700;">1.</span><div><strong>Try before you hint.</strong> Give every question a real shot first. The struggle is where the learning happens.</div></div>
@@ -922,7 +922,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <!-- Header card -->
     <div style="background:linear-gradient(135deg,#0d1f30,#1a3d5c);border-radius:16px;padding:16px 18px;margin-bottom:18px;color:white;position:relative;overflow:hidden;">
       <div style="position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:60px;opacity:0.08;">⚡</div>
-      <div style="font-family:'Special Elite',cursive;font-size:11px;letter-spacing:2px;opacity:.7;margin-bottom:4px;">SEDONA'S SCIENCE LAB</div>
+      <div style="font-family:'Special Elite',cursive;font-size:11px;letter-spacing:2px;opacity:.7;margin-bottom:4px;">SEDONA'S LEARNING LAB</div>
       <div style="font-size:18px;font-weight:800;margin-bottom:2px;">Physics Formula Reference</div>
       <div style="font-size:12px;opacity:.65;">Units 1–4 · Keep this handy during practice</div>
     </div>
@@ -1552,6 +1552,33 @@ const SESSIONS = [
       {icon:'📄',title:'Physics 7 Objectives List',url:'https://drive.google.com/drive/folders/1dCbeblGC-AB3V6YCLKYq0_UFJx1KIt3h',desc:'All 20 comp objectives for Physics 7.',src:'Google Drive'},
     ],
   },
+  // ── Session 13: History — Age of Exploration (DEMO — replace with real class content) ──
+  {
+    num: 13,
+    title: 'The Age of Exploration',
+    date: 'Demo Session',
+    subject: 'History',
+    unit: 'History Demo — replace with class unit',
+    why: 'Between 1450 and 1550, a handful of wooden ships redrew the map of the entire world. Understanding WHY Europeans sailed into the unknown — and what happened when two worlds collided — explains the borders, languages, and foods of the world you live in right now.',
+    concepts: [
+      {title:'🗺️ Why They Sailed: God, Gold & Glory', body:'Three motivations drove exploration: spreading Christianity (God), wealth from spices and precious metals (Gold), and fame for crown and country (Glory). After the Ottomans took Constantinople in 1453, overland trade routes to Asia became costly — Europe needed a sea route.'},
+      {title:'⛵ The Technology That Made It Possible', body:'The caravel (a fast ship with triangular lateen sails that could sail against the wind), the magnetic compass (direction), and the astrolabe (latitude from the stars) turned suicidal voyages into survivable ones.'},
+      {title:'🧭 The Great Voyages', body:'Dias rounds Africa\'s southern tip (1488). Columbus reaches the Americas (1492). Da Gama reaches India by sea (1498). Magellan\'s expedition circles the globe (1519–1522) — though Magellan himself dies in the Philippines.'},
+      {title:'📜 Dividing the World', body:'The Treaty of Tordesillas (1494) drew a line down the Atlantic: new lands west of it to Spain, east to Portugal. England, France, and the Netherlands were left out — and ignored it.'},
+      {title:'🌽 The Columbian Exchange', body:'The massive transfer of plants, animals, people, and diseases between the Eastern and Western Hemispheres. Potatoes and maize transformed Europe; horses transformed the Americas; European diseases like smallpox devastated Indigenous populations.'},
+      {title:'🔍 Reading the Evidence', body:'Primary sources (a sailor\'s diary, an Aztec codex, Columbus\'s letters) were created AT the time. Secondary sources (textbooks, documentaries) interpret them later. Historians compare both — every source has a point of view.'},
+    ],
+    formulas: 'God · Gold · Glory = motivations\n1453 Constantinople → 1492 Columbus → 1494 Tordesillas → 1498 da Gama → 1519–22 Magellan\nPrimary = created at the time · Secondary = written about it later',
+    story: {
+      emoji: '🗺️',
+      hook: 'The map on the captain\'s table simply ends — past that edge, nobody you\'ve ever met has sailed and returned.',
+      body: 'Lisbon harbor, 1492. The docks smell of tar and salted cod. Sailors whisper about sea monsters and waterfalls at the world\'s edge — and yet the ships keep leaving. Why? Because one hold full of pepper and cloves is worth more than a sailor earns in a lifetime, and the old road to Asia now runs through an empire that charges a fortune in tolls.\n\nThis is the moment the world\'s puzzle pieces get thrown in the air. A stubborn Genoese captain is about to bump into two continents nobody in Europe knew existed. Empires will rise on chocolate, potatoes, and silver — and fall to invisible microbes. Every voyage is a gamble: the crews that return come back rich or come back wrong.\n\nYour job today is the historian\'s job: follow the evidence, question every map, and figure out what REALLY happened when two worlds met. Grab your field journal.',
+      readyLabel: 'Chart the unknown 🗺️ →',
+    },
+    resources: [
+      {icon:'📁',title:'History Materials (add class notes here)',url:'https://drive.google.com/drive/folders/1dCbeblGC-AB3V6YCLKYq0_UFJx1KIt3h',desc:'Placeholder — link Sedona\'s actual History class notes, slides, and flashcard lists once the school year starts.',src:'Google Drive'},
+    ],
+  },
   // ── Combined review sessions ──
   {
     num: null, combined: true, subject: 'Chemistry',
@@ -1565,6 +1592,13 @@ const SESSIONS = [
     title: 'All Physics', date: 'Physics Review',
     unit: 'All Physics Sessions', icon: '⚡',
     why: 'Review everything from all Physics sessions combined — great for cumulative exam prep.',
+    concepts: [], formulas: '',
+  },
+  {
+    num: null, combined: true, subject: 'History',
+    title: 'All History', date: 'History Review',
+    unit: 'All History Sessions', icon: '🌍',
+    why: 'Review everything from all History sessions combined — great for cumulative exam prep.',
     concepts: [], formulas: '',
   },
 ];
@@ -1582,6 +1616,7 @@ function getSession(){ return SESSIONS[ACTIVE_SESSION]; }
 const SUBJECTS_META={
   Chemistry:{icon:'⚗️',cardFront:'H₂O  NaCl  CO₂',cardBack:'⚛'},
   Physics:  {icon:'🚀',cardFront:'F=ma  p=mv  v=fλ',cardBack:'🚀'},
+  History:  {icon:'🌍',cardFront:'1453 ✦ 1492 ✦ 1522',cardBack:'🌍'},
 };
 const SUBJECT_DEFAULT_META={icon:'📚',cardFront:'✎  ✎  ✎',cardBack:'★'};
 function getSubjectMeta(subject){return SUBJECTS_META[subject]||SUBJECT_DEFAULT_META;}
@@ -1784,6 +1819,22 @@ const CARDS=[
   {session:12,id:1215,type:'recall',term:'Momentum Formula',eq:'p = mv',def:'Momentum = mass × velocity. Units: kg·m/s. Vector — direction matters. Conserved in all collisions.',hint:'p = mv. kg·m/s. Doubles when velocity doubles.'},
   {session:12,id:1216,type:'recall',term:'Wave Speed',eq:'v = fλ',def:'Wave speed equals frequency times wavelength. At constant speed, higher frequency = shorter wavelength.',hint:'v = fλ. Fast frequency = short wavelength when speed is fixed.'},
   {session:12,id:1217,type:'recall',term:'Joule Base Units',eq:'J = kg·m²/s²',def:'Derived from F×d = (kg·m/s²)×m. Appears on comp unit-derivation questions.',hint:'kg·m²/s². From W=Fd=[N][m]=[kg·m/s²][m].'},
+  // ── Session 13: History — Age of Exploration (DEMO content) ──
+  {session:13,id:1300,term:'Age of Exploration',eq:null,def:'The period (roughly 1400s–1600s) when European nations sent ships across uncharted oceans seeking trade routes to Asia — and instead redrew the map of the world.',hint:'Think of it as Europe\'s great treasure hunt — driven by spices, not curiosity.'},
+  {session:13,id:1301,term:'God, Gold & Glory',eq:'The 3 G\'s',def:'The three motivations for exploration: spreading Christianity (God), wealth from spices and precious metals (Gold), and fame for crown and country (Glory).',hint:'Every expedition had a mission, a treasure map, and an ego. 3 G\'s.'},
+  {session:13,id:1302,term:'Prince Henry the Navigator',eq:null,def:'Portuguese prince who funded voyages down Africa\'s coast and gathered mapmakers, shipbuilders, and navigators — launching Portugal\'s lead in exploration. He never sailed the voyages himself.',hint:'The expedition\'s "man behind the desk" — funded the adventures, never boarded the ship.'},
+  {session:13,id:1303,term:'Caravel',eq:null,def:'A small, fast Portuguese ship with triangular lateen sails that could sail against the wind — the vehicle that made ocean exploration possible.',hint:'The Indiana Jones jeep of the ocean: small, quick, goes where big ships can\'t.'},
+  {session:13,id:1304,term:'Astrolabe',eq:null,def:'A navigation instrument that measured the angle of the sun or stars above the horizon, telling sailors their latitude — how far north or south they were.',hint:'Point it at a star, read your latitude. The GPS of 1490.'},
+  {session:13,id:1305,type:'recall',term:'Columbus reaches the Americas',eq:'1492',def:'Sailing for Spain, Christopher Columbus crossed the Atlantic seeking Asia and reached the Caribbean instead — beginning permanent contact between the hemispheres.',hint:'"In fourteen hundred ninety-two, Columbus sailed the ocean blue."'},
+  {session:13,id:1306,type:'recall',term:'Treaty of Tordesillas',eq:'1494',def:'Spain and Portugal drew a line down the Atlantic dividing all newly found lands: west to Spain, east to Portugal. Other European nations were left out — and ignored it.',hint:'Two years after Columbus, two countries split the world like a candy bar.'},
+  {session:13,id:1307,type:'recall',term:'Da Gama reaches India',eq:'1498',def:'Vasco da Gama sailed around Africa\'s Cape of Good Hope to India, opening Portugal\'s all-sea spice route to Asia.',hint:'Six years after Columbus went west, da Gama proved the eastern route worked.'},
+  {session:13,id:1308,type:'recall',term:'First circumnavigation',eq:'1519–1522',def:'Ferdinand Magellan\'s expedition sailed all the way around the world. Magellan died in the Philippines (1521); Juan Sebastián Elcano and 18 surviving crew completed the voyage.',hint:'Magellan started it, Elcano finished it. 3 years, 1 ship of 5 made it home.'},
+  {session:13,id:1309,term:'Columbian Exchange',eq:null,def:'The transfer of plants, animals, people, and diseases between the Eastern and Western Hemispheres after 1492. Potatoes and maize went east; horses, wheat, and smallpox went west.',hint:'Biggest biological swap meet in history — named after Columbus.'},
+  {session:13,id:1310,term:'Conquistador',eq:null,def:'Spanish for "conqueror" — soldiers and adventurers like Cortés and Pizarro who claimed American empires for Spain, aided by steel weapons, alliances with local rivals, and devastating disease.',hint:'Conquist- looks like "conquest." Spain\'s soldier-explorers.'},
+  {session:13,id:1311,term:'Hernán Cortés',eq:null,def:'Conquistador who toppled the Aztec Empire in Mexico (Tenochtitlán fell in 1521), aided by thousands of Indigenous allies who opposed Aztec rule, plus smallpox.',hint:'Cortés → Aztecs → Mexico. Allies and epidemics did much of the conquering.'},
+  {session:13,id:1312,term:'Francisco Pizarro',eq:null,def:'Conquistador who conquered the Inca Empire in Peru (early 1530s), capturing the emperor Atahualpa during a civil war that had already weakened the empire.',hint:'Pizarro → Peru → Inca. Both start with P… mostly.'},
+  {session:13,id:1313,term:'Primary Source',eq:null,def:'Evidence created AT the time by people who were there: a sailor\'s diary, Columbus\'s letters, an Aztec codex, a ship\'s log. The historian\'s raw evidence.',hint:'If the author was AT the event, it\'s primary. The artifact in the tomb, not the museum plaque.'},
+  {session:13,id:1314,term:'Secondary Source',eq:null,def:'An account created later that interprets primary evidence: textbooks, documentaries, biographies. Useful for context — but always one step removed from the event.',hint:'Written ABOUT the event, after it. The documentary, not the diary.'},
 ];
 
 const QS=[
@@ -2478,6 +2529,110 @@ const QS=[
    opts:['Sound travels faster than light, so it escapes the atmosphere','Sound is a mechanical wave requiring a medium; light is an EM wave that does not','Light is louder than sound in a vacuum','Sound waves are transverse and can\'t move without air resistance'],ans:1,
    hint:'What type of wave is each? What does each one need to travel?',
    ex:{main:'Sound is a mechanical wave — it requires a medium (particles to compress and rarify) to propagate. Space is a near-perfect vacuum with no particles, so sound cannot travel. Light is an electromagnetic wave — it creates oscillating electric and magnetic fields that can travel through a vacuum without any medium.',tip:'Mechanical wave = needs medium. EM wave = no medium needed.',mnemonic:'Sound = mechanical = needs air (or solid/liquid). Light = EM = travels through vacuum of space.'}},
+  // ── Session 13: History — Age of Exploration (DEMO content) ──
+  // LEVEL 1 — Recall
+  {session:13,id:1300,lv:1,q:'In what year did Columbus first reach the Americas?',
+   opts:['1488','1492','1494','1498'],ans:1,
+   hint:'There\'s a famous rhyme about the ocean blue…',
+   ex:{main:'Columbus, sailing for Spain, crossed the Atlantic in 1492 and reached the Caribbean. He believed he had reached islands near Asia — he never knew he had bumped into two continents unknown to Europe.',tip:'The other dates matter too: 1488 = Dias rounds Africa, 1494 = Treaty of Tordesillas, 1498 = da Gama reaches India. Exams love to swap them.',mnemonic:'"In fourteen hundred ninety-two, Columbus sailed the ocean blue."'}},
+  {session:13,id:1301,lv:1,q:'Which country sponsored Columbus\'s 1492 voyage?',
+   opts:['Portugal','England','Spain','Italy'],ans:2,
+   hint:'He was Italian, but his ships flew a different flag — one that had just finished a reconquest.',
+   ex:{main:'Columbus was from Genoa (Italy), but Portugal rejected his plan. Spain\'s monarchs Ferdinand and Isabella funded him in 1492, hoping to beat Portugal to Asia by sailing west.',tip:'Explorer\'s nationality ≠ sponsor. Exams test the flag, not the birthplace.',mnemonic:'Columbus: Italian sailor, Spanish paycheck.'}},
+  {session:13,id:1302,lv:1,q:'The three main motivations for European exploration are remembered as…?',
+   opts:['God, Gold & Glory','Land, Labor & Loot','Faith, Fame & Fortune','Ships, Spices & Silver'],ans:0,
+   hint:'Three words, all starting with the same letter — the "3 G\'s."',
+   ex:{main:'God (spreading Christianity), Gold (wealth from spices and precious metals), and Glory (fame and power for crown and country). Most expeditions mixed all three.',tip:'If an exam asks WHY Europeans explored, the 3 G\'s is almost always the framework the answer wants.',mnemonic:'3 G\'s: God, Gold, Glory. A mission, a treasure map, and an ego.'}},
+  {session:13,id:1303,lv:1,q:'What was a caravel?',
+   opts:['A navigation instrument for finding latitude','A Spanish gold coin','A treaty dividing new lands','A small, fast ship with triangular sails'],ans:3,
+   hint:'You\'d board one at the docks, not put it in your pocket.',
+   ex:{main:'The caravel was a small, maneuverable Portuguese ship whose triangular lateen sails let it sail against the wind — essential for returning home along Africa\'s coast. It made long exploration voyages practical.',tip:'Match the tool to the job: caravel = ship, astrolabe = latitude, compass = direction.',mnemonic:'CARavel — the CAR of the ocean: small, fast, goes anywhere.'}},
+  {session:13,id:1304,lv:1,q:'The astrolabe helped sailors determine their…?',
+   opts:['Speed','Latitude','Cargo weight','Distance from home'],ans:1,
+   hint:'It measured the angle of the sun or a star above the horizon.',
+   ex:{main:'By measuring how high the sun or a star sat above the horizon, the astrolabe told sailors their latitude — how far north or south of the equator they were. (Accurate longitude took another 250 years to solve!)',tip:'Astrolabe = latitude. If the option says "longitude," it\'s a trap.',mnemonic:'astroLABe → LAtitude. Point at a star, read your line on the globe.'}},
+  {session:13,id:1305,lv:1,q:'Prince Henry the Navigator, who funded early voyages down Africa\'s coast, was from which country?',
+   opts:['Spain','France','Portugal','England'],ans:2,
+   hint:'This small Atlantic-facing kingdom led exploration before Spain joined the race.',
+   ex:{main:'Prince Henry of Portugal gathered mapmakers, shipbuilders, and pilots and funded systematic voyages down the West African coast in the early 1400s. Ironically, "the Navigator" himself stayed home.',tip:'Portugal leads early (Henry, Dias, da Gama — the eastern route); Spain answers with Columbus going west.',mnemonic:'Henry = Portugal = the head start. He funded the maps but never sailed the trips.'}},
+  {session:13,id:1306,lv:1,q:'Who was the first European to reach India by sea, sailing around Africa?',
+   opts:['Vasco da Gama','Christopher Columbus','Ferdinand Magellan','Bartolomeu Dias'],ans:0,
+   hint:'Dias rounded Africa\'s tip in 1488 — ten years later this countryman finished the route.',
+   ex:{main:'Vasco da Gama reached Calicut, India in 1498, completing the all-sea spice route Portugal had chased for decades. Dias had rounded the Cape of Good Hope in 1488 but turned back before India.',tip:'Dias = rounded the Cape (1488). Da Gama = reached India (1498). Two Portuguese, one route, ten years apart.',mnemonic:'da GAMA finished the GAME — all the way to India.'}},
+  {session:13,id:1307,lv:1,q:'The Treaty of Tordesillas (1494) divided newly discovered lands between which two countries?',
+   opts:['Spain and England','Spain and Portugal','Portugal and France','England and France'],ans:1,
+   hint:'The two early leaders of exploration split the prize between themselves.',
+   ex:{main:'With the Pope\'s blessing, Spain and Portugal drew a north–south line through the Atlantic: lands west went to Spain, east to Portugal. That\'s why Brazil (which pokes east of the line) speaks Portuguese while most of Latin America speaks Spanish.',tip:'A map question favorite: Brazil = Portuguese because of this line.',mnemonic:'Tordesillas = TWO-rdesillas: the world split between TWO kingdoms.'}},
+  {session:13,id:1308,lv:1,q:'What was the Columbian Exchange?',
+   opts:['The trading of enslaved people for gold','A stock market founded by Columbus','The transfer of plants, animals, and diseases between hemispheres','A treaty exchanging colonies between Spain and Portugal'],ans:2,
+   hint:'It\'s named after Columbus, but it\'s about what crossed the ocean after him — in both directions.',
+   ex:{main:'After 1492, the hemispheres began swapping organisms: maize, potatoes, and tomatoes flowed to Europe; horses, cattle, wheat — and devastating diseases like smallpox — flowed to the Americas. It reshaped diets, economies, and populations worldwide.',tip:'Remember it\'s two-way traffic. Exams often ask which item went which direction.',mnemonic:'Exchange = both ways. Potatoes sailed east 🥔→ , horses sailed west ←🐎.'}},
+  {session:13,id:1309,lv:1,q:'Magellan\'s expedition (1519–1522) is famous for being the first to…?',
+   opts:['Reach the Pacific Ocean','Circumnavigate the globe','Discover Australia','Map the coast of Africa'],ans:1,
+   hint:'They left with five ships heading west and came home from the east.',
+   ex:{main:'Magellan\'s fleet completed the first circumnavigation of the Earth — proving definitively the world was round and far larger than Europeans believed. Magellan himself was killed in the Philippines in 1521; Elcano brought the last ship home in 1522.',tip:'Trick-question alert: Magellan did NOT personally finish the voyage. "Magellan\'s expedition" did.',mnemonic:'Magellan started the lap; Elcano crossed the finish line.'}},
+  {session:13,id:1310,lv:1,q:'A sailor\'s diary written during a 1520 voyage is an example of what kind of source?',
+   opts:['A primary source','A secondary source','An unreliable source','A tertiary source'],ans:0,
+   hint:'Was the author AT the event when it was created?',
+   ex:{main:'A primary source is evidence created at the time by someone who was there — diaries, letters, logs, codices, artifacts. Historians treat them as raw evidence (which can still be biased!).',tip:'The test is WHEN and WHO: created at the time, by a participant or witness = primary.',mnemonic:'Primary = present at the scene. The diary in the sea chest, not the documentary about it.'}},
+  {session:13,id:1311,lv:1,q:'What does "conquistador" mean?',
+   opts:['Explorer','Navigator','Missionary','Conqueror'],ans:3,
+   hint:'The Spanish word looks like an English word for taking territory by force.',
+   ex:{main:'Conquistador is Spanish for "conqueror" — the soldiers and adventurers like Cortés and Pizarro who claimed the Aztec and Inca empires for Spain in the early 1500s.',tip:'Conquistadors conquered land empires (Aztec, Inca); explorers like da Gama built trade routes. Different jobs.',mnemonic:'CONQUISTador → CONQUEST. The clue is inside the word.'}},
+  // LEVEL 2 — Apply & connect
+  {session:13,id:1312,lv:2,q:'Why did Europeans urgently seek a SEA route to Asia after 1453?',
+   opts:['They wanted to prove the Earth was round','The Ottoman Empire controlled the overland routes, making Asian goods expensive','Asia had just been discovered','European kings banned overland travel'],ans:1,
+   hint:'What happened to Constantinople in 1453, and who controlled the roads east afterward?',
+   ex:{main:'When the Ottomans captured Constantinople in 1453, they controlled the land routes between Europe and Asia. Spices and silks still flowed — but through middlemen and tolls that made them wildly expensive. A direct sea route would bypass all of it.',tip:'Cause-and-effect chains are exam gold: 1453 fall of Constantinople → expensive spices → sea route race → 1492.',mnemonic:'Roads blocked → take the ocean. Exploration was a detour, not a joyride.'}},
+  {session:13,id:1313,lv:2,q:'Which combination of technologies made long ocean voyages possible?',
+   opts:['Steam engine, telegraph, and sextant','Galleon, cannon, and gunpowder','Caravel, magnetic compass, and astrolabe','Railroad, astrolabe, and printing press'],ans:2,
+   hint:'You need a ship that sails into the wind, a way to hold direction, and a way to find latitude.',
+   ex:{main:'The caravel could sail against the wind (getting home was as important as getting there), the magnetic compass held a course out of sight of land, and the astrolabe gave latitude from the stars. Together they turned open-ocean sailing from suicide into strategy.',tip:'If an option includes anything from the 1800s (steam, telegraph, railroad), eliminate it instantly.',mnemonic:'Ship + direction + position: caravel, compass, astrolabe — the explorer\'s toolkit.'}},
+  {session:13,id:1314,lv:2,q:'A modern documentary about Magellan\'s voyage is what kind of source, and why?',
+   opts:['Primary, because it shows real historical maps','Primary, because the events really happened','Secondary, because it interprets the past from a distance in time','Secondary, because documentaries are always inaccurate'],ans:2,
+   hint:'Ask when it was created and whether the creators witnessed the events.',
+   ex:{main:'A documentary is created centuries after the events by people who weren\'t there, interpreting primary evidence — that makes it a secondary source. Secondary doesn\'t mean bad; it means one step removed from the event.',tip:'"Secondary = inaccurate" is always a wrong answer. The category is about distance from the event, not quality.',mnemonic:'Made later, about the past = secondary — even if it\'s excellent.'}},
+  {session:13,id:1315,lv:2,q:'Why did the Treaty of Tordesillas anger England, France, and the Netherlands?',
+   opts:['It gave all newly found lands to just Spain and Portugal, cutting everyone else out','It banned Christianity in the New World','It closed the Mediterranean to their ships','It forced them to pay taxes to the Pope'],ans:0,
+   hint:'Imagine two classmates splitting the whole pizza before anyone else reaches the table.',
+   ex:{main:'The treaty divided ALL non-European lands between Spain and Portugal alone. The excluded powers simply ignored it — which is why England, France, and the Netherlands later planted colonies in North America and the Caribbean.',tip:'This explains later colonial maps: latecomers grabbed North America because the treaty "gave away" the south.',mnemonic:'Two kingdoms split the pizza → everyone else raided the kitchen anyway.'}},
+  {session:13,id:1316,lv:2,q:'How did disease shape the Spanish conquest of the Americas?',
+   opts:['It mostly killed Spanish soldiers, slowing the conquest','European diseases like smallpox devastated Indigenous populations who had no immunity','Disease played almost no role compared to weapons','It spread from the Americas to Europe, weakening Spain'],ans:1,
+   hint:'Which side had never encountered smallpox, measles, or influenza before?',
+   ex:{main:'Indigenous Americans had no prior exposure — and therefore no immunity — to Eurasian diseases. Epidemics of smallpox and measles killed enormous numbers of people, collapsing armies, economies, and leadership before and during the conquests. Disease did more conquering than steel did.',tip:'When exams ask for the BIGGEST factor in Indigenous population collapse, the answer is disease — not weapons.',mnemonic:'The deadliest conquistador was invisible: the microbe.'}},
+  {session:13,id:1317,lv:2,q:'Potatoes and maize spreading to Europe — and feeding a population boom there — is an effect of…?',
+   opts:['The Treaty of Tordesillas','Mercantilism','The Renaissance','The Columbian Exchange'],ans:3,
+   hint:'Which process moved crops between hemispheres after 1492?',
+   ex:{main:'American crops like potatoes and maize were nutritious, calorie-dense, and grew where European grains struggled. Their spread through the Columbian Exchange helped Europe\'s population grow dramatically over the following centuries.',tip:'Linking a specific example to its big process is a classic exam move. Food crossing the Atlantic = Columbian Exchange, every time.',mnemonic:'Potato on a European plate = Columbian Exchange receipt.'}},
+  {session:13,id:1318,lv:2,q:'How could Cortés, with only a few hundred Spanish soldiers, topple the powerful Aztec Empire?',
+   opts:['The Aztecs surrendered without resistance','His army was actually larger than the Aztec army','Alliances with thousands of Indigenous rivals of the Aztecs, plus smallpox and steel weapons','He bribed the Aztec leadership with gold'],ans:2,
+   hint:'He didn\'t fight alone — many peoples resented Aztec rule. And something invisible arrived with him.',
+   ex:{main:'Many city-states resented Aztec domination and tribute demands; peoples like the Tlaxcalans supplied tens of thousands of warriors to fight alongside Cortés. Meanwhile smallpox swept Tenochtitlán. Spanish steel and horses mattered — but allies and epidemics were decisive.',tip:'"A few hundred Spaniards beat an empire alone" is the myth; the exam wants the allies + disease answer.',mnemonic:'Cortés\'s real army: rival nations + microbes + steel — in that order.'}},
+  {session:13,id:1319,lv:2,q:'Portugal and Spain built different kinds of empires. Which pairing is correct?',
+   opts:['Portugal: trading posts along Africa/Asia sea routes · Spain: large land empires in the Americas','Portugal: land empires in the Americas · Spain: trading posts in Asia','Both built only trading posts','Both conquered only the Americas'],ans:0,
+   hint:'Follow their routes: one went east around Africa, the other went west across the Atlantic.',
+   ex:{main:'Portugal\'s eastern route led to a string of fortified trading posts (Goa, Malacca) controlling spice commerce. Spain\'s western route hit the Americas, where conquistadors built vast land empires mining silver and gold. Route shaped empire.',tip:'Remember it geographically: Portugal = east = trade posts; Spain = west = land conquest.',mnemonic:'Portugal rented the harbor; Spain took the whole continent.'}},
+  // LEVEL 3 — Analyze & reason like a historian
+  {session:13,id:1320,lv:3,q:'Historians estimate Indigenous American populations fell catastrophically after European contact. Which factor was MOST responsible?',
+   opts:['Warfare with European armies','Epidemic diseases like smallpox to which Indigenous peoples had no immunity','Famine caused by crop failures','Forced migration to Europe'],ans:1,
+   hint:'Rank the killers: steel, hunger, displacement… and something nobody could see.',
+   ex:{main:'While warfare, enslavement, and famine all took terrible tolls, epidemic disease was the overwhelming driver — sweeping ahead of and alongside conquest, sometimes killing the majority of a community before Europeans even arrived in person.',tip:'"Most responsible" questions require ranking causes, not just naming one. Disease ranks first here in scholarly consensus.',mnemonic:'The conquest\'s biggest weapon fit inside a breath.'}},
+  {session:13,id:1321,lv:3,q:'A student claims: "Exploration was driven purely by scientific curiosity." Which evidence BEST refutes this claim?',
+   opts:['Explorers often carried scientists aboard','Monarchs funded voyages expecting returns in spices, gold, and territorial claims','Many explorers kept detailed journals','Maps improved rapidly during the period'],ans:1,
+   hint:'To refute "purely curiosity," find the evidence showing a different motive was at the core.',
+   ex:{main:'Voyages were investments: monarchs and merchants funded them expecting profit (spices, gold) and power (claims, converts). Journals, scientists, and better maps happened along the way — but the funding logic was God, Gold & Glory, not curiosity.',tip:'To refute a "purely X" claim, you need evidence of a competing motive — not evidence that X also existed.',mnemonic:'Follow the money: who paid for the ships, and what did they expect back?'}},
+  {session:13,id:1322,lv:3,q:'A textbook sentence reads: "Columbus discovered America." Why do historians criticize this wording?',
+   opts:['Columbus actually landed in Asia, not America','The voyage happened in 1493, not 1492','Millions of Indigenous people already lived there — "European contact" describes it more accurately','Vikings owned the continent at the time'],ans:2,
+   hint:'Can you "discover" a place where tens of millions of people already live?',
+   ex:{main:'"Discovery" erases the Indigenous civilizations — from the Aztec and Inca empires to countless other nations — who had lived in the Americas for millennia (and the Norse had briefly reached North America centuries earlier). Historians prefer "contact" or "encounter," which describe two worlds meeting rather than one finding an empty prize.',tip:'Questions about wording are really questions about perspective — whose viewpoint does the sentence assume?',mnemonic:'You can\'t discover someone\'s home. Contact, not discovery.'}},
+  {session:13,id:1323,lv:3,q:'Complete the causal chain: Ottomans capture Constantinople (1453) → ??? → European monarchs fund ocean voyages.',
+   opts:['Overland trade grows cheaper and safer','European navies are destroyed','Asian goods become scarce and expensive in Europe','The Pope bans land travel to Asia'],ans:2,
+   hint:'The middle link must explain WHY monarchs suddenly spent fortunes on risky ships.',
+   ex:{main:'Ottoman control of the eastern routes meant tolls and middlemen at every step — so spices and silks reached Europe scarce and costly. That price pressure is the missing link that made expensive, risky sea expeditions look like smart investments.',tip:'For chain questions, test the middle link both directions: does the first event cause it, AND does it cause the last event?',mnemonic:'Blocked road → pricey pepper → buy ships. Follow the spice money.'}},
+  {session:13,id:1324,lv:3,q:'A Spanish conquistador\'s letter and an Aztec codex describe the same battle very differently. What should a historian conclude?',
+   opts:['The conquistador\'s account is automatically more reliable because it\'s written','The codex is automatically more reliable because Aztecs were there first','One of the two sources must be a forgery','Each source reflects its creator\'s perspective — compare both against other evidence'],ans:3,
+   hint:'Both authors were present. Both had reasons to tell the story their way.',
+   ex:{main:'Both are primary sources, and both carry their creators\' perspectives — the conquistador justifying his actions to the crown, the codex preserving the community\'s memory of invasion. Historians don\'t pick a "winner"; they corroborate: compare the accounts with each other, with archaeology, and with other records.',tip:'"Which source is automatically more reliable?" — the answer containing "automatically" is nearly always wrong.',mnemonic:'Two witnesses, two stories → cross-examine everything. That\'s the historian\'s whip and fedora.'}},
 ];
 
 const LEVELS_META=[
@@ -2512,6 +2667,8 @@ const BADGES_DEF=[
   {id:'growth_cleared',icon:'🌿',name:'Growth Mindset',brag:'You turned a miss into a master. That\'s the whole point.',desc:'Mark a Growth Zone item as understood.',unlocked:false,new:false},
   {id:'all_modes',icon:'🔬',name:'Full Lab',brag:'Flashcards, Levels, Quick Questions, Sprint Quiz — you used the whole lab.',desc:'Play all four game modes in the same session.',unlocked:false,new:false},
   {id:'multi_session',icon:'🎓',name:'Multi-Scientist',brag:'Chemistry and Physics. Two subjects, one scientist.',desc:'Study content from more than one subject.',unlocked:false,new:false},
+  // ── Subject badges (one per subject beyond the sciences) ──
+  {id:'history_first',icon:'🗺️',name:'First Expedition',brag:'A whole new subject, charted. The map is yours now.',desc:'Complete your first History activity.',unlocked:false,new:false},
 ];
 
 // ─── STATE ────────────────────────────────────────────────────────────────
@@ -3320,12 +3477,72 @@ function getSessionOnlyFilter(){
   return q=>q.session===s.num;
 }
 function launchQuiz(sessionOnly){
-  QZ_SESSION_ONLY=sessionOnly;
   const filter=sessionOnly?getSessionOnlyFilter():getQSFilter();
   if(!QS.some(filter)){noQuestionsYet();return;}
   const modal=document.getElementById('quiz-mode-modal');
   if(modal)modal.remove();
+  // Mood check-in happens right before the first quiz of the day —
+  // that's when feeling/confidence data matters most for reading results.
+  if(!hasCheckedInToday()&&!(TEST_MODE&&!TEST_RECORD)){showQuizCheckin(sessionOnly);return;}
+  startQuizNow(sessionOnly);
+}
+function startQuizNow(sessionOnly){
+  QZ_SESSION_ONLY=sessionOnly;
   go('qz-run');
+}
+function hasCheckedInToday(){
+  const last=S.checkIns[S.checkIns.length-1];
+  return !!last&&new Date(last.ts).toDateString()===new Date().toDateString();
+}
+function showQuizCheckin(sessionOnly){
+  checkinAnswers={};
+  const old=document.getElementById('quiz-checkin-modal');if(old)old.remove();
+  const modal=document.createElement('div');
+  modal.id='quiz-checkin-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:flex-end;justify-content:center;';
+  modal.innerHTML=`<div style="background:var(--bg);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:18px 18px 30px;max-height:88vh;overflow-y:auto;">
+    <div style="font-size:16px;font-weight:800;color:var(--purple-dark);">💭 Quick check-in before your quiz</div>
+    <div style="font-size:12px;color:var(--gray-500);margin:4px 0 14px;">First quiz of the day — 20 seconds. It helps Hani read your results right.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${CHECKIN_STEPS.map((step,si)=>`
+        <div style="background:white;border-radius:14px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+          <div style="font-size:15px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;">${step.icon} ${step.q}</div>
+          <div style="display:flex;justify-content:space-between;">
+            ${step.emojis.map((e,i)=>`
+              <div data-qci-row="${si}" data-idx="${i}" onclick="qciSelect(${si},${i},this)" style="flex:1;text-align:center;cursor:pointer;padding:4px 2px;border-radius:8px;transition:background .15s;">
+                <div style="font-size:22px;">${e}</div>
+                <div style="font-size:9px;color:var(--gray-500);margin-top:1px;">${step.labels[i]}</div>
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>
+    <button onclick="qciSubmit(${sessionOnly})" id="qci-submit-btn" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:14px;opacity:.45;" disabled>Start the quiz ⏱️ →</button>
+    <button onclick="document.getElementById('quiz-checkin-modal').remove();startQuizNow(${sessionOnly})" style="width:100%;padding:10px;background:none;border:none;color:var(--gray-500);font-size:12px;cursor:pointer;">Skip today's check-in →</button>
+  </div>`;
+  document.body.appendChild(modal);
+}
+function qciSelect(row,idx,el){
+  document.querySelectorAll(`[data-qci-row="${row}"]`).forEach(d=>{d.style.background='';});
+  el.style.background='rgba(124,58,237,0.15)';
+  checkinAnswers[CHECKIN_STEPS[row].key]=5-idx;
+  const allDone=CHECKIN_STEPS.every(st=>checkinAnswers[st.key]);
+  const btn=document.getElementById('qci-submit-btn');
+  if(btn){btn.disabled=!allDone;btn.style.opacity=allDone?'1':'.45';}
+}
+function qciSubmit(sessionOnly){
+  S.checkIns.push({
+    ts:Date.now(),
+    feeling:checkinAnswers.feeling,
+    confidence:checkinAnswers.confidence,
+    sleep:checkinAnswers.sleep,
+    distraction:checkinAnswers.distraction,
+    selfStudy:checkinAnswers.selfStudy,
+    session:getSession().num
+  });
+  if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
+  saveProgress();
+  const m=document.getElementById('quiz-checkin-modal');if(m)m.remove();
+  startQuizNow(sessionOnly);
 }
 function startQuiz(){
   trackModeUsed('qz');updateRefButtons();
@@ -3612,6 +3829,8 @@ function showRes(mode,correct,total,xpRaw){
   const info=getLvInfo();
   document.getElementById('r-xp-bar').textContent='⚡ Total: '+S.totalXP+' XP — '+info.name;
   if(pct===100){launchConfetti(80);checkBadge('perfect_quiz');}
+  // Subject badges: first completed activity in a new subject
+  if(getSession().subject==='History'&&correct>0)checkBadge('history_first');
   // Log Sprint Quiz sessions
   if(mode==='qz'&&total>0){
     S.quizSessions.push({score:S.qz.score,correct,total,pct,ts:Date.now()});
@@ -3865,23 +4084,37 @@ function renderHaniDash(){
         <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Select which session Sedona is studying today. Flashcards will show only that session's content. Practice games draw from all sessions.</div>
         <div style="font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Individual Sessions</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
-          ${SESSIONS.filter(s=>!s.combined).map((s,i)=>{
-            const active=i===ACTIVE_SESSION;
-            return `<button onclick="setActiveSession(${i})" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'var(--purple)':'var(--gray-200)'};background:${active?'#ede9fe':'white'};color:${active?'var(--purple-dark)':'var(--gray-700)'};">
-              ${active?'✅ ':''}Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:0.7;">${s.date} · ${s.subject}</span>
-            </button>`;}).join('')}
+          ${(()=>{
+            // Group sessions by subject with a small header per subject
+            const groups=[];
+            SESSIONS.filter(s=>!s.combined).forEach(s=>{
+              let g=groups.find(g=>g.subject===s.subject);
+              if(!g){g={subject:s.subject,sessions:[]};groups.push(g);}
+              g.sessions.push(s);
+            });
+            return groups.map(g=>`
+              <div style="font-size:11px;font-weight:800;color:var(--gray-700);margin-top:4px;">${getSubjectMeta(g.subject).icon} ${g.subject}</div>
+              ${g.sessions.map(s=>{
+                const i=SESSIONS.indexOf(s);
+                const active=i===ACTIVE_SESSION;
+                return `<button onclick="setActiveSession(${i})" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'var(--purple)':'var(--gray-200)'};background:${active?'#ede9fe':'white'};color:${active?'var(--purple-dark)':'var(--gray-700)'};">
+                  ${active?'✅ ':''}Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:0.7;">${s.date} · ${s.subject}</span>
+                </button>`;}).join('')}`).join('');
+          })()}
         </div>
         <div style="font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Subject Review Modes</div>
         <div style="font-size:12px;color:var(--gray-500);margin-bottom:8px;line-height:1.4;">All questions and flashcards for one subject — great for targeted review before an exam.</div>
-        <div style="display:flex;gap:10px;">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
           ${SESSIONS.map((s,i)=>({s,i})).filter(({s})=>s.combined).map(({s,i})=>{
             const active=i===ACTIVE_SESSION;
             const cardCount=CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject)).length;
             const qCount=QS.filter(q=>q.session&&SESSIONS.find(sess=>sess.num===q.session&&sess.subject===s.subject)).length;
-            const isChem=s.subject==='Chemistry';
-            const col=isChem?'#6d28d9':'#1e3a5f';
-            const bg=isChem?'linear-gradient(135deg,#ede9fe,#ddd6fe)':'linear-gradient(135deg,#dbeafe,#bfdbfe)';
-            const activeBorder=isChem?'var(--purple)':'#2563eb';
+            const theme={
+              Chemistry:{col:'#6d28d9',bg:'linear-gradient(135deg,#ede9fe,#ddd6fe)',border:'var(--purple)'},
+              Physics:{col:'#1e3a5f',bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)',border:'#2563eb'},
+              History:{col:'#78350f',bg:'linear-gradient(135deg,#fef3c7,#fde68a)',border:'#b45309'},
+            }[s.subject]||{col:'#374151',bg:'linear-gradient(135deg,#f3f4f6,#e5e7eb)',border:'var(--gray-500)'};
+            const col=theme.col,bg=theme.bg,activeBorder=theme.border;
             return `<button onclick="setActiveSession(${i})" style="flex:1;padding:14px 12px;border-radius:var(--radius);font-size:13px;font-weight:800;cursor:pointer;text-align:center;border:2px solid ${active?activeBorder:'var(--gray-200)'};background:${active?bg:'white'};color:${active?col:'var(--gray-700)'};transition:all .2s;">
               <div style="font-size:28px;margin-bottom:6px;">${s.icon}</div>
               <div>${s.title}</div>
@@ -3993,72 +4226,102 @@ const CHECKIN_STEPS=[
   },
 ];
 let checkinAnswers={};
-let checkinStep=0;
 
+// Which subject is drilled into on the picker (null = show the subject tiles first)
+let ciPickerSubject=null;
+// Per-subject accent used across the picker (falls back to a neutral purple)
+function subjectTheme(subject){
+  return {
+    Chemistry:{col:'#6d28d9',bg:'linear-gradient(135deg,#ede9fe,#ddd6fe)',border:'var(--purple)'},
+    Physics:  {col:'#1e3a5f',bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)',border:'#2563eb'},
+    History:  {col:'#78350f',bg:'linear-gradient(135deg,#fef3c7,#fde68a)',border:'#b45309'},
+  }[subject]||{col:'#4c1d95',bg:'linear-gradient(135deg,#ede9fe,#ddd6fe)',border:'var(--purple)'};
+}
 function chooseSedona(){
-  checkinAnswers={};
-  buildCheckinUI();
+  // Always open on the subject list, defaulting to the active session's subject
+  ciPickerSubject=null;
+  buildSessionPickerUI();
   go('checkin');
   document.getElementById('s-checkin').scrollTop=0;
 }
-function buildCheckinUI(){
+// Sign-in flow: Sedona picks her SUBJECT first, then a session within it. The
+// mood check-in moved to the first quiz of the day (see launchQuiz), where
+// "how are you feeling / how confident" matters most for reading her results.
+function buildSessionPickerUI(){
   const s=getSession();
-  // Build session pills
   const pillsEl=document.getElementById('ci-sess-pills');
   const nameEl=document.getElementById('ci-sess-name');
   const subEl=document.getElementById('ci-sess-sub');
-  if(pillsEl){
-    pillsEl.innerHTML=SESSIONS.filter(x=>!x.combined&&x.num).map(x=>{
-      const active=x.num===s.num;
-      return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" id="ci-pill-${x.num}" style="padding:4px 11px;border-radius:99px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:${active?'white':'rgba(255,255,255,0.18)'};color:${active?'var(--purple-dark)':'rgba(255,255,255,0.75)'};">S${x.num}</button>`;
-    }).join('');
-  }
+  if(pillsEl)pillsEl.innerHTML='';// header stays compact — the body below is the picker
   if(nameEl)nameEl.textContent=s.combined?`${s.icon} ${s.title}`:`Session ${s.num} — ${s.title}`;
   if(subEl)subEl.textContent=`${s.subject} · ${s.date}`;
-  // Build question rows
   const rowsEl=document.getElementById('ci-rows');
   if(!rowsEl)return;
-  rowsEl.innerHTML=CHECKIN_STEPS.map((step,si)=>`
-    <div style="background:rgba(255,255,255,0.88);border-radius:14px;padding:12px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
-      <div style="font-size:16px;font-weight:700;color:var(--purple-dark);margin-bottom:8px;">${step.icon} ${step.q}</div>
-      <div style="display:flex;justify-content:space-between;">
-        ${step.emojis.map((e,i)=>`
-          <div data-row="${si}" data-idx="${i}" onclick="ciSelect(${si},${i},this)" style="flex:1;text-align:center;cursor:pointer;padding:4px 2px;border-radius:8px;transition:background .15s;">
-            <div style="font-size:22px;">${e}</div>
-            <div style="font-size:9px;color:var(--gray-500);margin-top:1px;">${step.labels[i]}</div>
-          </div>`).join('')}
-      </div>
-    </div>`).join('')
-  +`<button onclick="ciSubmit()" id="ci-submit-btn" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:4px;opacity:.45;" disabled>Let\'s go! 🚀</button>
-   <button onclick="go('welcome')" style="width:100%;padding:10px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;">← Back</button>`;
+  rowsEl.style.display='flex';
+  // Subjects in first-appearance order, with per-subject session lists
+  const groups=[];
+  SESSIONS.filter(x=>!x.combined&&x.num).forEach(x=>{
+    let g=groups.find(g=>g.subject===x.subject);
+    if(!g){g={subject:x.subject,sessions:[]};groups.push(g);}
+    g.sessions.push(x);
+  });
+  if(ciPickerSubject===null){renderSubjectTiles(rowsEl,groups,s);}
+  else{renderSubjectSessions(rowsEl,groups.find(g=>g.subject===ciPickerSubject),s);}
 }
-function ciPickSession(idx){
-  setActiveSession(idx);
-  buildCheckinUI();
+// Step 1 — pick a subject
+function renderSubjectTiles(rowsEl,groups,s){
+  rowsEl.innerHTML=`<div style="font-size:12px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Pick a subject</div>`
+  +groups.map(g=>{
+    const t=subjectTheme(g.subject);
+    const isActive=g.subject===s.subject;
+    return `<button onclick="ciPickSubject('${g.subject}')" style="width:100%;padding:16px 16px;border-radius:16px;cursor:pointer;text-align:left;border:2px solid ${isActive?t.border:'transparent'};background:${t.bg};color:${t.col};box-shadow:0 2px 10px rgba(0,0,0,0.08);display:flex;align-items:center;gap:14px;">
+      <span style="font-size:34px;line-height:1;">${getSubjectMeta(g.subject).icon}</span>
+      <span style="flex:1;">
+        <span style="display:block;font-size:17px;font-weight:900;">${g.subject}</span>
+        <span style="display:block;font-size:11px;font-weight:600;opacity:.7;margin-top:2px;">${g.sessions.length} session${g.sessions.length>1?'s':''}${isActive?' · last opened':''}</span>
+      </span>
+      <span style="font-size:20px;opacity:.5;">›</span>
+    </button>`;
+  }).join('')
+  +`<button onclick="go('welcome')" style="width:100%;padding:12px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;margin-top:2px;">← Back</button>`;
+}
+// Step 2 — pick a session within the chosen subject (review mode folded in)
+function renderSubjectSessions(rowsEl,group,s){
+  if(!group){ciPickerSubject=null;return buildSessionPickerUI();}
+  const t=subjectTheme(group.subject);
+  const combined=SESSIONS.find(x=>x.combined&&x.subject===group.subject);
+  const sessionBtn=x=>{
+    const active=x===s;
+    return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" style="width:100%;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?t.border:'transparent'};background:${active?'white':'rgba(255,255,255,0.88)'};color:${active?t.col:'var(--gray-700)'};box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+      ${active?'✅ ':''}${x.combined?`🎓 ${x.title}`:`S${x.num} · ${x.title}`}<br><span style="font-size:11px;opacity:.65;font-weight:600;">${x.combined?'Whole-subject exam review':x.date}</span>
+    </button>`;
+  };
+  rowsEl.innerHTML=`
+    <button onclick="ciBackToSubjects()" style="align-self:flex-start;background:none;border:none;color:${t.col};font-size:13px;font-weight:700;cursor:pointer;padding:2px 0;">‹ All subjects</button>
+    <div style="font-size:17px;font-weight:900;color:${t.col};display:flex;align-items:center;gap:8px;">${getSubjectMeta(group.subject).icon} ${group.subject}</div>
+    <div style="font-size:12px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;">Sessions</div>
+    ${group.sessions.map(sessionBtn).join('')}
+    ${combined?`<div style="font-size:12px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Exam review</div>${sessionBtn(combined)}`:''}
+    <button onclick="ciStartSession()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px;">Let's go! 🚀</button>`;
+}
+function ciPickSubject(subject){
+  ciPickerSubject=subject;
+  buildSessionPickerUI();
   document.getElementById('s-checkin').scrollTop=0;
 }
-function ciSelect(row,idx,el){
-  // Deselect others in same row
-  document.querySelectorAll(`[data-row="${row}"]`).forEach(d=>{d.style.background='';});
-  el.style.background='rgba(124,58,237,0.15)';
-  checkinAnswers[CHECKIN_STEPS[row].key]=5-idx;
-  // Enable submit if all answered
-  const allDone=CHECKIN_STEPS.every((_,i)=>checkinAnswers[CHECKIN_STEPS[i].key]);
-  const btn=document.getElementById('ci-submit-btn');
-  if(btn){btn.disabled=!allDone;btn.style.opacity=allDone?'1':'.45';}
+function ciBackToSubjects(){
+  ciPickerSubject=null;
+  buildSessionPickerUI();
+  document.getElementById('s-checkin').scrollTop=0;
 }
-function ciSubmit(){
-  S.checkIns.push({
-    ts:Date.now(),
-    feeling:checkinAnswers.feeling,
-    confidence:checkinAnswers.confidence,
-    sleep:checkinAnswers.sleep,
-    distraction:checkinAnswers.distraction,
-    selfStudy:checkinAnswers.selfStudy,
-    session:getSession().num
-  });
-  if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
-  saveProgress();
+function ciPickSession(idx){
+  const scr=document.getElementById('s-checkin');
+  const y=scr?scr.scrollTop:0;
+  setActiveSession(idx);
+  buildSessionPickerUI();
+  if(scr)scr.scrollTop=y;// keep her place in the list
+}
+function ciStartSession(){
   const s=getSession();
   if(s.story){
     document.getElementById('ci-rows').style.display='none';
@@ -4071,7 +4334,6 @@ function ciSubmit(){
     document.getElementById('s-checkin').scrollTop=0;
   } else {finishExplainerGoHome();}
 }
-function startCheckinQuestions(){buildCheckinUI();}
 function finishExplainerGoHome(){
   // Reset for next time
   const rows=document.getElementById('ci-rows');
@@ -4107,66 +4369,6 @@ function chooseHani(){
   enterTestMode(false); // Auto-enable preview mode — Hani browsing shouldn't record anything
   go('hani');
 }
-function renderCheckinStep(){
-  const step=CHECKIN_STEPS[checkinStep];
-  document.getElementById('checkin-step-icon').textContent=step.icon;
-  document.getElementById('checkin-q-text').textContent=step.q;
-  document.getElementById('checkin-q-sub').textContent=step.sub;
-  document.getElementById('checkin-step-indicator').textContent=`${checkinStep+1} of ${CHECKIN_STEPS.length}`;
-  document.getElementById('checkin-next-btn').textContent=checkinStep===CHECKIN_STEPS.length-1?'Let\'s go! 🚀':'Continue →';
-  document.getElementById('checkin-next-btn').classList.remove('ready');
-  const scale=document.getElementById('emoji-scale');
-  scale.innerHTML=step.emojis.map((e,i)=>`
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-      <button class="emoji-btn" onclick="selectCheckin(${i})" id="ci-btn-${i}">${e}</button>
-      <span class="emoji-label">${step.labels[i]}</span>
-    </div>`).join('');
-}
-function selectCheckin(idx){
-  document.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('ci-btn-'+idx).classList.add('selected');
-  // Scale is reversed: leftmost (idx 0) = highest score (5)
-  checkinAnswers[CHECKIN_STEPS[checkinStep].key]=5-idx;
-  document.getElementById('checkin-next-btn').classList.add('ready');
-}
-function checkinBack(){
-  if(checkinStep===0){go('welcome');}
-  else{checkinStep--;renderCheckinStep();}
-}
-function checkinNext(){
-  if(!checkinAnswers[CHECKIN_STEPS[checkinStep].key])return;
-  checkinStep++;
-  if(checkinStep<CHECKIN_STEPS.length){
-    renderCheckinStep();
-  } else {
-    // Save check-in
-    S.checkIns.push({
-      ts:Date.now(),
-      feeling:checkinAnswers.feeling,
-      confidence:checkinAnswers.confidence,
-      sleep:checkinAnswers.sleep,
-      distraction:checkinAnswers.distraction,
-      selfStudy:checkinAnswers.selfStudy,
-      session:getSession().num
-    });
-    if(S.checkIns.length>50)S.checkIns=S.checkIns.slice(-50);
-    saveProgress();
-    // Show fun explainer AFTER check-in, before home
-    const s=getSession();
-    if(s.story){
-      document.getElementById('checkin-questions').style.display='none';
-      document.getElementById('checkin-explainer').style.display='flex';
-      document.getElementById('explainer-emoji').textContent=s.story.emoji;
-      document.getElementById('explainer-hook').textContent=s.story.hook;
-      document.getElementById('explainer-body').textContent=s.story.body;
-      document.getElementById('explainer-ready-btn').textContent=s.story.readyLabel;
-      document.getElementById('explainer-session-label').textContent=`Session ${s.num} · ${s.subject}`;
-    } else {
-      go('home');
-    }
-  }
-}
-
 function haniQFilter(sessionFilter, btn){
   // Update button styles
   document.querySelectorAll('[id^="qf-"]').forEach(b=>{
@@ -4290,6 +4492,32 @@ const SORT_SETS=[
     ['Weight',0,'Fg = mg, pulls downward — has direction = vector'],
     ['Time',1,'Duration only, no direction = scalar'],
   ]},
+  {id:'source-type',subject:'History',title:'Primary or Secondary Source?',
+   buckets:['📜 Primary','📚 Secondary'],
+   items:[
+    ['Sailor\'s diary from 1520',0,'Written at the time by someone who was there → primary'],
+    ['Textbook chapter on exploration',1,'Written centuries later, interpreting evidence → secondary'],
+    ['Map drawn by Magellan\'s crew',0,'Created during the voyage by participants → primary'],
+    ['Documentary about Columbus',1,'Made today about the past → secondary'],
+    ['Aztec codex painted in the 1500s',0,'Created at the time by people who lived it → primary'],
+    ['Historian\'s biography of Cortés',1,'A later interpretation of primary evidence → secondary'],
+    ['Columbus\'s letter to the Spanish crown',0,'Written by Columbus himself at the time → primary'],
+    ['Museum plaque summarizing a voyage',1,'A modern summary written about the past → secondary'],
+    ['Ship\'s log from da Gama\'s 1498 voyage',0,'Recorded during the events themselves → primary'],
+    ['Encyclopedia entry on the caravel',1,'Compiled later from other sources → secondary'],
+  ]},
+  {id:'cause-effect-exploration',subject:'History',title:'Age of Exploration: Cause or Effect?',
+   buckets:['➡️ Cause','🎯 Effect'],
+   items:[
+    ['Ottomans control trade routes to Asia',0,'This pushed Europe to seek sea routes → a cause of exploration'],
+    ['The Columbian Exchange',1,'The hemisphere-swapping of crops, animals, and disease happened BECAUSE of the voyages → effect'],
+    ['Desire for spices and gold',0,'The "Gold" in God, Gold & Glory — a driving cause'],
+    ['Spanish colonies across the Americas',1,'Empires in the Americas were a result of the voyages → effect'],
+    ['Invention of the caravel',0,'New ship technology made the voyages possible → cause'],
+    ['Indigenous population collapse from disease',1,'A devastating consequence of contact → effect'],
+    ['Desire to spread Christianity',0,'The "God" motivation — a cause of exploration'],
+    ['Potatoes and maize feeding Europe',1,'American crops transforming European diets → effect'],
+  ]},
   {id:'soluble',subject:'Chemistry',title:'Soluble (aq) or Insoluble (s)? Use NAG rule.',
    buckets:['💧 Soluble (aq)','🪨 Insoluble (s)'],
    items:[
@@ -4341,6 +4569,17 @@ const TF_STATEMENTS=[
   {subj:'Physics',s:'Work is done when force is perpendicular to motion.',a:false,fix:'No work when force is perpendicular. Work = F × displacement IN THE SAME DIRECTION.'},
   {subj:'Physics',s:'An inelastic collision conserves kinetic energy.',a:false,fix:'Inelastic collisions lose KE (to heat/sound). Elastic collisions conserve KE.'},
   {subj:'Physics',s:'Impulse equals the change in momentum.',a:true},
+  // History (Age of Exploration demo)
+  {subj:'History',s:'Columbus first reached the Americas in 1492.',a:true},
+  {subj:'History',s:'Magellan personally completed the first voyage around the world.',a:false,fix:'Magellan died in the Philippines (1521). Elcano and the surviving crew completed the circumnavigation in 1522.'},
+  {subj:'History',s:'The astrolabe helped sailors find their latitude.',a:true},
+  {subj:'History',s:'The Treaty of Tordesillas divided new lands between Spain and England.',a:false,fix:'It divided lands between SPAIN and PORTUGAL — England, France, and the Netherlands were cut out.'},
+  {subj:'History',s:'The Columbian Exchange moved plants, animals, and diseases between hemispheres.',a:true},
+  {subj:'History',s:'A documentary made today about 1492 is a primary source.',a:false,fix:'Created later, about the past = SECONDARY source. Primary sources are created at the time (diaries, letters, logs).'},
+  {subj:'History',s:'Vasco da Gama reached India by sailing around Africa.',a:true},
+  {subj:'History',s:'Disease played almost no role in the Spanish conquest of the Americas.',a:false,fix:'Epidemics like smallpox were DECISIVE — Indigenous peoples had no immunity to Eurasian diseases.'},
+  {subj:'History',s:'The caravel could sail against the wind using triangular lateen sails.',a:true},
+  {subj:'History',s:'"God, Gold & Glory" summarizes the motivations for European exploration.',a:true},
 ];
 
 // ─── RANK & ORDER DATA ────────────────────────────────────────────────────
@@ -4363,6 +4602,12 @@ const RANK_QUESTIONS=[
   {subj:'Chemistry',q:'Rank by INCREASING electronegativity (least greedy for electrons first)',criterion:'Electronegativity: least → most',
    items:['Fr','Na','N','F'],order:[0,1,2,3],
    exp:'Bottom-left = lowest electronegativity. Fr (bottom-left corner) < Na < N < F (top-right = highest EN in all elements).'},
+  {subj:'History',q:'Put these voyages in CHRONOLOGICAL order (earliest first)',criterion:'Timeline: earliest → latest',
+   items:['Columbus reaches the Americas','Dias rounds Africa\'s tip','Magellan\'s fleet sets sail','Da Gama reaches India'],order:[1,0,3,2],
+   exp:'Dias rounds the Cape of Good Hope (1488) → Columbus crosses the Atlantic (1492) → da Gama reaches India (1498) → Magellan departs (1519). One decade of voyages redrew the world map.'},
+  {subj:'History',q:'Put these events in CHRONOLOGICAL order (earliest first)',criterion:'Timeline: earliest → latest',
+   items:['Treaty of Tordesillas','Ottomans capture Constantinople','Pizarro conquers the Inca','Cortés conquers the Aztecs'],order:[1,0,3,2],
+   exp:'Constantinople falls (1453) — the spark. Treaty of Tordesillas splits the world (1494). Cortés topples the Aztecs (1521). Pizarro conquers the Inca (early 1530s). Cause before treaty before conquests.'},
   {subj:'Chemistry',q:'Rank these ions by INCREASING number of electrons',criterion:'Electron count: fewest → most',
    items:['Na⁺','Mg²⁺','O²⁻','F⁻'],order:[1,0,3,2],
    exp:'Mg²⁺: 12−2=10e⁻. Na⁺: 11−1=10e⁻... wait, both 10! Use atomic number: Mg²⁺ technically same as Na⁺ (both 10e⁻). F⁻: 9+1=10. O²⁻: 8+2=10. All isoelectronic with Ne — trick question, all have 10!'},
@@ -4398,6 +4643,14 @@ const SPOT_QUESTIONS=[
    answer:'Molar mass = 1.008 + 16.00 = 17.008 g/mol',
    opts:['The atomic masses listed are incorrect — hydrogen and oxygen have different values','The calculation method is right but the final rounding is off','Only one hydrogen atom was counted — the subscript 2 means there are 2 H atoms, giving 18.016 g/mol','The molar mass formula should use Avogadro\'s number, not direct addition'],
    correct:2,exp:'H₂O has TWO hydrogen atoms. Molar mass = 2(1.008) + 16.00 = 18.016 g/mol. The subscript always tells you how many atoms.'},
+  {subj:'History',q:'Who completed the first circumnavigation of the globe?',
+   answer:'Ferdinand Magellan sailed all the way around the world, returning home in triumph in 1522.',
+   opts:['The dates are wrong — the voyage ended in 1525','Magellan never left Spain; the whole voyage is legend','Magellan died in the Philippines in 1521 — Elcano and the surviving crew completed the voyage','The voyage only crossed the Atlantic, not the whole globe'],
+   correct:2,exp:'Magellan led the expedition but was killed in the Philippines in 1521. Juan Sebastián Elcano brought the last ship, Victoria, home in 1522. Credit the EXPEDITION with the circumnavigation — not Magellan personally.'},
+  {subj:'History',q:'Describe what Columbus found in 1492.',
+   answer:'Columbus discovered an empty, unknown continent where no one had ever lived.',
+   opts:['Columbus actually landed in Asia, so nothing was discovered','The continent was far from empty — tens of millions of Indigenous people already lived there','Columbus arrived in 1493, not 1492','The land was unknown only because maps were classified'],
+   correct:1,exp:'The Americas were home to tens of millions of people and to sophisticated civilizations. "Empty and unknown" erases them — historians describe 1492 as CONTACT between two populated worlds, not discovery of an empty one.'},
   {subj:'Chemistry',q:'A combustion reaction: C₃H₈ + O₂ → CO₂ + H₂O. Is this balanced?',
    answer:'Yes, balanced: 3C on left, 1C on right — close enough for estimation.',
    opts:['It is balanced — the carbon count matches when you account for the coefficients','Combustion equations only need to be approximately balanced since oxygen is in excess','The carbon atoms are not equal (3 left, 1 right) and equations require exact balance — never approximate','The hydrogen is balanced but oxygen is not, which is the actual error'],
@@ -5335,13 +5588,6 @@ function showWelcomeBack(){
     },400);
   }
 }
-// Override chooseSedona to show welcome-back after check-in
-const _checkinNext=checkinNext;
-checkinNext=function(){
-  const wasLast=checkinStep===CHECKIN_STEPS.length-1;
-  _checkinNext();
-  if(wasLast)showWelcomeBack();
-};
 renderHome();
 function applySession(){
   const s=getSession();
