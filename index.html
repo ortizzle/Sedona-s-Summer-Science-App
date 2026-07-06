@@ -4227,13 +4227,25 @@ const CHECKIN_STEPS=[
 ];
 let checkinAnswers={};
 
+// Which subject is drilled into on the picker (null = show the subject tiles first)
+let ciPickerSubject=null;
+// Per-subject accent used across the picker (falls back to a neutral purple)
+function subjectTheme(subject){
+  return {
+    Chemistry:{col:'#6d28d9',bg:'linear-gradient(135deg,#ede9fe,#ddd6fe)',border:'var(--purple)'},
+    Physics:  {col:'#1e3a5f',bg:'linear-gradient(135deg,#dbeafe,#bfdbfe)',border:'#2563eb'},
+    History:  {col:'#78350f',bg:'linear-gradient(135deg,#fef3c7,#fde68a)',border:'#b45309'},
+  }[subject]||{col:'#4c1d95',bg:'linear-gradient(135deg,#ede9fe,#ddd6fe)',border:'var(--purple)'};
+}
 function chooseSedona(){
+  // Always open on the subject list, defaulting to the active session's subject
+  ciPickerSubject=null;
   buildSessionPickerUI();
   go('checkin');
   document.getElementById('s-checkin').scrollTop=0;
 }
-// Sign-in flow: Sedona picks her subject & session FIRST. The mood check-in
-// questions moved to the first quiz of the day (see launchQuiz), where
+// Sign-in flow: Sedona picks her SUBJECT first, then a session within it. The
+// mood check-in moved to the first quiz of the day (see launchQuiz), where
 // "how are you feeling / how confident" matters most for reading her results.
 function buildSessionPickerUI(){
   const s=getSession();
@@ -4245,30 +4257,62 @@ function buildSessionPickerUI(){
   if(subEl)subEl.textContent=`${s.subject} · ${s.date}`;
   const rowsEl=document.getElementById('ci-rows');
   if(!rowsEl)return;
-  // Group sessions by subject; whole-subject review modes get their own group
+  rowsEl.style.display='flex';
+  // Subjects in first-appearance order, with per-subject session lists
   const groups=[];
   SESSIONS.filter(x=>!x.combined&&x.num).forEach(x=>{
     let g=groups.find(g=>g.subject===x.subject);
     if(!g){g={subject:x.subject,sessions:[]};groups.push(g);}
     g.sessions.push(x);
   });
+  if(ciPickerSubject===null){renderSubjectTiles(rowsEl,groups,s);}
+  else{renderSubjectSessions(rowsEl,groups.find(g=>g.subject===ciPickerSubject),s);}
+}
+// Step 1 — pick a subject
+function renderSubjectTiles(rowsEl,groups,s){
+  rowsEl.innerHTML=`<div style="font-size:12px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Pick a subject</div>`
+  +groups.map(g=>{
+    const t=subjectTheme(g.subject);
+    const isActive=g.subject===s.subject;
+    return `<button onclick="ciPickSubject('${g.subject}')" style="width:100%;padding:16px 16px;border-radius:16px;cursor:pointer;text-align:left;border:2px solid ${isActive?t.border:'transparent'};background:${t.bg};color:${t.col};box-shadow:0 2px 10px rgba(0,0,0,0.08);display:flex;align-items:center;gap:14px;">
+      <span style="font-size:34px;line-height:1;">${getSubjectMeta(g.subject).icon}</span>
+      <span style="flex:1;">
+        <span style="display:block;font-size:17px;font-weight:900;">${g.subject}</span>
+        <span style="display:block;font-size:11px;font-weight:600;opacity:.7;margin-top:2px;">${g.sessions.length} session${g.sessions.length>1?'s':''}${isActive?' · last opened':''}</span>
+      </span>
+      <span style="font-size:20px;opacity:.5;">›</span>
+    </button>`;
+  }).join('')
+  +`<button onclick="go('welcome')" style="width:100%;padding:12px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;margin-top:2px;">← Back</button>`;
+}
+// Step 2 — pick a session within the chosen subject (review mode folded in)
+function renderSubjectSessions(rowsEl,group,s){
+  if(!group){ciPickerSubject=null;return buildSessionPickerUI();}
+  const t=subjectTheme(group.subject);
+  const combined=SESSIONS.find(x=>x.combined&&x.subject===group.subject);
   const sessionBtn=x=>{
     const active=x===s;
-    return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" style="width:100%;padding:11px 14px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'var(--purple)':'transparent'};background:${active?'#ede9fe':'rgba(255,255,255,0.88)'};color:${active?'var(--purple-dark)':'var(--gray-700)'};box-shadow:0 1px 4px rgba(0,0,0,0.06);">
-      ${active?'✅ ':''}${x.combined?`${x.icon} ${x.title}`:`S${x.num} · ${x.title}`}<br><span style="font-size:11px;opacity:.65;font-weight:600;">${x.date}</span>
+    return `<button onclick="ciPickSession(${SESSIONS.indexOf(x)})" style="width:100%;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?t.border:'transparent'};background:${active?'white':'rgba(255,255,255,0.88)'};color:${active?t.col:'var(--gray-700)'};box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+      ${active?'✅ ':''}${x.combined?`🎓 ${x.title}`:`S${x.num} · ${x.title}`}<br><span style="font-size:11px;opacity:.65;font-weight:600;">${x.combined?'Whole-subject exam review':x.date}</span>
     </button>`;
   };
-  rowsEl.innerHTML=groups.map(g=>`
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="font-size:12px;font-weight:900;color:var(--purple-dark);letter-spacing:.8px;">${getSubjectMeta(g.subject).icon} ${g.subject.toUpperCase()}</div>
-      ${g.sessions.map(sessionBtn).join('')}
-    </div>`).join('')
-  +`<div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="font-size:12px;font-weight:900;color:var(--teal);letter-spacing:.8px;">🎓 EXAM REVIEW — WHOLE SUBJECT</div>
-      ${SESSIONS.filter(x=>x.combined).map(sessionBtn).join('')}
-    </div>`
-  +`<button onclick="ciStartSession()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:4px;">Let\'s go! 🚀</button>
-   <button onclick="go('welcome')" style="width:100%;padding:10px;background:none;border:none;color:var(--gray-500);font-size:13px;cursor:pointer;">← Back</button>`;
+  rowsEl.innerHTML=`
+    <button onclick="ciBackToSubjects()" style="align-self:flex-start;background:none;border:none;color:${t.col};font-size:13px;font-weight:700;cursor:pointer;padding:2px 0;">‹ All subjects</button>
+    <div style="font-size:17px;font-weight:900;color:${t.col};display:flex;align-items:center;gap:8px;">${getSubjectMeta(group.subject).icon} ${group.subject}</div>
+    <div style="font-size:12px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:.8px;margin-top:2px;">Sessions</div>
+    ${group.sessions.map(sessionBtn).join('')}
+    ${combined?`<div style="font-size:12px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:.8px;margin-top:8px;">Exam review</div>${sessionBtn(combined)}`:''}
+    <button onclick="ciStartSession()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px;">Let's go! 🚀</button>`;
+}
+function ciPickSubject(subject){
+  ciPickerSubject=subject;
+  buildSessionPickerUI();
+  document.getElementById('s-checkin').scrollTop=0;
+}
+function ciBackToSubjects(){
+  ciPickerSubject=null;
+  buildSessionPickerUI();
+  document.getElementById('s-checkin').scrollTop=0;
 }
 function ciPickSession(idx){
   const scr=document.getElementById('s-checkin');
