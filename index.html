@@ -3295,7 +3295,7 @@ function startFC(){
   // Update scope pill counts
   const scopeAllLabel=s.mixedReview?'All Sessions':`All ${s.subject}`;
   const scopeLabels={session:'This Session',all:scopeAllLabel,prev:'Prev Sessions',weak:'🌱 Growth Cards'};
-  const scopeCounts={session:sessionCards.length,all:allCards.length,prev:prevCards.length,weak:weakCards.length};
+  const scopeCounts={session:sessionCards.length,all:subjectCards.length,prev:prevCards.length,weak:weakCards.length};
   document.querySelectorAll('#fc-scope-bar .fcf-btn').forEach(b=>b.classList.remove('active-scope'));
   Object.keys(scopeLabels).forEach(sc=>{
     const btn=document.getElementById('fcs-'+sc);
