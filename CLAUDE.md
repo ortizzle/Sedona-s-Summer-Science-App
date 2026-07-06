@@ -99,7 +99,7 @@ Badges are unlocked by gameplay events (streaks, session completion, mastery). W
 
 ## How to Add a New Subject
 
-1. **Create sessions** — Add entries to `SESSIONS[]`. Increment `num` globally (don't restart from 1 per subject). Set `subject` to the new subject's display name (e.g., `'Biology'`, `'Algebra'`).
+1. **Create sessions** — Add entries to `SESSIONS[]`. Increment `num` globally (don't restart from 1 per subject — it's the internal join key; per-subject "Session 1..N" is a display concern, see the numbering plan above). Set `subject` to the new subject's display name (e.g., `'Biology'`, `'Algebra'`). Content stays subject-scoped automatically — never add cross-subject content to a subject's sessions.
 
 2. **Create flashcards** — Add entries to `CARDS[]` with matching `session` numbers. Write 15–30 cards per session. Cards should prioritize: vocabulary, formulas, common misconceptions, mnemonics.
 
