@@ -5200,10 +5200,11 @@ const MATCH_SIZE=6;
 function startMatch(roundIdx){
   const s=getSession();
   let sessionCards=s.combined
-    ? CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
+    ? CARDS.filter(c=>sessionSubject(c.session)===s.subject)
     : CARDS.filter(c=>!c.session||c.session===s.num);
-  // Sessions with no cards of their own (e.g. review sessions) fall back to everything studied so far
-  if(!sessionCards.length&&s.num)sessionCards=CARDS.filter(c=>c.session&&c.session<=s.num);
+  // Sessions with no cards of their own (e.g. review sessions) fall back to
+  // everything studied so far — same subject only, unless a mixedReview session
+  if(!sessionCards.length&&s.num)sessionCards=CARDS.filter(c=>c.session&&c.session<=s.num&&(s.mixedReview||sessionSubject(c.session)===s.subject));
   if(!sessionCards.length){
     showBadgeToast({icon:'📋',name:'No flashcards yet for this session'},true);
     go('home');return;
