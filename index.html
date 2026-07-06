@@ -5159,16 +5159,22 @@ function showPeriodicTableOverlay(){
   });
 }
 
+function sessionSubject(num){
+  const sess=SESSIONS.find(x=>x.num===num);
+  return sess?sess.subject:null;
+}
+// Content scoping rule: subjects never mingle. Cumulative views build from
+// PREVIOUS SESSIONS OF THE SAME SUBJECT only — Physics never deals History
+// flashcards. The one exception: sessions flagged mixedReview:true (summer
+// comp-rehearsal sessions) intentionally span subjects.
 function getQSFilter(){
   const s=getSession();
   if(s.combined){
-    return q=>{
-      const sess=SESSIONS.find(sess=>sess.num===q.session);
-      return sess&&sess.subject===s.subject;
-    };
+    return q=>sessionSubject(q.session)===s.subject;
   }
   const maxNum=s.num||99;
-  return q=>!q.session||q.session<=maxNum;
+  if(s.mixedReview)return q=>!q.session||q.session<=maxNum;
+  return q=>q.session&&q.session<=maxNum&&sessionSubject(q.session)===s.subject;
 }
 
 // ─── KATEX ────────────────────────────────────────────────────────────────
