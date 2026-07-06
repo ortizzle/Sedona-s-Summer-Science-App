@@ -3769,6 +3769,8 @@ function showRes(mode,correct,total,xpRaw){
   const info=getLvInfo();
   document.getElementById('r-xp-bar').textContent='⚡ Total: '+S.totalXP+' XP — '+info.name;
   if(pct===100){launchConfetti(80);checkBadge('perfect_quiz');}
+  // Subject badges: first completed activity in a new subject
+  if(getSession().subject==='History'&&correct>0)checkBadge('history_first');
   // Log Sprint Quiz sessions
   if(mode==='qz'&&total>0){
     S.quizSessions.push({score:S.qz.score,correct,total,pct,ts:Date.now()});
