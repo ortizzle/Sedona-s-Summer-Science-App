@@ -132,6 +132,7 @@ The password is stored as a hardcoded hash in the script. Do not log it or expos
 - **Mobile-first, touch-friendly.** All tap targets ≥ 44px. No hover-only interactions.
 - **Gamified.** XP, levels, streaks, badges, confetti — these matter. Don't remove gamification elements to simplify.
 - **Story-first.** Every session starts with a narrative hook that connects the material to the student's real life. Write these in second person, present tense, with genuine enthusiasm.
+- **Sign-in flow**: Sedona picks subject & session first (subject-grouped picker), then reads the story hook. The 5-question mood check-in appears once per day, gated on the first quiz launch (`launchQuiz` → `showQuizCheckin`) — that's where feeling/confidence data is most meaningful for interpreting results.
 - **Mistake-tolerant.** The Growth Zone (Mistake Journal) surfaces wrong answers without shame. Wrong answers get rich explanations with tips and mnemonics.
 - **One file.** The PWA works offline and installs from the home screen. Do not introduce dependencies that require a server or build step.
 - **Sedona's voice.** She's a sharp student who responds well to wit and real-world stakes. Avoid condescending tone. Assume she can handle "why this is actually cool" explanations.
