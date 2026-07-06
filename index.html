@@ -4024,11 +4024,23 @@ function renderHaniDash(){
         <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px;line-height:1.5;">Select which session Sedona is studying today. Flashcards will show only that session's content. Practice games draw from all sessions.</div>
         <div style="font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Individual Sessions</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
-          ${SESSIONS.filter(s=>!s.combined).map((s,i)=>{
-            const active=i===ACTIVE_SESSION;
-            return `<button onclick="setActiveSession(${i})" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'var(--purple)':'var(--gray-200)'};background:${active?'#ede9fe':'white'};color:${active?'var(--purple-dark)':'var(--gray-700)'};">
-              ${active?'✅ ':''}Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:0.7;">${s.date} · ${s.subject}</span>
-            </button>`;}).join('')}
+          ${(()=>{
+            // Group sessions by subject with a small header per subject
+            const groups=[];
+            SESSIONS.filter(s=>!s.combined).forEach(s=>{
+              let g=groups.find(g=>g.subject===s.subject);
+              if(!g){g={subject:s.subject,sessions:[]};groups.push(g);}
+              g.sessions.push(s);
+            });
+            return groups.map(g=>`
+              <div style="font-size:11px;font-weight:800;color:var(--gray-700);margin-top:4px;">${getSubjectMeta(g.subject).icon} ${g.subject}</div>
+              ${g.sessions.map(s=>{
+                const i=SESSIONS.indexOf(s);
+                const active=i===ACTIVE_SESSION;
+                return `<button onclick="setActiveSession(${i})" style="padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;text-align:left;border:2px solid ${active?'var(--purple)':'var(--gray-200)'};background:${active?'#ede9fe':'white'};color:${active?'var(--purple-dark)':'var(--gray-700)'};">
+                  ${active?'✅ ':''}Session ${s.num} — ${s.title}<br><span style="font-size:11px;opacity:0.7;">${s.date} · ${s.subject}</span>
+                </button>`;}).join('')}`).join('');
+          })()}
         </div>
         <div style="font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Subject Review Modes</div>
         <div style="font-size:12px;color:var(--gray-500);margin-bottom:8px;line-height:1.4;">All questions and flashcards for one subject — great for targeted review before an exam.</div>
