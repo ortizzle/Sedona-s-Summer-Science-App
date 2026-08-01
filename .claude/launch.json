@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-p", "3000", "."],
       "port": 3000
+    },
+    {
+      "name": "ad-astra",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "4178", "../ad-astra"],
+      "port": 4178
     }
   ]
 }
