@@ -583,7 +583,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     <button onclick="launchQuiz(false)" style="background:linear-gradient(135deg,#6d28d9,#7c3aed);border:none;border-radius:var(--radius-sm);padding:14px 12px;color:white;cursor:pointer;text-align:left;">
       <div style="font-size:22px;margin-bottom:4px;">⏱️</div>
       <div style="font-size:13px;font-weight:800;">Sprint Quiz</div>
-      <div style="font-size:10px;opacity:.8;margin-top:2px;">All sessions · timed</div>
+      <div style="font-size:10px;opacity:.8;margin-top:2px;">Cumulative · timed</div>
     </button>
     <button onclick="launchQuiz(true)" style="background:linear-gradient(135deg,#0f766e,#0d9488);border:none;border-radius:var(--radius-sm);padding:14px 12px;color:white;cursor:pointer;text-align:left;">
       <div style="font-size:22px;margin-bottom:4px;">📚</div>
@@ -1480,7 +1480,7 @@ const SESSIONS = [
     ],
   },
   {
-    num:10,title:'Practice Exam',date:'Monday, June 8',subject:'Chemistry',unit:'Physics + Chemistry Review',
+    num:10,title:'Practice Exam',date:'Monday, June 8',subject:'Chemistry',unit:'Physics + Chemistry Review',mixedReview:true,
     why:'This is it — the final push before the comp exam. Today pulls everything together: all the chemistry and physics you\'ve covered over the past two weeks. Think of this as a full rehearsal.',
     concepts:[
       {title:'⚗️ Chemistry Review',body:'Units 3–6: atomic structure, bonding, reactions, stoichiometry. Know your formulas and be able to apply them to multi-step problems.'},
@@ -3281,16 +3281,21 @@ function startFC(){
   // Build full card pool (all cards, used for scope counting)
   const allCards=CARDS;
   const sessionCards=s.combined
-    ? allCards.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
+    ? allCards.filter(c=>sessionSubject(c.session)===s.subject)
     : allCards.filter(c=>!c.session||c.session===s.num);
-  const prevCards=allCards.filter(c=>c.session&&c.session<s.num);
+  // Subjects never mingle: "All"/"Prev" build from the active subject only
+  // (mixedReview sessions keep the old cross-subject behavior on purpose)
+  const inScope=c=>s.mixedReview?!!c.session:sessionSubject(c.session)===s.subject;
+  const subjectCards=allCards.filter(inScope);
+  const prevCards=allCards.filter(c=>c.session&&c.session<s.num&&inScope(c));
   const weakSet=new Set(Object.keys(S.weakCards).filter(k=>S.weakCards[k]>0));
   const weakCards=allCards.filter(c=>weakSet.has(weakCardKey(c)));
   // Store all pools for scope switching
-  f.pools={session:sessionCards,all:allCards,prev:prevCards,weak:weakCards};
+  f.pools={session:sessionCards,all:subjectCards,prev:prevCards,weak:weakCards};
   // Update scope pill counts
-  const scopeLabels={session:'This Session',all:'All Sessions',prev:'Prev Sessions',weak:'🌱 Growth Cards'};
-  const scopeCounts={session:sessionCards.length,all:allCards.length,prev:prevCards.length,weak:weakCards.length};
+  const scopeAllLabel=s.mixedReview?'All Sessions':`All ${s.subject}`;
+  const scopeLabels={session:'This Session',all:scopeAllLabel,prev:'Prev Sessions',weak:'🌱 Growth Cards'};
+  const scopeCounts={session:sessionCards.length,all:subjectCards.length,prev:prevCards.length,weak:weakCards.length};
   document.querySelectorAll('#fc-scope-bar .fcf-btn').forEach(b=>b.classList.remove('active-scope'));
   Object.keys(scopeLabels).forEach(sc=>{
     const btn=document.getElementById('fcs-'+sc);
@@ -3459,7 +3464,7 @@ function showQuizModeSelector(){
       <div style="font-size:13px;color:var(--gray-500);margin-bottom:18px;">Choose your practice scope:</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <button onclick="launchQuiz(false)" style="padding:16px;border-radius:14px;background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white;border:none;font-size:14px;font-weight:800;cursor:pointer;text-align:left;">
-          🌟 All Sessions — Cumulative<br><span style="font-size:12px;opacity:.8;font-weight:600;">Questions from every session studied so far</span>
+          🌟 ${s.mixedReview?'All Sessions':'All '+s.subject} — Cumulative<br><span style="font-size:12px;opacity:.8;font-weight:600;">${s.mixedReview?'Questions from every session studied so far':`Questions from every ${s.subject} session so far`}</span>
         </button>
         <button onclick="launchQuiz(true)" style="padding:16px;border-radius:14px;background:linear-gradient(135deg,#0f766e,#0d9488);color:white;border:none;font-size:14px;font-weight:800;cursor:pointer;text-align:left;">
           📚 This Session Only — ${s.combined?s.title:`Session ${s.num}: ${s.title}`}<br><span style="font-size:12px;opacity:.8;font-weight:600;">Focus on just today's material</span>
@@ -5159,16 +5164,22 @@ function showPeriodicTableOverlay(){
   });
 }
 
+function sessionSubject(num){
+  const sess=SESSIONS.find(x=>x.num===num);
+  return sess?sess.subject:null;
+}
+// Content scoping rule: subjects never mingle. Cumulative views build from
+// PREVIOUS SESSIONS OF THE SAME SUBJECT only — Physics never deals History
+// flashcards. The one exception: sessions flagged mixedReview:true (summer
+// comp-rehearsal sessions) intentionally span subjects.
 function getQSFilter(){
   const s=getSession();
   if(s.combined){
-    return q=>{
-      const sess=SESSIONS.find(sess=>sess.num===q.session);
-      return sess&&sess.subject===s.subject;
-    };
+    return q=>sessionSubject(q.session)===s.subject;
   }
   const maxNum=s.num||99;
-  return q=>!q.session||q.session<=maxNum;
+  if(s.mixedReview)return q=>!q.session||q.session<=maxNum;
+  return q=>q.session&&q.session<=maxNum&&sessionSubject(q.session)===s.subject;
 }
 
 // ─── KATEX ────────────────────────────────────────────────────────────────
@@ -5189,10 +5200,11 @@ const MATCH_SIZE=6;
 function startMatch(roundIdx){
   const s=getSession();
   let sessionCards=s.combined
-    ? CARDS.filter(c=>c.session&&SESSIONS.find(sess=>sess.num===c.session&&sess.subject===s.subject))
+    ? CARDS.filter(c=>sessionSubject(c.session)===s.subject)
     : CARDS.filter(c=>!c.session||c.session===s.num);
-  // Sessions with no cards of their own (e.g. review sessions) fall back to everything studied so far
-  if(!sessionCards.length&&s.num)sessionCards=CARDS.filter(c=>c.session&&c.session<=s.num);
+  // Sessions with no cards of their own (e.g. review sessions) fall back to
+  // everything studied so far — same subject only, unless a mixedReview session
+  if(!sessionCards.length&&s.num)sessionCards=CARDS.filter(c=>c.session&&c.session<=s.num&&(s.mixedReview||sessionSubject(c.session)===s.subject));
   if(!sessionCards.length){
     showBadgeToast({icon:'📋',name:'No flashcards yet for this session'},true);
     go('home');return;
