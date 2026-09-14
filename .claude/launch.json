@@ -12,6 +12,18 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["serve", "-p", "4178", "../ad-astra"],
       "port": 4178
+    },
+    {
+      "name": "wayfinder",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "4179", "../wayfinder"],
+      "port": 4179
+    },
+    {
+      "name": "home-os",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "8126", "../ortiz-home-os"],
+      "port": 8126
     }
   ]
 }
