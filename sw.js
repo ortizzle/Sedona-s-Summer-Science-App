@@ -27,6 +27,9 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  // Google sign-in and the Drive API must always hit the network — a cached folder lookup
+  // would point the Drive copy at a stale (or trashed) folder.
+  if (url.hostname === 'www.googleapis.com' || url.hostname === 'accounts.google.com') return;
 
   const isShell = url.origin === self.location.origin &&
     (url.pathname.endsWith('/') || url.pathname.endsWith('index.html'));
