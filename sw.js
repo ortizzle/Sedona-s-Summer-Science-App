@@ -4,8 +4,8 @@
 //     with the cached copy as the offline fallback.
 //   • Everything else (fonts, KaTeX CDN, icons): cache-first, populated at runtime.
 // Bump CACHE_VERSION whenever caching behavior changes.
-const CACHE_VERSION = 'sedona-lab-v1';
-const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
+const CACHE_VERSION = 'sedona-lab-v2';
+const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './ortiz-drive.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(

@@ -335,6 +335,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .hani-section{margin:16px 20px 0;}
 .hani-section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#1e3a5f;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .hani-card{background:var(--white);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow-sm);margin-bottom:10px;}
+.drive-label{font-size:13px;font-weight:700;color:var(--gray-700);margin:16px 0 8px;padding-top:14px;border-top:1px solid var(--gray-200);}
+.drive-btn{display:block;width:100%;min-height:48px;padding:12px;margin:0 0 8px;background:#eff6ff;color:#1d4ed8;border:2px solid #93c5fd;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;}
+#drive-bar .drive-btn{margin-bottom:14px;}
+.drive-hint{font-size:12px;color:var(--gray-500);line-height:1.5;}
+.ortiz-drive-off{color:var(--gray-500) !important;}
 .hani-stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .hani-stat{background:var(--gray-100);border-radius:8px;padding:10px;text-align:center;}
 .hani-stat-val{font-size:20px;font-weight:800;color:#1e3a5f;}
@@ -554,6 +559,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   </div>
   <!-- Spaced-repetition warm-up: shown when Growth Cards are waiting -->
   <div id="warmup-banner" style="display:none;padding:0 20px 14px;"></div>
+  <div id="drive-bar" style="padding:0 20px;"></div>
   <!-- STUDY RESOURCES -->
   <!-- STUDY RESOURCES -->
   <div class="sec-div"><div class="sec-div-line sec-div-line-l"></div><div class="sec-div-label">📖 Study Resources</div><div class="sec-div-line sec-div-line-r"></div></div>
@@ -1155,6 +1161,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <div class="streak-pop" id="streak-pop"></div>
 <div class="badge-toast" id="badge-toast"></div>
 
+<script src="ortiz-drive.js"></script>
 <script>
 // ─── PERIODIC TABLE DATA ───────────────────────────────────────────────────
 const ELEMENTS_DATA=[
@@ -3046,6 +3053,7 @@ function renderHome(){
   document.getElementById('h-mastered').textContent=S.masteredCards;
   document.getElementById('h-badges').textContent=S.badges.filter(b=>b.unlocked).length;
   renderWarmupBanner();
+  OrtizDrive.mountBar(document.getElementById('drive-bar'),{className:'drive-btn'});
   renderGrowthZone();renderBadges();
 }
 // Spaced repetition: nudge a quick review of cards she was still learning
@@ -4062,7 +4070,8 @@ function renderHaniDash(){
       <div class="hani-card">
         ${(()=>{
           if(!S.totalXP)return '';
-          const days=S.lastBackupTs?Math.floor((Date.now()-S.lastBackupTs)/86400000):null;
+          const last=Math.max(S.lastBackupTs||0,driveLastSavedTs());
+          const days=last?Math.floor((Date.now()-last)/86400000):null;
           if(days===null)return '<div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 12px;font-size:12px;color:#991b1b;font-weight:700;margin-bottom:12px;">⚠️ No backup yet! iPhones can clear browser data — copy a sync code or export a file now.</div>';
           if(days>=7)return `<div style="background:#fff7ed;border:1.5px solid #fdba74;border-radius:10px;padding:10px 12px;font-size:12px;color:#9a3412;font-weight:700;margin-bottom:12px;">⏰ Last backup was ${days} days ago — time for a fresh one.</div>`;
           return `<div style="font-size:11px;color:#166534;font-weight:600;margin-bottom:12px;">✅ Last backup: ${days===0?'today':days===1?'yesterday':days+' days ago'}</div>`;
@@ -4081,6 +4090,7 @@ function renderHaniDash(){
           </label>
         </div>
         <div id="import-msg" style="display:none;font-size:12px;color:#166534;font-weight:600;padding:6px 0;"></div>
+        <div id="drive-slot"></div>
       </div>
     </div>
     <div class="hani-section">
@@ -4169,6 +4179,7 @@ function renderHaniDash(){
       </div>
     </div>
   `;
+  document.getElementById('drive-slot').appendChild(OrtizDrive.settingsBlock({labelClass:'drive-label',buttonClass:'drive-btn',hintClass:'drive-hint'}));
   // Populate the card editor list
   setTimeout(renderHaniCardList, 0);
 }
@@ -5399,6 +5410,7 @@ function loadCustomCards(){
 }
 function saveCustomCards(cards){
   localStorage.setItem('sedona_custom_cards',JSON.stringify(cards));
+  scheduleDriveCheck();
 }
 // Render the edit list in Hani's dashboard
 function renderHaniCardList(){
@@ -5549,7 +5561,7 @@ function exitTestMode(){
 }
 // Wrap save/record functions to be no-ops in test mode
 const _saveProgress=saveProgress;
-saveProgress=function(){if(!TEST_MODE||TEST_RECORD)_saveProgress();};
+saveProgress=function(){if(!TEST_MODE||TEST_RECORD){_saveProgress();scheduleDriveCheck();}};
 const _addXP=addXP;
 addXP=function(n,el){
   if(TEST_MODE&&!TEST_RECORD){if(el){const e=document.getElementById(el);if(e)e.textContent='TEST';}return;}
@@ -5576,6 +5588,24 @@ function stopStudyTimer(){if(_studyTimer){clearInterval(_studyTimer);_studyTimer
 document.addEventListener('visibilitychange',()=>{document.hidden?stopStudyTimer():startStudyTimer();});
 startStudyTimer();
 function fmtStudyTime(sec){const m=Math.floor(sec/60),s=sec%60;return m>0?`${m}m ${s}s`:`${s}s`;}
+
+// ─── GOOGLE DRIVE COPY ────────────────────────────────────────────────────
+// Same payload as export/sync codes (serializeProgress), plus Hani's card
+// edits so a restore from Drive loses nothing. Long debounce: the study timer
+// saves every 30s, and one copy after she pauses is plenty.
+var _driveTimer=null;
+function scheduleDriveCheck(){clearTimeout(_driveTimer);_driveTimer=setTimeout(()=>OrtizDrive.check(),60000);}
+function driveLastSavedTs(){
+  if(!OrtizDrive.enabled())return 0;
+  try{return Date.parse(JSON.parse(localStorage.getItem('ortizdrive:sedona-science:last_at')))||0;}catch(e){return 0;}
+}
+OrtizDrive.init({
+  app:"Sedona's Science",
+  prefix:'sedona-science',
+  getData:()=>Object.assign(JSON.parse(serializeProgress()),{customCards:loadCustomCards()}),
+  toast:m=>{const t=document.getElementById('badge-toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),4500);},
+  onChange:()=>OrtizDrive.mountBar(document.getElementById('drive-bar'),{className:'drive-btn'})
+});
 
 loadProgress();
 takeSnapshot();
