@@ -4,8 +4,8 @@
 //     with the cached copy as the offline fallback.
 //   • Everything else (fonts, KaTeX CDN, icons): cache-first, populated at runtime.
 // Bump CACHE_VERSION whenever caching behavior changes.
-const CACHE_VERSION = 'sedona-lab-v1';
-const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon.svg'];
+const CACHE_VERSION = 'sedona-lab-v2';
+const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './ortiz-drive.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -27,6 +27,9 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  // Google sign-in and the Drive API must always hit the network — a cached folder lookup
+  // would point the Drive copy at a stale (or trashed) folder.
+  if (url.hostname === 'www.googleapis.com' || url.hostname === 'accounts.google.com') return;
 
   const isShell = url.origin === self.location.origin &&
     (url.pathname.endsWith('/') || url.pathname.endsWith('index.html'));
